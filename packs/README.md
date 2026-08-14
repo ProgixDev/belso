@@ -38,11 +38,11 @@ and follow `packs/<name>/README.md`.
 
 Status: ✅ ready · 🟡 planned · ⬜ to build.
 
-| Pack              | Status | What it includes (background)                                                                                                          | Dev keys              |
-| ----------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Pack              | Status | What it includes (background)                                                                                                           | Dev keys                |
+| ----------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | `payments-stripe` | ✅     | Stripe Checkout (server action) + webhook route handler that writes the server-owned `subscriptions` table, `useEntitlement`, test-mode | none (Stripe test mode) |
-| `chat-realtime`   | ✅     | Supabase Realtime DMs/groups: migration + member-scoped RLS, server actions (send/read), client subscribe hook; thread stub            | none                  |
-| `media-upload`    | ✅     | Private Supabase Storage bucket, per-user folder RLS, signed-URL reads, upload server action + browser-File client; upload stub         | none                  |
+| `chat-realtime`   | ✅     | Supabase Realtime DMs/groups: migration + member-scoped RLS, server actions (send/read), client subscribe hook; thread stub             | none                    |
+| `media-upload`    | ✅     | Private Supabase Storage bucket, per-user folder RLS, signed-URL reads, upload server action + browser-File client; upload stub         | none                    |
 
 ## Anatomy of a pack
 

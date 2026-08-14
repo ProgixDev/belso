@@ -12,7 +12,9 @@ type Result<T> = { ok: true; value: T } | { ok: false; error: string };
  */
 export async function getSignedUrl(path: string, expiresInSeconds = 3600): Promise<Result<string>> {
   const supabase = await createClient();
-  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, expiresInSeconds);
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(path, expiresInSeconds);
   if (error || !data) return { ok: false, error: error?.message ?? "Could not sign URL." };
   return { ok: true, value: data.signedUrl };
 }

@@ -7,9 +7,7 @@
   "deps": {},
   "env": [],
   "migrations": ["supabase/0010_chat.sql"],
-  "routeHandlers": [
-    { "from": "app/chat/[id]/page.tsx", "to": "src/app/chat/[id]/page.tsx" }
-  ],
+  "routeHandlers": [{ "from": "app/chat/[id]/page.tsx", "to": "src/app/chat/[id]/page.tsx" }],
   "routes": [{ "path": "src/app/chat/[id]/page.tsx", "renders": "ChatThreadPage" }],
   "postInstall": [
     "Apply supabase/0010_chat.sql (conversations/members/messages, member-scoped RLS, realtime publication)",

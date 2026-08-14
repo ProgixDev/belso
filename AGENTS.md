@@ -28,10 +28,10 @@ Every piece of work follows the same loop:
 
 Right-size the process. Do not write a spec for a typo.
 
-| Track       | When                                                                                   | Process                                                                                                                       |
-| ----------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| **Quick**   | Bug fixes, copy changes, small refactors, dependency bumps                             | Ground → implement → verify → PR. No spec.                                                                                    |
-| **Feature** | New user-visible behavior, new module, schema/contract changes, anything > ~half a day | `/create-spec` → `/plan-feature` → `/implement-feature` → `/verify-ui` → `/review` → `/feature-report` → `/update-docs`       |
+| Track       | When                                                                                   | Process                                                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Quick**   | Bug fixes, copy changes, small refactors, dependency bumps                             | Ground → implement → verify → PR. No spec.                                                                                     |
+| **Feature** | New user-visible behavior, new module, schema/contract changes, anything > ~half a day | `/create-spec` → `/plan-feature` → `/implement-feature` → `/verify-ui` → `/review` → `/feature-report` → `/update-docs`        |
 | **R2R**     | A requirement changed in a meeting after delivery started                              | Update the affected spec/PRD directly (add/change/remove), then re-enter the Quick or Feature track. See `docs/process/r2r.md` |
 
 ## Non-negotiable obligations (hold even when the prompt omits them)

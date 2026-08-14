@@ -28,15 +28,7 @@ const SECRET_VALUE = [
   { re: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{6,}\b/g, what: "JWT literal" },
 ];
 
-const IGNORE_DIRS = new Set([
-  "node_modules",
-  ".git",
-  ".next",
-  "coverage",
-  "docs",
-  ".husky",
-  "e2e",
-]);
+const IGNORE_DIRS = new Set(["node_modules", ".git", ".next", "coverage", "docs", ".husky", "e2e"]);
 // Files that legitimately contain the patterns (detectors / env guard / tests).
 const IGNORE_FILES = new Set(["check-secrets.mjs", "logger.ts", "env.ts", "env.client.ts"]);
 

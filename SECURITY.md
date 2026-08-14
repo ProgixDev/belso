@@ -16,19 +16,19 @@ not open public issues for security reports.
 
 `[x]` baked in · `[~]` partial / later phase · `[ ]` not yet.
 
-| Area                 | Control                                       | Status | How it's enforced                                                                 |
-| -------------------- | --------------------------------------------- | ------ | --------------------------------------------------------------------------------- |
-| Secrets in code      | No hardcoded secrets / secret-looking env     | `[x]`  | `scripts/check-secrets.mjs` in `pnpm verify` + pre-commit; gitleaks (optional)     |
-| Secrets at runtime   | `process.env` read only via server-only `env` | `[x]`  | `src/core/env.ts` imports `server-only` (client import = build error)             |
-| Response headers     | HSTS, X-Frame-Options, nosniff, Referrer, PP  | `[x]`  | `next.config.ts` `headers()` on every route; CSP shipped report-only to tune      |
-| Input validation     | Validate at every trust boundary              | `[x]`  | Zod schemas (AGENTS hard rule); Server Actions/Route Handlers parse input         |
-| Open redirect        | No redirect to attacker-controlled URLs       | `[x]`  | `src/lib/redirect.ts` allowlist + tests                                            |
-| Logging              | No tokens/PII in logs                         | `[x]`  | `src/lib/logger.ts` redacts tokens/PII/JWTs                                        |
-| Auth / sessions      | Server-validated sessions; secure cookies     | `[~]`  | Phase 2 (Supabase SSR auth via `@supabase/ssr`, httpOnly cookies, middleware)     |
-| Authorization        | RLS deny-by-default; never trust the client   | `[~]`  | Phase 2 (same RLS-first migrations as the Expo skeleton)                          |
-| CSP (enforcing)      | Strict CSP with nonces                        | `[~]`  | Report-only baseline shipped; tighten + enforce per app                           |
-| Rate limiting        | Throttle auth / mutation endpoints            | `[ ]`  | Pattern doc + per-app (e.g. Upstash) — backlog                                    |
-| Supply chain         | Lockfile + audit + behavioral scan            | `[~]`  | Committed `pnpm-lock.yaml`; `pnpm audit` + Socket.dev — backlog                   |
+| Area               | Control                                       | Status | How it's enforced                                                              |
+| ------------------ | --------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
+| Secrets in code    | No hardcoded secrets / secret-looking env     | `[x]`  | `scripts/check-secrets.mjs` in `pnpm verify` + pre-commit; gitleaks (optional) |
+| Secrets at runtime | `process.env` read only via server-only `env` | `[x]`  | `src/core/env.ts` imports `server-only` (client import = build error)          |
+| Response headers   | HSTS, X-Frame-Options, nosniff, Referrer, PP  | `[x]`  | `next.config.ts` `headers()` on every route; CSP shipped report-only to tune   |
+| Input validation   | Validate at every trust boundary              | `[x]`  | Zod schemas (AGENTS hard rule); Server Actions/Route Handlers parse input      |
+| Open redirect      | No redirect to attacker-controlled URLs       | `[x]`  | `src/lib/redirect.ts` allowlist + tests                                        |
+| Logging            | No tokens/PII in logs                         | `[x]`  | `src/lib/logger.ts` redacts tokens/PII/JWTs                                    |
+| Auth / sessions    | Server-validated sessions; secure cookies     | `[~]`  | Phase 2 (Supabase SSR auth via `@supabase/ssr`, httpOnly cookies, middleware)  |
+| Authorization      | RLS deny-by-default; never trust the client   | `[~]`  | Phase 2 (same RLS-first migrations as the Expo skeleton)                       |
+| CSP (enforcing)    | Strict CSP with nonces                        | `[~]`  | Report-only baseline shipped; tighten + enforce per app                        |
+| Rate limiting      | Throttle auth / mutation endpoints            | `[ ]`  | Pattern doc + per-app (e.g. Upstash) — backlog                                 |
+| Supply chain       | Lockfile + audit + behavioral scan            | `[~]`  | Committed `pnpm-lock.yaml`; `pnpm audit` + Socket.dev — backlog                |
 
 ## Non-negotiables (the short version)
 

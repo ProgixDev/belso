@@ -22,16 +22,16 @@ The docs tree is the repository's long-term memory. Agents and humans ground the
 
 ## Web production-readiness
 
-| File                                 | What it answers                                                          |
-| ------------------------------------ | ----------------------------------------------------------------------- |
+| File                                 | What it answers                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------- |
 | [web/checklist.md](web/checklist.md) | `WEB-*` launch checklist (SEO, PWA, errors, a11y, perf); `pnpm web:check` |
 
 ## Design
 
-| File                                                       | What it answers                                              |
-| ---------------------------------------------------------- | ----------------------------------------------------------- |
-| [design/quality-bar.md](design/quality-bar.md)             | Premium vs "vibe-coded"; the checklist every page must clear |
-| [templates/claude-design-prompt.md](templates/claude-design-prompt.md) | The professional design brief (`/design-prompt` fills it)   |
+| File                                                                   | What it answers                                              |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [design/quality-bar.md](design/quality-bar.md)                         | Premium vs "vibe-coded"; the checklist every page must clear |
+| [templates/claude-design-prompt.md](templates/claude-design-prompt.md) | The professional design brief (`/design-prompt` fills it)    |
 
 ## Conventions (how we write code)
 
@@ -48,21 +48,21 @@ The docs tree is the repository's long-term memory. Agents and humans ground the
 
 ## Process (how the team works)
 
-| File                                                           | What it answers                                                     |
-| -------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [process/workflow.md](process/workflow.md)                     | Roles, the two work tracks, conflict-free collaboration             |
-| [process/r2r.md](process/r2r.md)                               | Requirement-to-Review — the meeting → diff → grill → spec loop      |
-| [process/definition-of-done.md](process/definition-of-done.md) | The checklist that gates every merge                                |
-| [process/painted-door.md](process/painted-door.md)             | How designers/PMs ship UI experiments safely                        |
+| File                                                           | What it answers                                                |
+| -------------------------------------------------------------- | -------------------------------------------------------------- |
+| [process/workflow.md](process/workflow.md)                     | Roles, the two work tracks, conflict-free collaboration        |
+| [process/r2r.md](process/r2r.md)                               | Requirement-to-Review — the meeting → diff → grill → spec loop |
+| [process/definition-of-done.md](process/definition-of-done.md) | The checklist that gates every merge                           |
+| [process/painted-door.md](process/painted-door.md)             | How designers/PMs ship UI experiments safely                   |
 
 ## Templates (artifacts skills instantiate)
 
-| File                                                                         | Filled by                                     |
-| ---------------------------------------------------------------------------- | --------------------------------------------- |
-| [templates/](templates/README.md)                                            | Index of all project artifacts                |
-| [templates/prd.md](templates/prd.md)                                         | `/write-prd`                                  |
-| [templates/claude-design-prompt.md](templates/claude-design-prompt.md)       | `/design-prompt`                              |
-| [templates/daily-report.md](templates/daily-report.md)                       | `/daily-report`                               |
+| File                                                                   | Filled by                      |
+| ---------------------------------------------------------------------- | ------------------------------ |
+| [templates/](templates/README.md)                                      | Index of all project artifacts |
+| [templates/prd.md](templates/prd.md)                                   | `/write-prd`                   |
+| [templates/claude-design-prompt.md](templates/claude-design-prompt.md) | `/design-prompt`               |
+| [templates/daily-report.md](templates/daily-report.md)                 | `/daily-report`                |
 
 ## Product (what we are building)
 

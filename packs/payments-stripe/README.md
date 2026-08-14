@@ -1,7 +1,7 @@
 # Pack: payments-stripe (web)
 
 Stripe subscriptions, the secure way: **Checkout** and the **billing portal** via Server Actions, and
-a **signature-verified webhook** that is the *only* writer of entitlement. Logic-first; UI is a shadcn
+a **signature-verified webhook** that is the _only_ writer of entitlement. Logic-first; UI is a shadcn
 placeholder. Runs in **test mode** in dev (test keys only — no real charges).
 
 ## What you get
@@ -46,7 +46,7 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 The client **cannot** grant itself Pro. `subscriptions` is SELECT-only under RLS; the single writer
 is the webhook, which (a) verifies the Stripe signature so a forged POST is rejected, and (b) uses
-the service_role key that bypasses RLS — server-side only. Checkout/portal actions run on the server
+the service*role key that bypasses RLS — server-side only. Checkout/portal actions run on the server
 with the user's cookie session. Secret keys live in `src/core/env.ts` behind `server-only`; nothing
-sensitive is ever `NEXT_PUBLIC_`. This is the web mirror of the Expo `payments-revenuecat` pack,
-which writes the same server-owned `subscriptions` table.
+sensitive is ever `NEXT_PUBLIC*`. This is the web mirror of the Expo `payments-revenuecat`pack,
+which writes the same server-owned`subscriptions` table.

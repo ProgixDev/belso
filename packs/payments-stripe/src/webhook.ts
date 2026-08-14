@@ -13,7 +13,10 @@ type WebhookResult = { status: number; body: Record<string, unknown> };
  * and boundary-clean (it imports only the feature's index). Verifies the Stripe
  * signature, then writes entitlement with the service_role client.
  */
-export async function handleStripeWebhook(rawBody: string, signature: string | null): Promise<WebhookResult> {
+export async function handleStripeWebhook(
+  rawBody: string,
+  signature: string | null,
+): Promise<WebhookResult> {
   const stripe = getStripe();
   const secret = env.STRIPE_WEBHOOK_SECRET;
   if (!stripe || !secret) return { status: 503, body: { error: "Stripe not configured" } };

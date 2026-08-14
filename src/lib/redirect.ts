@@ -8,10 +8,7 @@
 /** Absolute hosts an external redirect may target (https only). Usually empty. */
 const ALLOWED_HOSTS: readonly string[] = [];
 
-export function safeRedirectPath(
-  target: string | null | undefined,
-  fallback = "/",
-): string {
+export function safeRedirectPath(target: string | null | undefined, fallback = "/"): string {
   if (!target) return fallback;
   try {
     // Same-origin relative path — but reject protocol-relative "//evil.com".

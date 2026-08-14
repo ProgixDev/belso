@@ -32,12 +32,12 @@ a fully scripted client — never touching your UI — still cannot read or writ
 
 ## Data classification
 
-| Class               | Examples                                   | Where it may live                                            |
-| ------------------- | ------------------------------------------ | ----------------------------------------------------------- |
-| **Secret**          | tokens, API keys, service_role key         | server only (via `src/core/env.ts`); never logs/bundle      |
-| **Sensitive (PII)** | email, phone, health, finance              | server (RLS-scoped); minimize on the client                 |
-| **Public-config**   | `NEXT_PUBLIC_*`, anon/publishable key, URLs| the bundle is fine (public by design)                       |
-| **Non-sensitive**   | UI prefs, caches                           | client storage is fine                                      |
+| Class               | Examples                                    | Where it may live                                      |
+| ------------------- | ------------------------------------------- | ------------------------------------------------------ |
+| **Secret**          | tokens, API keys, service_role key          | server only (via `src/core/env.ts`); never logs/bundle |
+| **Sensitive (PII)** | email, phone, health, finance               | server (RLS-scoped); minimize on the client            |
+| **Public-config**   | `NEXT_PUBLIC_*`, anon/publishable key, URLs | the bundle is fine (public by design)                  |
+| **Non-sensitive**   | UI prefs, caches                            | client storage is fine                                 |
 
 ## Out of scope (accepted)
 

@@ -30,12 +30,12 @@ export function MessageThread({
     <div className="flex h-full flex-col gap-2">
       <ul className="flex-1 space-y-2 overflow-y-auto">
         {messages.map((m) => (
-          <li key={m.id} className="rounded-md bg-muted p-2 text-sm">
+          <li key={m.id} className="bg-muted rounded-md p-2 text-sm">
             {m.body}
           </li>
         ))}
       </ul>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
       <form
         className="flex gap-2"
         onSubmit={(e) => {

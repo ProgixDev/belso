@@ -56,7 +56,11 @@ export async function saveStripeCustomerId(userId: string, customerId: string): 
  */
 export async function upsertEntitlement(
   userId: string,
-  fields: { status: Entitlement["status"]; productId: string | null; currentPeriodEnd: string | null },
+  fields: {
+    status: Entitlement["status"];
+    productId: string | null;
+    currentPeriodEnd: string | null;
+  },
 ): Promise<void> {
   const admin = createAdminClient();
   const { error } = await admin.from("subscriptions").upsert(

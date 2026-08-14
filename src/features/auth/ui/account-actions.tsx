@@ -13,7 +13,11 @@ export function AccountActions() {
 
   return (
     <div className="flex w-full max-w-sm flex-col gap-3">
-      <Button variant="secondary" disabled={pending} onClick={() => startTransition(() => signOut())}>
+      <Button
+        variant="secondary"
+        disabled={pending}
+        onClick={() => startTransition(() => signOut())}
+      >
         Sign out
       </Button>
       <Button

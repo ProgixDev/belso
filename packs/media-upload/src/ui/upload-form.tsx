@@ -29,8 +29,8 @@ export function UploadForm() {
           if (file) void upload(file);
         }}
       />
-      {state === "uploading" ? <p className="text-sm text-muted-foreground">Uploading…</p> : null}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {state === "uploading" ? <p className="text-muted-foreground text-sm">Uploading…</p> : null}
+      {error ? <p className="text-destructive text-sm">{error}</p> : null}
     </div>
   );
 }

@@ -9,7 +9,10 @@ type Result = { ok: true } | { ok: false; error: string };
  * Send a message. Validated server-side; RLS guarantees the sender is a member
  * and `sender_id` defaults to auth.uid() (a client can't forge another sender).
  */
-export async function sendMessage(input: { conversationId: string; body: string }): Promise<Result> {
+export async function sendMessage(input: {
+  conversationId: string;
+  body: string;
+}): Promise<Result> {
   const parsed = SendInputSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid message" };
@@ -23,7 +26,9 @@ export async function sendMessage(input: { conversationId: string; body: string 
 }
 
 /** Start (or reuse) a 1:1 conversation with another user. */
-export async function createDirectConversation(otherUserId: string): Promise<Result & { id?: string }> {
+export async function createDirectConversation(
+  otherUserId: string,
+): Promise<Result & { id?: string }> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -35,7 +40,8 @@ export async function createDirectConversation(otherUserId: string): Promise<Res
     .insert({ is_group: false })
     .select("id")
     .single();
-  if (error || !conv) return { ok: false, error: error?.message ?? "Could not create conversation." };
+  if (error || !conv)
+    return { ok: false, error: error?.message ?? "Could not create conversation." };
 
   const { error: memberError } = await supabase.from("conversation_members").insert([
     { conversation_id: conv.id, user_id: user.id },

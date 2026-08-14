@@ -19,7 +19,7 @@ Audit the diff against `docs/security/checklist.md` (the `SEC-*` catalog) and
    (`src/core/env*.ts`), `src/lib/supabase/*`, Server Actions, Route Handlers (`src/app/api/*`),
    `src/middleware.ts`, redirects, `next.config.ts`, `supabase/migrations`.
 3. Explicitly verify the high-leverage rules:
-   - No secret in source/bundle; no secret-looking `NEXT_PUBLIC_*` (SEC-SECRET-*). `process.env` only
+   - No secret in source/bundle; no secret-looking `NEXT_PUBLIC_*` (SEC-SECRET-\*). `process.env` only
      via `env.ts`/`env.client.ts` (SEC-ENV-001).
    - service_role key used only in server code (SEC-SECRET-003).
    - New tables: RLS + owner-scoped policies + `WITH CHECK`; never trust the client (SEC-RLS / AUTHZ).

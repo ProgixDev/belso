@@ -11,10 +11,7 @@ export function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
     <div
       role="status"
       aria-label="Loading"
-      className={cn(
-        "bg-muted animate-pulse rounded-md motion-reduce:animate-none",
-        className,
-      )}
+      className={cn("bg-muted animate-pulse rounded-md motion-reduce:animate-none", className)}
       {...props}
     />
   );
