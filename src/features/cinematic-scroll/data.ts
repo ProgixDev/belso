@@ -101,10 +101,10 @@ export const collage: readonly CollageTile[] = [
 
 /** Static scene plates. Paths are public/ assets exported from the design bundle. */
 export const scene = {
-  sky: "/design/besto-sky-bg.png",
-  housePlate: "/design/besto-house-plate.png",
-  heroTall: "/design/besto-hero-tall.png",
-  street: "/design/besto-hero.png",
+  sky: "/design/belso-sky-bg.png",
+  housePlate: "/design/belso-house-plate.png",
+  heroTall: "/design/belso-hero-tall.png",
+  street: "/design/belso-hero.png",
   doorLeft: "/design/stock/door-left.jpg",
   doorRight: "/design/stock/door-right.jpg",
   reveal: "/design/stock/reveal-interior.jpg",

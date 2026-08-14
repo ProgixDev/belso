@@ -7,6 +7,12 @@ import styles from "../cinematic-scroll.module.css";
 import { collage, heroLede, navLinks, scene, sights, stats } from "../data";
 import { useCinematicScroll } from "../use-cinematic-scroll";
 
+/**
+ * The full-bleed scene plates are photoreal renders — the default quality of 75
+ * bands their sky gradients badly. Declared in next.config.ts `images.qualities`.
+ */
+const PLATE_QUALITY = 90;
+
 /** Inline styles here only ever alias a motion custom property to a per-item one. */
 type CssVars = CSSProperties & Record<`--${string}`, string>;
 
@@ -31,7 +37,7 @@ export function CinematicScroll() {
         ref={sectionRef}
         className={styles.cinemaScroll}
         id="cinema"
-        aria-label="Besto cinematic scroll story"
+        aria-label="Belso cinematic scroll story"
       >
         <div className={styles.stage}>
           <div ref={worldRef} className={styles.world}>
@@ -43,12 +49,13 @@ export function CinematicScroll() {
                 priority
                 sizes="100vw"
                 className={styles.slotImg}
+                quality={PLATE_QUALITY}
               />
             </div>
 
             <header className={styles.siteHeader} aria-label="Primary navigation">
               <a className={styles.siteLogo} href="#cinema">
-                Besto
+                Belso
               </a>
               <nav className={styles.siteNav} aria-label="Main menu">
                 {navLinks.map((link, i) => (
@@ -73,7 +80,7 @@ export function CinematicScroll() {
             <div className={styles.backStack}>
               <div className={styles.backFour} />
 
-              <section className={styles.sightsSlider} aria-label="Besto residences slider">
+              <section className={styles.sightsSlider} aria-label="Belso residences slider">
                 <div ref={trackRef} className={styles.sightsTrack}>
                   {loopedSights.map((sight, index) => (
                     <article
@@ -164,7 +171,7 @@ export function CinematicScroll() {
               </button>
             </div>
 
-            <h1 className={styles.heroTitle}>Besto</h1>
+            <h1 className={styles.heroTitle}>Belso</h1>
 
             <Image
               className={styles.forePlate}
@@ -174,6 +181,7 @@ export function CinematicScroll() {
               fill
               priority
               sizes="100vw"
+              quality={PLATE_QUALITY}
             />
 
             <div className={`${styles.splitFrame} ${styles.splitFrameLeft}`}>
@@ -183,6 +191,7 @@ export function CinematicScroll() {
                 fill
                 sizes="50vw"
                 className={styles.slotImg}
+                quality={PLATE_QUALITY}
               />
             </div>
             <div className={`${styles.splitFrame} ${styles.splitFrameRight}`}>
@@ -192,16 +201,18 @@ export function CinematicScroll() {
                 fill
                 sizes="50vw"
                 className={styles.slotImg}
+                quality={PLATE_QUALITY}
               />
             </div>
 
             <div className={styles.bridgeImg}>
               <Image
                 src={scene.heroTall}
-                alt="Besto seen in three-quarter view"
+                alt="Belso seen in three-quarter view"
                 fill
                 sizes="100vw"
                 className={styles.slotImg}
+                quality={PLATE_QUALITY}
               />
             </div>
 
@@ -212,6 +223,7 @@ export function CinematicScroll() {
                 fill
                 sizes="130vw"
                 className={styles.slotImg}
+                quality={PLATE_QUALITY}
               />
             </div>
 
@@ -219,7 +231,7 @@ export function CinematicScroll() {
             <div className={styles.shade} aria-hidden="true" />
           </div>
 
-          <section className={styles.introCopy} aria-label="Besto overview">
+          <section className={styles.introCopy} aria-label="Belso overview">
             <div aria-hidden="true" className={styles.introVignette} />
             <div className={styles.heroColumn}>
               <div className={styles.heroStats}>
@@ -264,15 +276,15 @@ export function CinematicScroll() {
             </p>
           </section>
 
-          <section className={styles.aboutPanel} id="about" aria-label="About Besto">
+          <section className={styles.aboutPanel} id="about" aria-label="About Belso">
             <div className={styles.aboutEyebrow}>
               <span aria-hidden="true" className={styles.aboutEyebrowMark} />
-              <span>About Besto</span>
+              <span>About Belso</span>
             </div>
             <div className={styles.aboutBody}>
               <h2>A quieter kind of address</h2>
               <p>
-                Besto is a modern residential address shaped by warm desert calm, refined
+                Belso is a modern residential address shaped by warm desert calm, refined
                 architecture, and the quiet beauty of everyday living. More than a place to stay, it
                 is designed to change how home feels from the moment you arrive.
               </p>

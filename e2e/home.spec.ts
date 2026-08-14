@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { shot } from "./utils/shot";
 
-const SCENE = 'section[aria-label="Besto cinematic scroll story"]';
+const SCENE = 'section[aria-label="Belso cinematic scroll story"]';
 
 /**
  * The scene lerps toward the scroll target over ~2s, so a shot taken too early
@@ -40,7 +40,7 @@ async function scrollTo(page: import("@playwright/test").Page, y: number) {
   await settle(page);
 }
 
-// CUJ-01 — Land and travel the Besto scroll story (docs/product/critical-user-journeys.md)
+// CUJ-01 — Land and travel the Belso scroll story (docs/product/critical-user-journeys.md)
 test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async ({ page }) => {
   await page.goto("/");
 
@@ -52,7 +52,7 @@ test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async
     SCENE,
     { timeout: 15_000 },
   );
-  await expect(page.getByRole("heading", { level: 1, name: "Besto" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Belso" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Book a call" })).toBeVisible();
   await shot(page, "01-hero", { fullPage: false });
 
@@ -71,7 +71,7 @@ test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async
   await shot(page, "04-amenities", { fullPage: false });
 
   await scrollTo(page, 6600);
-  const slider = page.getByRole("region", { name: "Besto residences slider" });
+  const slider = page.getByRole("region", { name: "Belso residences slider" });
   await expect(slider).toBeVisible();
   await shot(page, "05-residences-slider", { fullPage: false });
 
