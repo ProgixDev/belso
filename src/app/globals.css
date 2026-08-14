@@ -1,54 +1,67 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — Tailwind v4 CSS-first config (docs/conventions/styling.md).
+ * Belso design tokens — Tailwind v4 CSS-first config (docs/conventions/styling.md).
  * Semantic tokens below are the only colors features may use.
  * shadcn/ui-compatible naming so `pnpm dlx shadcn add <component>` drops in cleanly.
+ *
+ * The palette is promoted from the cinematic scene rather than invented, so the
+ * storefront and the hero are one system: paper #f6ece0, ink #241c16,
+ * shell #17110d, sand #c9a882 — converted to oklch, not eyeballed.
+ * Placeholder pending B-7 (final logo and typography).
  */
 
+/* Class-based dark mode, so the `dark:` utilities and the tokens below switch
+ * on the same signal. Without this the utilities follow prefers-color-scheme
+ * while the tokens follow `.dark`, which lands light text on light surfaces. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --radius: 0.625rem;
+  --background: oklch(0.968 0.012 74);
+  --foreground: oklch(0.234 0.017 58.7);
+  --card: oklch(0.985 0.008 76);
+  --card-foreground: oklch(0.234 0.017 58.7);
+  --popover: oklch(0.985 0.008 76);
+  --popover-foreground: oklch(0.234 0.017 58.7);
+  --primary: oklch(0.284 0.02 58);
+  --primary-foreground: oklch(0.968 0.012 74);
+  --secondary: oklch(0.925 0.016 74);
+  --secondary-foreground: oklch(0.284 0.02 58);
+  --muted: oklch(0.935 0.013 74);
+  --muted-foreground: oklch(0.464 0.019 62);
+  --accent: oklch(0.752 0.064 70.5);
+  --accent-foreground: oklch(0.234 0.017 58.7);
+  --destructive: oklch(0.484 0.17 27);
+  --destructive-foreground: oklch(0.98 0.008 76);
+  /* `border` is a decorative divider and stays quiet. `input` is a control
+   * boundary and must clear 3:1 against the page (WCAG 1.4.11), so the two
+   * are deliberately different values rather than the usual shared one. */
+  --border: oklch(0.879 0.015 74);
+  --input: oklch(0.585 0.022 66);
+  --ring: oklch(0.556 0.075 68);
+  --radius: 0.25rem;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --background: oklch(0.184 0.013 55.5);
+  --foreground: oklch(0.948 0.019 72.6);
+  --card: oklch(0.232 0.015 57);
+  --card-foreground: oklch(0.948 0.019 72.6);
+  --popover: oklch(0.232 0.015 57);
+  --popover-foreground: oklch(0.948 0.019 72.6);
+  --primary: oklch(0.752 0.064 70.5);
+  --primary-foreground: oklch(0.184 0.013 55.5);
+  --secondary: oklch(0.283 0.016 58);
+  --secondary-foreground: oklch(0.948 0.019 72.6);
+  --muted: oklch(0.283 0.016 58);
+  --muted-foreground: oklch(0.756 0.021 70);
+  --accent: oklch(0.752 0.064 70.5);
+  --accent-foreground: oklch(0.184 0.013 55.5);
+  --destructive: oklch(0.663 0.16 25);
+  --destructive-foreground: oklch(0.184 0.013 55.5);
+  --border: oklch(1 0 0 / 13%);
+  --input: oklch(0.505 0.018 60);
+  --ring: oklch(0.752 0.064 70.5);
 }
 
 @theme inline {
@@ -71,12 +84,25 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-geist-sans);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  /* Archivo is the brand face — it is what the scene is composed in.
+   * Geist Mono stays for references and numeric detail. */
+  --font-sans: var(--font-archivo);
+  --font-display: var(--font-archivo);
   --font-mono: var(--font-geist-mono);
+
+  /* Display scale for headings — the editorial sizes the scene establishes.
+   * Body text keeps Tailwind's default ~1.2 ramp. */
+  --text-display-sm: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem);
+  --text-display-md: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
+  --text-display-lg: clamp(3rem, 1.5rem + 6vw, 6rem);
+
+  --tracking-display: -0.03em;
+  --tracking-eyebrow: 0.18em;
 }
 
 @layer base {
@@ -95,5 +121,22 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+  /* Focus is never removed — the quality bar treats an invisible focus ring as
+   * reject-worthy, and it is the only affordance a keyboard user has. */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* The shared page container referenced by docs/conventions/styling.md.
+   * Gutters widen with the viewport rather than stepping at breakpoints. */
+  .container-page {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 0.4rem + 2.5vw, 3rem);
   }
 }
