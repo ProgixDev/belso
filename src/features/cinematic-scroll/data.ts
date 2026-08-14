@@ -20,29 +20,61 @@ export const navLinks = [
 export const heroLede = ["Where", "heritage", "meets", "home"] as const;
 
 /**
- * Supporting photography on the about sheet, staggered in behind the copy.
- * Captions and alt text describe what is actually in each frame — the stock
- * file names do not (`grid-pool-dusk` is a planted facade, `grid-stone-detail`
- * is a bedroom). Placeholder imagery until the real shoot lands.
+ * The scattered square collage on the about sheet. Squares rise from below,
+ * out of reading order, so they read as arriving rather than sweeping across.
+ *
+ * Alt text describes what is actually in each frame — the stock file names do
+ * not. `grid-pool-dusk` is a planted facade, `grid-stone-detail` is a bedroom,
+ * and `door-right` is a skylit stairwell. Placeholder imagery until the real
+ * Marrakech shoot lands (plan.md phase 5).
  */
 export const aboutShots: readonly AboutShot[] = [
+  {
+    id: "facade",
+    image: "/design/stock/grid-pool-dusk.jpg",
+    imageAlt: "Planted balconies stepping down a timber-clad facade at golden hour",
+    column: 1,
+    span: 3,
+    offset: 0,
+    delay: 0,
+  },
   {
     id: "walkway",
     image: "/design/stock/grid-courtyard.jpg",
     imageAlt: "A sunlit walkway running along the inner courtyard",
-    caption: "Shaded walkways",
+    column: 4,
+    span: 2,
+    offset: 34,
+    delay: 0.52,
   },
   {
-    id: "terraces",
-    image: "/design/stock/grid-pool-dusk.jpg",
-    imageAlt: "Planted balconies stepping down a timber-clad facade at dusk",
-    caption: "Planted terraces",
-  },
-  {
-    id: "interior",
+    id: "bedroom",
     image: "/design/stock/grid-stone-detail.jpg",
-    imageAlt: "A bedroom in warm neutrals with a woven throw",
-    caption: "Inside a residence",
+    imageAlt: "A bedroom in warm neutrals with a woven throw across the bed",
+    column: 7,
+    span: 2,
+    offset: 8,
+    delay: 0.18,
+  },
+  {
+    // Not door-right.jpg: that is the same stairwell as `walkway` above and the
+    // pair read as a duplicate in the collage.
+    id: "terraces",
+    image: "/design/stock/grid-terrace.jpg",
+    imageAlt: "A pale facade with planted terraces and timber shutters",
+    column: 9,
+    span: 2,
+    offset: 46,
+    delay: 0.78,
+  },
+  {
+    id: "joinery",
+    image: "/design/stock/grid-living-wide.jpg",
+    imageAlt: "Lit oak joinery and marble beside a bedroom doorway",
+    column: 11,
+    span: 2,
+    offset: 14,
+    delay: 0.34,
   },
 ] as const;
 

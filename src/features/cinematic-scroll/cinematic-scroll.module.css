@@ -803,41 +803,45 @@
 /* Supporting photography. Each shot resolves a beat after the one before it,
  * driven by --about-reveal (the raw entrance ramp) rather than the sheet's own
  * opacity, which snaps to 1 early so the paper never goes see-through. */
+/* Scattered square collage. Placement comes from data (--shot-col/span/offset)
+ * so the arrangement can be retuned without touching this file.
+ *
+ * Each square rises on --about-reveal, which tracks the sheet's own lifetime —
+ * it must not follow the raw entrance ramp, or the squares fade out while the
+ * paper is still fully covering the hero. --shot-delay is deliberately out of
+ * reading order, so they arrive scattered rather than sweeping left to right. */
 .aboutGallery {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.6vw, 26px);
-  align-content: end;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 18px);
+  align-content: start;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .aboutShot {
-  --shot-t: clamp(0, calc((var(--about-reveal, 0) - 0.34 - 0.11 * var(--shot-index, 0)) * 5), 1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  opacity: var(--shot-t);
-  transform: translate3d(0, calc(22px * (1 - var(--shot-t))), 0);
-  will-change: transform, opacity;
-}
+  --shot-t: clamp(0, calc((var(--about-reveal, 0) - 0.3 - 0.34 * var(--shot-delay, 0)) * 4.5), 1);
 
-.aboutShotFrame {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4/3;
+  grid-row: 1;
+  grid-column: var(--shot-col, 1) / span var(--shot-span, 2);
+  aspect-ratio: 1;
+  margin-block-start: calc(var(--shot-offset, 0) * 1%);
   overflow: hidden;
   border-radius: 2px;
   background: rgba(36, 28, 22, 0.06);
+  opacity: var(--shot-t);
+  transform: translate3d(0, calc(46px * (1 - var(--shot-t))), 0);
+  will-change: transform, opacity;
 }
 
-.aboutShotCaption {
-  color: rgba(36, 28, 22, 0.56);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+/* The rise is decoration; without motion the squares are simply present. */
+@media (prefers-reduced-motion: reduce) {
+  .aboutShot {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .aboutFoot {

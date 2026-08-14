@@ -285,35 +285,36 @@ export function CinematicScroll() {
               <h2>A quieter kind of address</h2>
               <div className={styles.aboutCopy}>
                 <p>
-                  Belso is a modern residential address shaped by warm desert calm, refined
-                  architecture, and the quiet beauty of everyday living. More than a place to stay,
-                  it is designed to change how home feels from the moment you arrive.
+                  Belso is a private address in the Palmeraie — thirty residences drawn in warm
+                  stone, shaded timber and still water. It is built for the way Marrakech actually
+                  lives: slowly, in the shade, with the doors open.
                 </p>
                 <p>
-                  Thirty residences sit low against the Palmeraie, drawn in hand-finished stone and
-                  shaded timber. Every home is dual-aspect, every terrace turned away from the road
-                  and towards the gardens.
+                  Every home is dual-aspect and turned away from the road, so light crosses it all
+                  day and the city never quite arrives. Heritage craft, held to a contemporary plan.
                 </p>
               </div>
             </div>
 
             <ul className={styles.aboutGallery}>
-              {aboutShots.map((shot, i) => (
+              {aboutShots.map((shot) => (
                 <li
                   className={styles.aboutShot}
                   key={shot.id}
-                  style={vars({ "--shot-index": String(i) })}
+                  style={vars({
+                    "--shot-col": String(shot.column),
+                    "--shot-span": String(shot.span),
+                    "--shot-offset": String(shot.offset),
+                    "--shot-delay": String(shot.delay),
+                  })}
                 >
-                  <div className={styles.aboutShotFrame}>
-                    <Image
-                      src={shot.image}
-                      alt={shot.imageAlt}
-                      fill
-                      sizes="(max-width: 900px) 45vw, 22vw"
-                      className={styles.slotImg}
-                    />
-                  </div>
-                  <span className={styles.aboutShotCaption}>{shot.caption}</span>
+                  <Image
+                    src={shot.image}
+                    alt={shot.imageAlt}
+                    fill
+                    sizes="(max-width: 900px) 40vw, 18vw"
+                    className={styles.slotImg}
+                  />
                 </li>
               ))}
             </ul>

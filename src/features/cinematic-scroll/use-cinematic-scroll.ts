@@ -231,9 +231,13 @@ export function useCinematicScroll(sightCount: number) {
       const aboutCover = Math.min(1, aboutIn * 5);
       const aboutLeave = smoothstep(0.62, 1, aboutOut);
       set("--about-opacity", (aboutCover * (1 - aboutLeave)).toFixed(4));
-      // The raw entrance ramp. The sheet's own opacity snaps early, so the
-      // contents need an unclamped driver to stagger against.
-      set("--about-reveal", (aboutIn * (1 - aboutOut)).toFixed(4));
+      /*
+       * Drives the collage. It has to track the sheet's *lifetime*, not the
+       * raw entrance ramp: `aboutOut` starts long before the sheet fades, so
+       * multiplying by it emptied the collage while the paper was still fully
+       * covering the hero. Reuses `aboutLeave` so squares and sheet go together.
+       */
+      set("--about-reveal", (aboutIn * (1 - aboutLeave)).toFixed(4));
       set("--about-y", `${((1 - aboutIn) * 100 - aboutOut * 46).toFixed(2)}%`);
 
       /*

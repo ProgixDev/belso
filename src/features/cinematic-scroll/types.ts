@@ -19,12 +19,26 @@ export type CollageTile = {
   span?: number;
 };
 
-/** A captioned photograph in the about sheet's supporting row. */
+/**
+ * A square photograph in the about sheet's scattered collage.
+ * Placement is data rather than CSS so the scatter can be retuned without
+ * touching the stylesheet.
+ */
 export type AboutShot = {
   id: string;
   image: string;
   imageAlt: string;
-  caption: string;
+  /** 1-based start column on the 12-column collage grid. */
+  column: number;
+  /** How many of the 12 columns the square occupies. */
+  span: number;
+  /** Vertical nudge, in % of the square's own width. Creates the scatter. */
+  offset: number;
+  /**
+   * Position in the reveal sequence, 0–1. Deliberately out of reading order so
+   * the squares appear to arrive at random rather than sweeping left to right.
+   */
+  delay: number;
 };
 
 /** A short credential shown along the foot of the about sheet. */
