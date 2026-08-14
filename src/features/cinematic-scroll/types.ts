@@ -19,6 +19,20 @@ export type CollageTile = {
   span?: number;
 };
 
+/** A captioned photograph in the about sheet's supporting row. */
+export type AboutShot = {
+  id: string;
+  image: string;
+  imageAlt: string;
+  caption: string;
+};
+
+/** A short credential shown along the foot of the about sheet. */
+export type AboutFact = {
+  value: string;
+  label: string;
+};
+
 /** A headline number rendered both in the hero column and on the cream sheet. */
 export type Stat = {
   value: string;

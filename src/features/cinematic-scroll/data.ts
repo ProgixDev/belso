@@ -1,4 +1,4 @@
-import type { CollageTile, SightCard, Stat } from "./types";
+import type { AboutFact, AboutShot, CollageTile, SightCard, Stat } from "./types";
 
 /** Headline numbers. Shown in the hero column and repeated on the cream sheet. */
 export const stats: readonly Stat[] = [
@@ -18,6 +18,40 @@ export const navLinks = [
 
 /** The four words of the hero lede, staggered in one line at a time. */
 export const heroLede = ["Where", "heritage", "meets", "home"] as const;
+
+/**
+ * Supporting photography on the about sheet, staggered in behind the copy.
+ * Captions and alt text describe what is actually in each frame — the stock
+ * file names do not (`grid-pool-dusk` is a planted facade, `grid-stone-detail`
+ * is a bedroom). Placeholder imagery until the real shoot lands.
+ */
+export const aboutShots: readonly AboutShot[] = [
+  {
+    id: "walkway",
+    image: "/design/stock/grid-courtyard.jpg",
+    imageAlt: "A sunlit walkway running along the inner courtyard",
+    caption: "Shaded walkways",
+  },
+  {
+    id: "terraces",
+    image: "/design/stock/grid-pool-dusk.jpg",
+    imageAlt: "Planted balconies stepping down a timber-clad facade at dusk",
+    caption: "Planted terraces",
+  },
+  {
+    id: "interior",
+    image: "/design/stock/grid-stone-detail.jpg",
+    imageAlt: "A bedroom in warm neutrals with a woven throw",
+    caption: "Inside a residence",
+  },
+] as const;
+
+/** Credentials along the foot of the about sheet. */
+export const aboutFacts: readonly AboutFact[] = [
+  { value: "2027", label: "Completion" },
+  { value: "1.4 ha", label: "Grounds" },
+  { value: "Marrakech", label: "Palmeraie" },
+] as const;
 
 export const sights: readonly SightCard[] = [
   {

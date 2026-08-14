@@ -220,9 +220,31 @@ export function useCinematicScroll(sightCount: number) {
       set("--mx", (rm ? 0 : mouseX).toFixed(4));
       set("--my", (rm ? 0 : mouseY).toFixed(4));
 
-      set("--about-opacity", (aboutIn * (1 - aboutOut * 0.999)).toFixed(4));
+      /*
+       * The about sheet is an opaque sheet of paper, so it must never be
+       * cross-faded over the hero: at any partial opacity the building ghosts
+       * through and the whole frame reads as washed out. It reaches full
+       * opacity within the first fifth of its travel — while it is still
+       * mostly below the fold — and from then on the *slide* does the work.
+       * On the way out it holds opaque until the last stretch.
+       */
+      const aboutCover = Math.min(1, aboutIn * 5);
+      const aboutLeave = smoothstep(0.62, 1, aboutOut);
+      set("--about-opacity", (aboutCover * (1 - aboutLeave)).toFixed(4));
+      // The raw entrance ramp. The sheet's own opacity snaps early, so the
+      // contents need an unclamped driver to stagger against.
+      set("--about-reveal", (aboutIn * (1 - aboutOut)).toFixed(4));
       set("--about-y", `${((1 - aboutIn) * 100 - aboutOut * 46).toFixed(2)}%`);
-      set("--hero-recede", (aboutIn * (1 - aboutOut)).toFixed(4));
+
+      /*
+       * As the sheet rises the hero settles back rather than just shrinking:
+       * a deeper scale, a longer lift, and a focus pull. The blur lands on
+       * `.world` only, which the sheet is a sibling of, so the copy stays sharp.
+       */
+      const heroRecede = aboutIn * (1 - aboutOut);
+      set("--hero-recede", heroRecede.toFixed(4));
+      set("--hero-recede-blur", `${(heroRecede * 7).toFixed(2)}px`);
+      set("--hero-recede-dim", (1 - heroRecede * 0.18).toFixed(4));
       set("--back-opacity", (1 - frame2.active * 0.06).toFixed(4));
       set("--back-x", `${(mX * -12).toFixed(2)}px`);
       set("--back-y", `${(mY * -4).toFixed(2)}px`);

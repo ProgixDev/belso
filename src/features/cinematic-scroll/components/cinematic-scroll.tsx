@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { CSSProperties, KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 import styles from "../cinematic-scroll.module.css";
-import { collage, heroLede, navLinks, scene, sights, stats } from "../data";
+import { aboutFacts, aboutShots, collage, heroLede, navLinks, scene, sights, stats } from "../data";
 import { useCinematicScroll } from "../use-cinematic-scroll";
 
 /**
@@ -283,22 +283,50 @@ export function CinematicScroll() {
             </div>
             <div className={styles.aboutBody}>
               <h2>A quieter kind of address</h2>
-              <p>
-                Belso is a modern residential address shaped by warm desert calm, refined
-                architecture, and the quiet beauty of everyday living. More than a place to stay, it
-                is designed to change how home feels from the moment you arrive.
-              </p>
-            </div>
-            <div className={styles.aboutFoot}>
-              <div className={styles.aboutThumb}>
-                <Image
-                  src={scene.street}
-                  alt="Street view"
-                  fill
-                  sizes="(max-width: 640px) 150px, 226px"
-                  className={styles.slotImg}
-                />
+              <div className={styles.aboutCopy}>
+                <p>
+                  Belso is a modern residential address shaped by warm desert calm, refined
+                  architecture, and the quiet beauty of everyday living. More than a place to stay,
+                  it is designed to change how home feels from the moment you arrive.
+                </p>
+                <p>
+                  Thirty residences sit low against the Palmeraie, drawn in hand-finished stone and
+                  shaded timber. Every home is dual-aspect, every terrace turned away from the road
+                  and towards the gardens.
+                </p>
               </div>
+            </div>
+
+            <ul className={styles.aboutGallery}>
+              {aboutShots.map((shot, i) => (
+                <li
+                  className={styles.aboutShot}
+                  key={shot.id}
+                  style={vars({ "--shot-index": String(i) })}
+                >
+                  <div className={styles.aboutShotFrame}>
+                    <Image
+                      src={shot.image}
+                      alt={shot.imageAlt}
+                      fill
+                      sizes="(max-width: 900px) 45vw, 22vw"
+                      className={styles.slotImg}
+                    />
+                  </div>
+                  <span className={styles.aboutShotCaption}>{shot.caption}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className={styles.aboutFoot}>
+              <dl className={styles.aboutFacts}>
+                {aboutFacts.map((fact) => (
+                  <div className={styles.aboutFact} key={fact.label}>
+                    <dt className={styles.aboutFactValue}>{fact.value}</dt>
+                    <dd className={styles.aboutFactLabel}>{fact.label}</dd>
+                  </div>
+                ))}
+              </dl>
               <span className={styles.aboutHint}>Scroll to explore</span>
             </div>
           </section>
