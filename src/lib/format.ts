@@ -1,15 +1,48 @@
+import { type Currency, convert } from "@/core/currency";
+import { type Locale, localeTag } from "@/core/i18n";
+
 /**
- * Shared Intl-based formatters (docs/conventions/copy.md): user-visible dates and
- * numbers always go through these — never hand-rolled string math.
+ * Locale-aware formatting, built on the platform's own `Intl` rather than a
+ * dependency. Lives in `shared` because both the properties slice and the page
+ * chrome need it, and features may not import each other
+ * (docs/architecture/module-boundaries.md).
  */
 
-const dateFormatter = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
-const numberFormatter = new Intl.NumberFormat("en");
-
-export function formatDate(date: Date | number): string {
-  return dateFormatter.format(date);
+/** The real asking price, in the currency it was listed in. */
+export function formatPrice(amount: number, currency: Currency, locale: Locale): string {
+  return new Intl.NumberFormat(localeTag[locale], {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+  }).format(amount);
 }
 
-export function formatNumber(value: number): string {
-  return numberFormatter.format(value);
+/**
+ * The converted price, always marked as approximate. Returns null when the
+ * conversion is not available or would be a no-op, so callers render nothing
+ * rather than a misleading "≈" next to an identical figure.
+ */
+export function formatApproxPrice(
+  amount: number,
+  from: Currency,
+  to: Currency,
+  locale: Locale,
+): string | null {
+  if (from === to) return null;
+  const converted = convert(amount, from, to);
+  if (converted === null) return null;
+  return `≈ ${formatPrice(Math.round(converted), to, locale)}`;
+}
+
+/** Areas are always whole square metres; fractions read as false precision. */
+export function formatArea(sqm: number, locale: Locale): string {
+  return `${new Intl.NumberFormat(localeTag[locale], { maximumFractionDigits: 0 }).format(sqm)} m²`;
+}
+
+export function formatCount(value: number, locale: Locale): string {
+  return new Intl.NumberFormat(localeTag[locale]).format(value);
+}
+
+export function formatDate(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(localeTag[locale], { dateStyle: "long" }).format(new Date(iso));
 }

@@ -1,14 +1,102 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import {
+  LOCALE_COOKIE,
+  LOCALE_COOKIE_MAX_AGE,
+  detectLocale,
+  isLocale,
+  toInternalPath,
+} from "@/core/i18n";
 import { updateSession } from "@/lib/supabase/middleware";
 
 /**
- * Refresh the Supabase session on every request and gate protected routes.
- * The matcher skips static assets and images for performance.
- *
  * Named `proxy` per the Next 16 file convention — `middleware` is deprecated.
+ *
+ * Two jobs, in this order:
+ *   1. Refresh the Supabase session and gate protected routes (`updateSession`).
+ *   2. Put every storefront request under a locale and rewrite the translated
+ *      public segment onto the real app-directory path (`/fr/biens/x` renders
+ *      `/fr/properties/x`).
+ *
+ * The session response is *composed with*, never replaced: `updateSession`
+ * returns a response carrying refreshed auth cookies, so a rewrite has to copy
+ * them across or the visitor is silently signed out on any translated URL.
  */
+
+/** Not part of the localised storefront — these keep their bare paths. */
+const UNLOCALISED_PREFIXES = [
+  "/api",
+  "/auth",
+  "/account",
+  "/dashboard",
+  "/sign-in",
+  "/examples",
+] as const;
+
+function isUnlocalised(pathname: string): boolean {
+  if (UNLOCALISED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return true;
+  }
+  // Anything with a file extension: robots.txt, sitemap.xml, manifest.webmanifest.
+  // Without this they would be redirected to /fr/robots.txt and quietly 404,
+  // which the matcher's asset exclusions do not cover.
+  const last = pathname.split("/").pop() ?? "";
+  return last.includes(".");
+}
+
+const localeCookie = {
+  path: "/",
+  maxAge: LOCALE_COOKIE_MAX_AGE,
+  sameSite: "lax",
+} as const;
+
 export async function proxy(request: NextRequest) {
-  return updateSession(request);
+  const { pathname } = request.nextUrl;
+
+  if (isUnlocalised(pathname)) {
+    return updateSession(request);
+  }
+
+  const first = pathname.split("/")[1] ?? "";
+
+  // No locale in the path: send the visitor to the one we detect, and remember it.
+  if (!isLocale(first)) {
+    const locale = detectLocale(
+      request.headers.get("accept-language"),
+      request.cookies.get(LOCALE_COOKIE)?.value,
+    );
+    const url = request.nextUrl.clone();
+    url.pathname = pathname === "/" ? `/${locale}` : `/${locale}${pathname}`;
+    const redirect = NextResponse.redirect(url);
+    redirect.cookies.set(LOCALE_COOKIE, locale, localeCookie);
+    return redirect;
+  }
+
+  const sessionResponse = await updateSession(request);
+  // A protected-route redirect from updateSession outranks anything we do here.
+  if (sessionResponse.headers.get("location")) {
+    return sessionResponse;
+  }
+
+  const internalPath = toInternalPath(pathname);
+  let response = sessionResponse;
+
+  if (internalPath && internalPath !== pathname) {
+    const url = request.nextUrl.clone();
+    url.pathname = internalPath;
+    response = NextResponse.rewrite(url, { request });
+    // Carry the refreshed auth cookies onto the rewritten response.
+    for (const cookie of sessionResponse.cookies.getAll()) {
+      response.cookies.set(cookie);
+    }
+  }
+
+  // A locale in the URL is an explicit choice — persist it so the next bare
+  // visit lands in the same language (AC-1).
+  if (request.cookies.get(LOCALE_COOKIE)?.value !== first) {
+    response.cookies.set(LOCALE_COOKIE, first, localeCookie);
+  }
+
+  return response;
 }
 
 export const config = {
