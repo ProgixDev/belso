@@ -4,53 +4,25 @@ Ordered, executable, checkboxed. An agent works top-to-bottom, ticks boxes as it
 
 This spec is large. **Phases 1–3 are each independently shippable** — the site stays green and usable at the end of every phase. Do not start a phase before the previous one's `pnpm verify` is green.
 
+Findings and deviations are recorded in [Implementation notes](#implementation-notes) at the bottom, keyed by task. Keep them there rather than inline: nested HTML comments inside list items make Prettier non-idempotent, which breaks `pnpm verify`.
+
 ## Phase 0 — setup
 
 - [x] T0.1 Create branch `feat/004-belso-public` · done: `git status` clean on new branch
-- [x] T0.2 Scaffold the three slices (files: `src/features/{i18n,properties,enquiries}/index.ts`) · done: `pnpm lint` green, each `index.ts` exports nothing yet
-      <!-- Deviation: created by hand rather than via /new-module. The canonical scaffold ships a
-                  Zustand store + provider + action stub; none of these three slices needs a store (locale is
-                  URL+cookie, listings are RSC + searchParams, the form uses local state), so the scaffold
-                  would have added dead code for reviewers to flag. Patterns are still mirrored from
-                  src/features/task-list/ — index.ts public API, zod types.ts, painted-door actions.ts. -->
+- [x] T0.2 Scaffold the three slices (files: `src/features/{i18n,properties,enquiries}/index.ts`) · done: `pnpm lint` green — see note
 
 ## Phase 1 — foundation: tokens, routing, shell (AC-1, AC-10)
 
-- [x] T1.1 Promote the scene palette + Archivo scale into oklch role tokens, light + dark (files: `src/app/globals.css`) · done: no raw hex outside the token block; existing home renders unchanged
-      <!-- Palette converted from the scene hexes, not eyeballed. All 20 WCAG pairs pass in both
-                  themes; `border` and `input` were split because a control boundary owes 3:1 (WCAG 1.4.11)
-                  and a decorative divider does not. Added `@custom-variant dark` so the `dark:` utilities and
-                  the tokens switch on the same signal — they were previously media- vs class-based. -->
+- [x] T1.1 Promote the scene palette + Archivo scale into oklch role tokens, light + dark (files: `src/app/globals.css`) · done: no raw hex outside the token block; existing home renders unchanged — see note
 - [ ] T1.2 [P] Shared primitives: `button`, `input`, `field`, `badge`, `skeleton` (files: `src/components/ui/*.tsx`) · done: each has a colocated test rendering all variants
 - [x] T1.3 Rename `src/middleware.ts` → `src/proxy.ts` for the Next 16 convention, **no behaviour change** (files: `src/proxy.ts`) · done: build emits no deprecation warning; `/account` still redirects when signed out
-      <!-- Verified: build warning gone; GET /account → 307 → /sign-in?next=%2Faccount. -->
 - [x] T1.4 Locale config: locale list, default `fr`, segment map (`biens`↔`properties`, `contact`, `legal`), detection helper (files: `src/core/i18n.ts`, `src/core/i18n.test.ts`) · done: `i18n.test.ts` green incl. segment-map round-trip (**AC-1 unit**)
-      <!-- 17 tests. Covers q-value ordering, cookie-beats-header, malformed cookie, and that a
-              planned-but-unshipped locale (ar) never resolves. -->
-
-- [x] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr`, `/en/properties` and `/fr/biens` both resolve, `/account` unaffected
-      <!-- Verified: / → 307 /fr, /fr and /en → 200, /account → 307 /sign-in, /examples/tasks → 200.
-          Auth cookies from updateSession are copied onto the rewritten response, or a visitor would be
-          silently signed out on any translated URL. Added a file-extension guard: without it
-          /robots.txt and /sitemap.xml get redirected to /fr/robots.txt and 404 — the matcher's asset
-          exclusions do not cover them. -->
-- [ ] **T1.5a** Proxy unit tests — the segment rewrite and cookie composition are currently proven only by manual curl and the Phase 4 e2e (files: `src/proxy.test.ts`)
-- [ ] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically
-      <!-- PARTIAL. Formatting is done and tested (src/lib/format.ts, src/core/currency.ts, 8 tests);
-          dictionaries are not written yet. Placement corrected from plan.md: formatting went to
-          `shared` and rates to `core`, because the properties slice needs both and features may not
-          import each other. Dictionaries will reach feature components as props from `app`. -->
-      <!-- Finding: our French locale is fr-MA, whose CLDR grouping separator is "." — prices read
-          12.000.000 MAD, not 12 000 000. Pinned by a test and raised with B-7. -->
-- [ ] T1.7 Locale layout + shell: header with working nav, footer with contact + legal links, locale switcher that stays on the current page (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`, `src/features/i18n/components/locale-switcher.tsx`) · done: switcher preserves path across locales
-- [ ] **T1.7a** `<html lang>` / `dir` per locale. The root layout hardcodes `lang="en"` and cannot see the locale; `[locale]/layout.tsx` nests inside it, so today `dir` is set on a wrapper div and `lang` is wrong on French pages. Fix is per-group root layouts via route groups — `src/app/(storefront)/[locale]/layout.tsx` + `src/app/(system)/layout.tsx` — so each owns its own `<html>`. Deliberately deferred: it moves every existing route and was too large to bolt onto T1.8. **Blocks AC-1 sign-off.**
-- [x] T1.8 Move the home route under the locale segment (files: `src/app/[locale]/page.tsx`, delete `src/app/page.tsx`) · done: CUJ-01 passes against `/fr`
-      <!-- Pulled forward, out of order: T1.5 activated the locale redirect while no /[locale] route
-          existed, so / → /fr → 404 and the site was broken between the two tasks. The task ordering in
-          this file was wrong; T1.5 and T1.8 have to land together. -->
-      <!-- CUJ-01 and CUJ-02 both green against /fr. Note: running `pnpm build` while `pnpm dev` is
-          live corrupts the shared .next chunks and fails both CUJs with intact SSR HTML but dead
-          client JS — clear .next and restart rather than chasing a phantom regression. -->
+- [x] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr` and `/account` unaffected — see note
+- [ ] **T1.5a** Proxy unit tests — the segment rewrite and the auth-cookie composition are currently proven only by manual request checks and (later) the Phase 4 e2e (files: `src/proxy.test.ts`)
+- [ ] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically — **partial, see note**
+- [ ] T1.7 Locale shell: header with working nav, footer with contact + legal links, locale switcher that stays on the current page (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`, `src/features/i18n/components/locale-switcher.tsx`) · done: switcher preserves path across locales
+- [ ] **T1.7a** `<html lang>` / `dir` per locale — **blocks AC-1 sign-off**, see note
+- [x] T1.8 Move the home route under the locale segment (files: `src/app/[locale]/page.tsx`, delete `src/app/page.tsx`) · done: CUJ-01 passes against `/fr` — see note
 - [ ] T1.9 `pnpm verify` + `pnpm e2e` green; conventional commit · done: both green
 
 ## Phase 2 — properties: index and detail (AC-2, AC-3, AC-4, AC-5, AC-9)
@@ -92,9 +64,18 @@ This spec is large. **Phases 1–3 are each independently shippable** — the si
 - [ ] T5.4 Open PR (template filled, spec + report linked) · done: PR open
 - [ ] T5.5 After merge: `/update-docs` — feature doc, CUJ table, specs index status → `shipped` · done: `pnpm check:docs` green
 
-## AC coverage (mirror of plan.md — keep ticked in sync)
+## Implementation notes
 
-- [ ] AC-1 → T1.4, T1.5, T4.3 · [ ] AC-2 → T2.5, T4.1 · [ ] AC-3 → T2.4, T2.6, T4.1
-- [ ] AC-4 → T2.6, T4.2 · [ ] AC-5 → T2.7, T4.1 · [ ] AC-6 → T3.3, T4.1
-- [ ] AC-7 → T3.1, T3.2, T4.2 · [ ] AC-8 → T2.8, T4.2 · [ ] AC-9 → T2.4, T2.7, T4.3
-- [ ] AC-10 → T1.7, T3.5, T4.3 · [ ] AC-11 → T4.4
+**T0.2 — slices scaffolded by hand, not via `/new-module`.** The canonical scaffold ships a Zustand store, provider and action stub. None of these three slices needs a store: locale is URL + cookie, listings are RSC + `searchParams`, the form uses local state. Running it would have added dead code for reviewers to flag. Patterns are still mirrored from `src/features/task-list/` — `index.ts` public API, zod `types.ts`, painted-door `actions.ts`.
+
+**T1.1 — palette converted, not eyeballed.** Scene hexes were converted to oklch programmatically. All 20 foreground/background pairs clear WCAG AA in both themes. Two departures from the shadcn defaults: `border` and `input` are separate values, because a control boundary owes 3:1 under WCAG 1.4.11 while a decorative divider does not (sharing one token put inputs at 1.31:1); and `@custom-variant dark` was added because the `dark:` utilities resolved via `prefers-color-scheme` while the tokens keyed off `.dark`, which could land light text on light surfaces.
+
+**T1.5 — composition, not replacement.** Auth cookies from `updateSession` are copied onto the rewritten response; replacing it would sign a visitor out on every translated URL. A file-extension guard keeps `/robots.txt`, `/sitemap.xml` and the manifest out of the locale tree — without it they redirect to `/fr/robots.txt` and 404, which the matcher's asset exclusions do not cover. Verified by request: `/` → 307 `/fr`; `/fr`, `/en`, `/examples/tasks`, `/robots.txt` → 200; `/account` → 307 `/sign-in?next=%2Faccount`.
+
+**T1.6 — partial.** Formatting is done and tested (`src/lib/format.ts`, `src/core/currency.ts`, 8 tests); the dictionaries themselves are not written. Placement is corrected from `plan.md`: formatting went to `shared` and rates to `core`, because the properties slice needs both and features may not import each other. Dictionaries will reach feature components as props from `app`. Finding: our French locale is `fr-MA`, whose CLDR grouping separator is `.` — prices render `12.000.000 MAD`, not `12 000 000`. A French-from-France buyer may read that as wrong. Pinned by a test; raised with B-7. Switching to `fr-FR` is a one-line change in `core/i18n` `localeTag`.
+
+**T1.7a — `<html lang>` is wrong on French pages.** The root layout hardcodes `lang="en"` and cannot see the locale, because `[locale]/layout.tsx` nests inside it. `dir` is applied to a wrapper div so RTL has a hook, but `lang` is not per-locale. The fix is per-group root layouts via route groups (`src/app/(storefront)/[locale]/layout.tsx` + `src/app/(system)/layout.tsx`), each owning its own `<html>`. Deferred deliberately: it relocates every existing route and was too large to bolt onto T1.8.
+
+**T1.8 — pulled forward, out of order.** T1.5 activated the locale redirect while no `/[locale]` route existed, so `/` → `/fr` → 404 and the site was broken between the two tasks. The ordering in this file was wrong: T1.5 and T1.8 have to land together.
+
+**Gotcha for whoever picks this up.** Running `pnpm build` while `pnpm dev` is live corrupts the shared `.next` chunks. The symptom is both CUJs failing with intact SSR HTML but dead client JS, which looks exactly like a real regression. Clear `.next` and restart rather than chasing it.
