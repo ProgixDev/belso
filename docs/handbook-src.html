@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>The AI-Native Engineering Handbook</title>
+    <style>
+      :root {
+        --dark: #141413;
+        --light: #faf9f5;
+        --mid: #b0aea5;
+        --lightgray: #e8e6dc;
+        --orange: #d97757;
+        --blue: #6a9bcc;
+        --green: #788c5d;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Lora", Georgia, serif;
+        color: var(--dark);
+        background: var(--light);
+        margin: 0;
+        font-size: 10.5pt;
+        line-height: 1.55;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: "Poppins", Arial, sans-serif;
+        line-height: 1.2;
+        margin: 0 0 0.4em;
+      }
+      h1 {
+        font-size: 26pt;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 15pt;
+        font-weight: 600;
+        margin-top: 0;
+        padding-top: 0.2em;
+      }
+      h3 {
+        font-size: 11.5pt;
+        font-weight: 600;
+        margin-top: 1.2em;
+        color: var(--dark);
+      }
+      p {
+        margin: 0.45em 0 0.8em;
+      }
+      section.page {
+        page-break-after: always;
+        padding: 0 6mm;
+      }
+      section.page:last-child {
+        page-break-after: auto;
+      }
+      .kicker {
+        font-family: "Poppins", Arial, sans-serif;
+        font-size: 8.5pt;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--orange);
+        margin-bottom: 1em;
+        font-weight: 600;
+      }
+      .rule {
+        height: 3px;
+        width: 48px;
+        background: var(--orange);
+        border: 0;
+        margin: 1.2em 0 1.6em;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 9pt;
+        margin: 0.8em 0 1.2em;
+        font-family: "Poppins", Arial, sans-serif;
+      }
+      th {
+        text-align: left;
+        font-weight: 600;
+        background: var(--dark);
+        color: var(--light);
+        padding: 6px 9px;
+      }
+      td {
+        padding: 6px 9px;
+        border-bottom: 1px solid var(--lightgray);
+        vertical-align: top;
+      }
+      tr:nth-child(even) td {
+        background: #f3f1ea;
+      }
+      code,
+      pre {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 8.5pt;
+      }
+      code {
+        background: var(--lightgray);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+      pre {
+        background: var(--dark);
+        color: var(--light);
+        padding: 12px 14px;
+        border-radius: 10px;
+        overflow: hidden;
+        line-height: 1.5;
+      }
+      pre code {
+        background: none;
+        padding: 0;
+        color: inherit;
+      }
+      ul {
+        margin: 0.3em 0 1em;
+        padding-left: 1.25em;
+      }
+      li {
+        margin-bottom: 0.35em;
+      }
+      .cover {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 255mm;
+        background: var(--dark);
+        color: var(--light);
+        border-radius: 14px;
+        padding: 22mm 18mm !important;
+      }
+      .cover h1 {
+        font-size: 34pt;
+        color: var(--light);
+        max-width: 88%;
+      }
+      .cover .sub {
+        font-size: 12pt;
+        color: var(--mid);
+        max-width: 80%;
+      }
+      .cover .meta {
+        font-family: "Poppins", Arial, sans-serif;
+        font-size: 9pt;
+        color: var(--mid);
+      }
+      .cover .dots span {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+      .callout {
+        border-left: 4px solid var(--blue);
+        background: #eef2f7;
+        padding: 10px 14px;
+        border-radius: 0 10px 10px 0;
+        margin: 1em 0;
+      }
+      .callout.orange {
+        border-color: var(--orange);
+        background: #f8ece6;
+      }
+      .callout.green {
+        border-color: var(--green);
+        background: #eef1e9;
+      }
+      .tag {
+        display: inline-block;
+        font-family: "Poppins", Arial, sans-serif;
+        font-size: 7.5pt;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 99px;
+        color: var(--light);
+        margin-right: 6px;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .card {
+        border: 1px solid var(--lightgray);
+        border-radius: 10px;
+        padding: 10px 14px;
+        background: #fffefb;
+      }
+      .card h4 {
+        font-size: 9.5pt;
+        margin-bottom: 0.3em;
+      }
+      .card p {
+        font-size: 9pt;
+        margin: 0;
+      }
+      .small {
+        font-size: 8.5pt;
+        color: #555;
+      }
+      .flow {
+        font-family: "Poppins", Arial, sans-serif;
+        font-size: 8.4pt;
+        background: #fffefb;
+        border: 1px solid var(--lightgray);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- COVER -->
+    <section class="page cover">
+      <div>
+        <div class="meta">NEXTJS-SKELETON · INTERNAL ENGINEERING HANDBOOK</div>
+      </div>
+      <div>
+        <h1>The AI-Native Engineering Handbook</h1>
+        <p class="sub">
+          Why the repository is the harness, how spec-driven development is wired into our skeleton,
+          and how a whole team — PMs, developers, testers, designers — ships through agents without
+          conflicts.
+        </p>
+      </div>
+      <div>
+        <div class="dots" style="margin-bottom: 14px">
+          <span style="background: #d97757"></span><span style="background: #6a9bcc"></span
+          ><span style="background: #788c5d"></span>
+        </div>
+        <div class="meta">
+          June 2026 · Built and verified with Claude · Companion repo: <b>NEXTJS-SKELETON</b>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXEC SUMMARY -->
+    <section class="page">
+      <div class="kicker">Executive summary</div>
+      <h2>Code is no longer the constraint. Context and verification are.</h2>
+      <hr class="rule" />
+      <p>
+        For decades, engineering organizations were tooled around one assumption: code is the most
+        expensive thing to produce, so protect it with synchronous human attention. Frontier teams
+        have inverted this. OpenAI's Frontier team shipped roughly
+        <b>one million lines of code in six months with zero lines typed by a human</b> — alongside
+        ~250,000 lines of markdown governing agent behavior. The first month was 10× slower than
+        typing the code by hand; by month six, a single 60-hour agent session completed a
+        staff-level refactor with two steering prompts.
+      </p>
+      <p>
+        Their conclusion, and the premise of our skeleton:
+        <b>the highest-leverage engineering work is writing things down</b> — then wiring what was
+        written into machinery the agent cannot ignore. Every piece of feedback given twice is a
+        harness bug.
+      </p>
+      <h3>What we built</h3>
+      <p>
+        NEXTJS-SKELETON is a production-grade Next.js 16 starting point where that philosophy is
+        implemented, not aspirational. It ships with four interlocking systems:
+      </p>
+      <table>
+        <tr>
+          <th style="width: 24%">System</th>
+          <th>What it does</th>
+          <th style="width: 34%">Where it lives</th>
+        </tr>
+        <tr>
+          <td><b>Legibility</b></td>
+          <td>
+            Everything an agent needs to do senior-level work is in the repo, pointer-based, current
+          </td>
+          <td>
+            <code>AGENTS.md</code>, <code>docs/</code> (30+ files), <code>.claude/rules/</code>
+          </td>
+        </tr>
+        <tr>
+          <td><b>Encoded taste</b></td>
+          <td>
+            Conventions enforced by gates, not vibes: layer boundaries, typography, docs integrity,
+            strict types
+          </td>
+          <td>
+            <code>eslint.config.mjs</code>, <code>scripts/check-*</code>, hooks,
+            <code>pnpm verify</code>
+          </td>
+        </tr>
+        <tr>
+          <td><b>Closed verification</b></td>
+          <td>Agents prove work against the running app with screenshots, not claims</td>
+          <td>
+            Playwright CUJs, <code>artifacts/screenshots/</code>, <code>/verify-ui</code>,
+            <code>/feature-report</code>
+          </td>
+        </tr>
+        <tr>
+          <td><b>Async review</b></td>
+          <td>Five reviewer personas grade every PR before a human looks</td>
+          <td>
+            <code>.claude/agents/</code>, <code>docs/personas/</code>,
+            <code>claude-review.yml</code>
+          </td>
+        </tr>
+      </table>
+      <h3>Verified, not promised</h3>
+      <p>
+        Everything in the skeleton runs:
+        <b
+          >lint (boundaries clean) · typecheck · format · docs-link gate (59 files) · typography
+          gate · 9/9 unit tests · production build · 2/2 Playwright CUJs with screenshot evidence</b
+        >. The demo feature (<code>task-list</code>) traveled the entire pipeline — spec → plan →
+        tasks → implementation → verification → report — and the resulting report with real
+        screenshots is committed at <code>docs/reports/001-task-list.md</code>.
+      </p>
+      <div class="callout orange">
+        <b>The one-sentence operating model:</b> Ground → Plan → Implement → Verify → Encode. Humans
+        steer through specs, docs and review gates; agents do the typing; the repo guarantees the
+        floor.
+      </div>
+    </section>
+
+    <!-- RESEARCH: HARNESS -->
+    <section class="page">
+      <div class="kicker">Research · Part 1</div>
+      <h2>Harness engineering — what frontier teams actually do</h2>
+      <hr class="rule" />
+      <p>
+        Source: Ryan Lopopolo (OpenAI Frontier) on building a 1M-LOC product with agents only;
+        corroborated by Anthropic's Claude Code guidance. Five mechanisms recur, and each has a
+        concrete counterpart in our skeleton:
+      </p>
+      <table>
+        <tr>
+          <th style="width: 30%">Frontier practice</th>
+          <th>Why it works</th>
+          <th style="width: 30%">Our implementation</th>
+        </tr>
+        <tr>
+          <td>
+            Repo legible to the agent; <code>agents.md</code> points at a docs tree; model decides
+            what to pull
+          </td>
+          <td>Deterministic steering toward context without blowing the context budget</td>
+          <td>
+            <code>AGENTS.md</code> map + <code>docs/INDEX.md</code>; path-scoped digests in
+            <code>.claude/rules/</code>
+          </td>
+        </tr>
+        <tr>
+          <td>Taste encoded as failing tests (even “petty” ones like curly-quote enforcement)</td>
+          <td>
+            Agents are trained to make tests pass — a failing gate is prompt injection that cannot
+            be ignored
+          </td>
+          <td>
+            <code>check:typography</code>, <code>check:docs</code>, boundaries lint, strict tsconfig
+          </td>
+        </tr>
+        <tr>
+          <td>Architecture so modular that “spaghetti is impossible”; ACL-by-folder</td>
+          <td>
+            Limits the blast radius of any change; enables painted-door experiments and safe
+            parallelism
+          </td>
+          <td>
+            <code>app → features → shared → core</code> enforced by
+            <code>eslint-plugin-boundaries</code>; public APIs via <code>index.ts</code>
+          </td>
+        </tr>
+        <tr>
+          <td>Closed loops: agent drives the app, sees logs/UI, attests end-to-end</td>
+          <td>
+            “Vibed something up” without proof is the failure mode; evidence builds delegable
+            confidence
+          </td>
+          <td>
+            Playwright CUJs + <code>shot()</code> evidence; <code>/verify-ui</code> attestation
+            table
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Reviewer personas grade every change before humans; feedback loops back into the repo
+          </td>
+          <td>Human attention moves to intent and taste; repeated feedback becomes machinery</td>
+          <td>
+            <code>.claude/agents/</code> board + CI persona action;
+            <code>/encode-lesson</code> flywheel
+          </td>
+        </tr>
+      </table>
+      <div class="callout">
+        <b>The economics:</b> when generation is cheap and parallel, the bottleneck moves to (a)
+        what the agent knows at second zero, and (b) how cheaply you can verify its output. Spend
+        engineering effort exactly there. The corollary — “a billion tokens a day” — only pays off
+        if confidence is the default, which is what the gates buy.
+      </div>
+      <h3>The failure they encoded (and we did too)</h3>
+      <p>
+        Frontier's scheduled-tasks feature collapsed into spaghetti because the harness lacked
+        guardrails; they reverted it and added the missing constraints before retrying. The lesson
+        is institutionalized here as Constitution Article VI and the
+        <code>/encode-lesson</code> skill: every correction worth giving twice must end as a doc
+        line, lint rule, test, hook, or persona check — chosen from an explicit escalation ladder,
+        strongest mechanism first.
+      </p>
+    </section>
+
+    <!-- RESEARCH: SDD -->
+    <section class="page">
+      <div class="kicker">Research · Part 2</div>
+      <h2>Spec-driven development — adopted, with its critiques designed in</h2>
+      <hr class="rule" />
+      <p>
+        Sources: GitHub spec-kit (the
+        <code>/speckit.constitution → specify → clarify → plan → tasks → analyze → implement</code>
+        workflow) and Birgitta Böckeler's Thoughtworks field evaluation of Kiro, spec-kit and Tessl.
+      </p>
+      <h3>What SDD gets right</h3>
+      <ul>
+        <li>
+          <b>Specs become the contract</b> between PM intent and agent implementation — Frontier's
+          PM shipped features from a markdown PRD to a deployed PR within a week, without talking to
+          engineers.
+        </li>
+        <li>
+          <b>A constitution</b> (immutable principles applied to every change) is the
+          highest-leverage rules file a repo can have.
+        </li>
+        <li>
+          <b>Phase separation</b> (what → how → steps) catches misunderstandings while they are
+          still cheap words, not code.
+        </li>
+      </ul>
+      <h3>Where SDD fails in the field — and our countermeasures</h3>
+      <table>
+        <tr>
+          <th style="width: 38%">Documented failure mode</th>
+          <th>Our design response</th>
+        </tr>
+        <tr>
+          <td>
+            One heavy workflow for every problem size — “a sledgehammer to crack a nut” (16
+            acceptance criteria for a small bug)
+          </td>
+          <td>
+            <b>Two tracks.</b> Quick track (no spec) for fixes; spec track only for new behavior or
+            structure. Defined in AGENTS.md, ADR-0003.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Markdown review overload: verbose, repetitive generated files nobody reviews honestly
+          </td>
+          <td>
+            <b>One-page templates.</b> spec/plan/tasks are deliberately lean; the AC→test mapping
+            table is the load-bearing element, not prose volume.
+          </td>
+        </tr>
+        <tr>
+          <td>False sense of control: agents ignore parts of large specs</td>
+          <td>
+            Specs feed <b>gates</b>, not just prompts: every AC maps to a test the agent must make
+            pass; <code>/verify-ui</code> re-checks ACs against screenshots.
+          </td>
+        </tr>
+        <tr>
+          <td>Stale spec piles (spec-anchored ambiguity)</td>
+          <td>
+            <b>Specs are anchored to the change, docs to the product.</b> After ship,
+            <code>/update-docs</code> distills the spec into a living feature doc; the spec is
+            archived as history.
+          </td>
+        </tr>
+      </table>
+      <div class="callout green">
+        <b>Net position (ADR-0003):</b> spec-first always for feature work, spec-anchored during the
+        change's lifetime, never spec-as-source. The long-term source of truth is the docs tree plus
+        the code — kept honest by the docs-link gate and the docs-curator agent.
+      </div>
+    </section>
+
+    <!-- TEAM MODEL -->
+    <section class="page">
+      <div class="kicker">Operating model</div>
+      <h2>One team, four lenses, zero file conflicts</h2>
+      <hr class="rule" />
+      <p>
+        Everyone drives agents; roles differ by what they are accountable for reviewing — not by who
+        may touch the code. When the agent fails someone, engineering fixes the harness, not the
+        person.
+      </p>
+      <table>
+        <tr>
+          <th style="width: 16%">Role</th>
+          <th>Owns</th>
+          <th style="width: 38%">Primary instruments</th>
+        </tr>
+        <tr>
+          <td><b>PO / PM</b></td>
+          <td>Problem definition, priorities, acceptance</td>
+          <td>
+            <code>/create-spec</code>, product persona review, <code>docs/product/</code>, feature
+            reports as demo artifacts
+          </td>
+        </tr>
+        <tr>
+          <td><b>Developer</b></td>
+          <td>Implementation quality and the harness itself</td>
+          <td>
+            <code>/plan-feature</code>, <code>/implement-feature</code>, <code>/new-module</code>,
+            ADRs, <code>/encode-lesson</code>
+          </td>
+        </tr>
+        <tr>
+          <td><b>Tester / QA</b></td>
+          <td>Verification strategy and evidence</td>
+          <td><code>/verify-ui</code>, CUJ registry, <code>e2e/</code>, QA persona</td>
+        </tr>
+        <tr>
+          <td><b>Designer</b></td>
+          <td>Experience quality, design system</td>
+          <td>
+            Painted-door experiments, <code>components/ui</code>, UX persona, copy + styling
+            conventions
+          </td>
+        </tr>
+      </table>
+      <h3>Why parallel work cannot collide</h3>
+      <div class="grid2">
+        <div class="card">
+          <h4 style="color: #d97757">1 · Physical isolation</h4>
+          <p>
+            One feature = one slice = one branch. Features cannot import each other (lint-enforced),
+            so two teams cannot touch the same files.
+          </p>
+        </div>
+        <div class="card">
+          <h4 style="color: #6a9bcc">2 · Declared territory</h4>
+          <p>
+            Every spec lists “areas touched”; <code>/plan-feature</code> cross-checks all active
+            specs and flags overlap before any code exists.
+          </p>
+        </div>
+        <div class="card">
+          <h4 style="color: #788c5d">3 · Shared layers ride alone</h4>
+          <p>
+            Changes to <code>components/ui</code>, <code>core</code>, configs or CI ship as
+            dedicated CODEOWNER-reviewed PRs that features rebase onto.
+          </p>
+        </div>
+        <div class="card">
+          <h4 style="color: #141413">4 · Short-lived branches</h4>
+          <p>
+            Target &lt; 2 days, rebase daily, squash-merge with conventional titles. A long branch
+            is a process smell, not a merge problem.
+          </p>
+        </div>
+      </div>
+      <h3>The feature pipeline (and where evidence appears)</h3>
+      <div class="flow">
+        /create-spec → specs/NNN-slug/spec.md &nbsp;⟶&nbsp; /plan-feature → plan.md + tasks.md
+        (AC→test mapping)<br />
+        ⟶ /implement-feature (checkpoint commits, gates green) &nbsp;⟶&nbsp; /verify-ui →
+        artifacts/screenshots/NNN-slug/ (inspected!)<br />
+        ⟶ /review (5-persona board, P0/P1 fixed) &nbsp;⟶&nbsp; /feature-report →
+        docs/reports/NNN-slug.md (+ optional PDF)<br />
+        ⟶ PR (CI + e2e + Claude persona action + human CODEOWNER) &nbsp;⟶&nbsp; /update-docs →
+        living feature doc, CUJ registry, spec archived
+      </div>
+      <p class="small">
+        The PR template mirrors the Definition of Done; branch protection requires the CI and E2E
+        workflows; the persona action posts one consolidated review comment per PR.
+      </p>
+    </section>
+
+    <!-- CLAUDE OPTIMIZATION -->
+    <section class="page">
+      <div class="kicker">Agent optimization</div>
+      <h2>Tuned for Claude Code &amp; Opus — portable to any agent</h2>
+      <hr class="rule" />
+      <h3>Memory without bloat</h3>
+      <ul>
+        <li>
+          <b><code>AGENTS.md</code> is the single operating model</b>; <code>CLAUDE.md</code> is two
+          paragraphs plus <code>@AGENTS.md</code> (the official multi-agent pattern). Codex, Cursor
+          and friends read the same file — no duplication.
+        </li>
+        <li>
+          <b>Path-scoped rules</b> (<code>.claude/rules/*.md</code> with
+          <code>paths:</code> frontmatter) load conventions only when matching files are touched —
+          context is spent where it pays.
+        </li>
+        <li>
+          <b>Skills load on demand</b> (descriptions always visible, bodies only when invoked) —
+          procedures cost nothing until needed.
+        </li>
+      </ul>
+      <h3>The nine skills</h3>
+      <table>
+        <tr>
+          <th style="width: 22%">Skill</th>
+          <th>Role in the loop</th>
+        </tr>
+        <tr>
+          <td><code>/create-spec</code></td>
+          <td>
+            Interviews the requester (AskUserQuestion), writes a one-page spec, registers it;
+            refuses to guess on product decisions
+          </td>
+        </tr>
+        <tr>
+          <td><code>/plan-feature</code></td>
+          <td>
+            Resolves open questions, checks cross-spec conflicts, writes plan + tasks with the
+            AC→test mapping
+          </td>
+        </tr>
+        <tr>
+          <td><code>/implement-feature</code></td>
+          <td>
+            Executes tasks.md top-down; ticks checkboxes as durable progress (survives compaction);
+            never weakens a gate
+          </td>
+        </tr>
+        <tr>
+          <td><code>/verify-ui</code></td>
+          <td>
+            Runs CUJ e2e, captures screenshots, <i>looks at them</i>, attests per-AC with a verdict
+            table
+          </td>
+        </tr>
+        <tr>
+          <td><code>/review</code></td>
+          <td>
+            Spawns persona subagents in parallel (context isolation), consolidates P0/P1/P2, drives
+            fixes
+          </td>
+        </tr>
+        <tr>
+          <td><code>/feature-report</code></td>
+          <td>
+            Diff + screenshots + spec → committed evidence report;
+            <code>pnpm report:pdf</code> renders shareable PDF
+          </td>
+        </tr>
+        <tr>
+          <td><code>/update-docs</code></td>
+          <td>
+            Distills shipped specs into living feature docs; audits doc drift; keeps indexes true
+          </td>
+        </tr>
+        <tr>
+          <td><code>/new-module</code></td>
+          <td>
+            Scaffolds a slice by mirroring the canonical <code>task-list</code> feature — agents
+            cargo-cult, so the canon is kept perfect
+          </td>
+        </tr>
+        <tr>
+          <td><code>/encode-lesson</code></td>
+          <td>
+            The flywheel: turns any repeated correction into the strongest fitting mechanism (lint →
+            test → hook → persona → rule → doc)
+          </td>
+        </tr>
+      </table>
+      <h3>Hard guardrails (hooks — cannot be talked out of)</h3>
+      <ul>
+        <li>
+          <b>PreToolUse</b> blocks agent writes to <code>.env*</code>, the lockfile, CI workflows,
+          and the constitution — with explanations that teach instead of just refusing.
+        </li>
+        <li>
+          <b>PostToolUse</b> auto-formats every edited file, so formatting feedback never reaches
+          review or burns agent turns.
+        </li>
+      </ul>
+      <h3>Context discipline (Constitution Art. X)</h3>
+      <p>
+        Noisy work goes to subagents (the review board runs in parallel isolation); docs stay under
+        ~200 lines and pointer-based; vendored <code>llms.txt</code> references are added per
+        dependency when first needed; CLI tools are preferred over MCP servers for repeatable
+        integrations (cheaper context, more reliable for agents).
+      </p>
+    </section>
+
+    <!-- ADOPTION -->
+    <section class="page">
+      <div class="kicker">Adoption</div>
+      <h2>Rollout roadmap and day-one checklist</h2>
+      <hr class="rule" />
+      <h3>Cloning the skeleton for a real project (first hour)</h3>
+      <ul>
+        <li>Fill <code>docs/product/overview.md</code> — the first file every agent grounds on.</li>
+        <li>
+          Replace <code>.github/CODEOWNERS</code> placeholders; protect <code>main</code> (require
+          CI + E2E); add the <code>ANTHROPIC_API_KEY</code> secret via
+          <code>/install-github-app</code> for persona reviews.
+        </li>
+        <li>
+          Keep or delete the demo slice (<code>src/features/task-list</code> +
+          <code>src/app/examples</code>) — if kept, it stays the canonical pattern.
+        </li>
+        <li>
+          Ship the first real feature through <code>/create-spec</code> end-to-end to validate the
+          loop with your team.
+        </li>
+      </ul>
+      <h3>The six-month curve (calibrated to the Frontier experience)</h3>
+      <table>
+        <tr>
+          <th style="width: 22%">Phase</th>
+          <th>Focus</th>
+          <th style="width: 34%">Success signal</th>
+        </tr>
+        <tr>
+          <td><b>Months 1–2</b></td>
+          <td>
+            Docs discipline: every correction lands in docs/rules/ADRs; team writes specs for real
+            features; expect slower-than-manual at first — that is the investment, not a failure
+          </td>
+          <td>Agents stop asking questions the repo already answers</td>
+        </tr>
+        <tr>
+          <td><b>Months 3–4</b></td>
+          <td>
+            Encode taste: grow <code>check:*</code> gates and persona checklists from review
+            findings via <code>/encode-lesson</code>; tune CI persona prompts
+          </td>
+          <td>Human review comments shift from defects to product judgment</td>
+        </tr>
+        <tr>
+          <td><b>Months 5–6</b></td>
+          <td>
+            Open the system: PMs ship via specs; designers run painted-door experiments; testers own
+            the CUJ registry
+          </td>
+          <td>A non-engineer's spec reaches production with zero synchronous engineering time</td>
+        </tr>
+      </table>
+      <h3>Health metrics worth tracking</h3>
+      <ul>
+        <li>
+          <b>Repeat-feedback rate</b> — the same review note appearing twice means a missing gate
+          (the core harness KPI).
+        </li>
+        <li>
+          <b>Spec → merged lead time</b> per track, and share of PRs with complete evidence (report
+          + screenshots).
+        </li>
+        <li>
+          <b>Gate catch ratio</b> — defects caught by machine gates vs. humans (should rise toward
+          the machines).
+        </li>
+      </ul>
+      <h3>Sources</h3>
+      <p class="small">
+        R. Lopopolo (OpenAI Frontier) on harness engineering — Product Growth podcast, plus the
+        published roadmap thread · B. Böckeler, “Understanding Spec-Driven Development: Kiro,
+        spec-kit, and Tessl,” martinfowler.com (Oct 2025) · github.com/github/spec-kit (workflow,
+        constitution, templates) · Anthropic Claude Code documentation: memory &amp; AGENTS.md
+        import, skills frontmatter, subagents, hooks, claude-code-action v1 ·
+        eslint-plugin-boundaries v6 (jsboundaries.dev) · Verified against Next.js 16.2.7 / React
+        19.2.4 / Tailwind v4 / Zustand 5.0.14 / Motion 12 / Vitest 4 / Playwright 1.60 on
+        2026-06-07.
+      </p>
+    </section>
+  </body>
+</html>

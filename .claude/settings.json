@@ -1,0 +1,44 @@
+{
+  "$comment": "Project harness settings — versioned. Personal overrides go in .claude/settings.local.json (gitignored).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/protect-paths.mjs"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hooks/post-edit-format.mjs"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint*)",
+      "Bash(pnpm typecheck*)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm verify*)",
+      "Bash(pnpm check:*)",
+      "Bash(pnpm e2e*)",
+      "Bash(pnpm build*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ],
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(git push --force*)", "Bash(git push -f*)"]
+  }
+}

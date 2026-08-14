@@ -1,0 +1,18 @@
+{
+  "name": "media-upload",
+  "summary": "Upload files from the browser to a PRIVATE Supabase Storage bucket with per-user folders + signed-URL reads. Key-free.",
+  "status": "ready",
+  "installTo": "src/features/media",
+  "devKeysNeeded": false,
+  "deps": {},
+  "env": [],
+  "migrations": ["supabase/0010_media.sql"],
+  "routeHandlers": [],
+  "routes": [{ "path": "src/app/media/page.tsx", "renders": "MediaPage" }],
+  "postInstall": [
+    "Apply supabase/0010_media.sql (creates the private 'user-media' bucket + per-user folder RLS)",
+    "supabase db reset",
+    "No keys. The browser uploads directly to Storage under the user's own folder (RLS-enforced); reads use short-lived signed URLs via a Server Action.",
+    "Replace src/features/media/ui/upload-form.tsx after the Claude Design pass"
+  ]
+}

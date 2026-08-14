@@ -1,0 +1,20 @@
+{
+  "name": "chat-realtime",
+  "summary": "Supabase Realtime DMs + group chat for the web: member-scoped RLS, Server Actions to send/read, a client subscribe hook. Key-free.",
+  "status": "ready",
+  "installTo": "src/features/chat",
+  "devKeysNeeded": false,
+  "deps": {},
+  "env": [],
+  "migrations": ["supabase/0010_chat.sql"],
+  "routeHandlers": [
+    { "from": "app/chat/[id]/page.tsx", "to": "src/app/chat/[id]/page.tsx" }
+  ],
+  "routes": [{ "path": "src/app/chat/[id]/page.tsx", "renders": "ChatThreadPage" }],
+  "postInstall": [
+    "Apply supabase/0010_chat.sql (conversations/members/messages, member-scoped RLS, realtime publication)",
+    "supabase db reset && supabase test db",
+    "No keys — Supabase Realtime works on the free tier. RLS limits what each client receives.",
+    "Replace src/features/chat/ui/message-thread.tsx after the Claude Design pass"
+  ]
+}

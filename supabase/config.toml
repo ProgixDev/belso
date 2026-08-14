@@ -1,0 +1,4 @@
+# Supabase CLI config (template). Run `supabase init` to regenerate the full file
+# for your environment. Migrations live in supabase/migrations; tests in
+# supabase/tests/database (run `supabase test db`).
+project_id = "nextjs-skeleton"

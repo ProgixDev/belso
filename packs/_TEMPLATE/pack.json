@@ -1,0 +1,26 @@
+{
+  "name": "example-feature",
+  "summary": "One-line description of what this web pack adds.",
+  "status": "ready",
+  "installTo": "src/features/example",
+  "devKeysNeeded": false,
+  "deps": {
+    "some-js-dep": "^1.0.0"
+  },
+  "env": [
+    {
+      "name": "EXAMPLE_SECRET_KEY",
+      "where": "server",
+      "required": false,
+      "note": "Server-only (src/core/env.ts). NEVER prefix NEXT_PUBLIC_. Dev works without it."
+    }
+  ],
+  "migrations": ["supabase/0010_example.sql"],
+  "routeHandlers": [{ "from": "app/api/example/route.ts", "to": "src/app/api/example/route.ts" }],
+  "routes": [{ "path": "src/app/example/page.tsx", "renders": "ExamplePage" }],
+  "postInstall": [
+    "Run the migration: supabase db reset (or apply 0010_example.sql)",
+    "Add env entries to src/core/env.ts (server) / env.client.ts (NEXT_PUBLIC_*) and .env.example",
+    "Replace the placeholder UI after the Claude Design pass"
+  ]
+}

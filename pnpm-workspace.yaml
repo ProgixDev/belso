@@ -1,0 +1,5 @@
+# pnpm config (single-app repo — this file carries pnpm settings, not workspaces).
+# Build scripts are opt-in by design (supply-chain hygiene): only the deps below may run them.
+allowBuilds:
+  sharp: true
+  unrs-resolver: true

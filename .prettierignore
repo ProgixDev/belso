@@ -1,0 +1,10 @@
+.next
+out
+node_modules
+pnpm-lock.yaml
+coverage
+playwright-report
+test-results
+artifacts
+public
+docs/reports/*/img

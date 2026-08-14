@@ -1,0 +1,41 @@
+{
+  "name": "payments-stripe",
+  "summary": "Stripe Checkout + billing portal (Server Actions) and a signature-verified webhook that writes the server-owned subscriptions table. Test-mode in dev.",
+  "status": "ready",
+  "installTo": "src/features/billing",
+  "devKeysNeeded": false,
+  "deps": { "stripe": "^18.0.0" },
+  "env": [
+    {
+      "name": "STRIPE_SECRET_KEY",
+      "where": "server",
+      "required": false,
+      "note": "Server-only. Use the TEST key (sk_test_...) in dev. NEVER NEXT_PUBLIC_."
+    },
+    {
+      "name": "STRIPE_WEBHOOK_SECRET",
+      "where": "server",
+      "required": false,
+      "note": "Server-only. From `stripe listen` (whsec_...) or the dashboard endpoint."
+    },
+    {
+      "name": "NEXT_PUBLIC_SITE_URL",
+      "where": "client",
+      "required": false,
+      "note": "Public base URL for checkout success/cancel redirects, e.g. http://localhost:3000."
+    }
+  ],
+  "migrations": ["supabase/0010_stripe_customers.sql"],
+  "routeHandlers": [
+    { "from": "app/api/stripe/webhook/route.ts", "to": "src/app/api/stripe/webhook/route.ts" }
+  ],
+  "routes": [{ "path": "src/app/billing/page.tsx", "renders": "BillingPage" }],
+  "postInstall": [
+    "pnpm add stripe",
+    "Apply supabase/0010_stripe_customers.sql (maps user <-> stripe customer; subscriptions table already exists from 0004)",
+    "Add STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET to src/core/env.ts and NEXT_PUBLIC_SITE_URL to env.client.ts; mirror in .env.example",
+    "Local webhooks: `stripe listen --forward-to localhost:3000/api/stripe/webhook` and paste the whsec_ into STRIPE_WEBHOOK_SECRET",
+    "Create test-mode Products/Prices in the Stripe dashboard; pass the price id to startCheckout()",
+    "Replace src/features/billing/ui/paywall.tsx after the Claude Design pass"
+  ]
+}
