@@ -24,6 +24,9 @@ const eslintConfig = defineConfig([
     // Feature packs are parked/inactive until installed via /add-feature — they
     // live outside src and must add zero weight to the app (tsconfig also excludes them).
     "packs/**",
+    // Claude Design handoff bundles: vendored prototype source (design-tool runtime,
+    // not our code). Gitignored; the assets we ship are copied into public/design/.
+    "*-handoff/**",
   ]),
   {
     files: ["src/**/*.{ts,tsx}"],

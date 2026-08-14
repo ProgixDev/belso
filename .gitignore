@@ -37,3 +37,7 @@ docs/reports/*.pdf
 # local agent scratch
 .claude/settings.local.json
 CLAUDE.local.md
+
+# Claude Design handoff bundles — source-of-truth mockups, ~60MB of PNG/MP4.
+# The assets the app actually ships are copied into public/design/.
+*-handoff/

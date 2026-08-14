@@ -10,11 +10,16 @@ import type { Page } from "@playwright/test";
  */
 const dir = join("artifacts", "screenshots", process.env.FEATURE ?? "baseline");
 
-export async function shot(page: Page, name: string): Promise<void> {
+export async function shot(
+  page: Page,
+  name: string,
+  /** Sticky/scroll-driven scenes need the viewport, not the whole 7000px runway. */
+  options: { fullPage?: boolean } = {},
+): Promise<void> {
   mkdirSync(dir, { recursive: true });
   await page.screenshot({
     path: join(dir, `${name}.png`),
-    fullPage: true,
+    fullPage: options.fullPage ?? true,
     animations: "disabled",
   });
 }

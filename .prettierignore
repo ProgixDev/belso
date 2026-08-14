@@ -8,3 +8,4 @@ test-results
 artifacts
 public
 docs/reports/*/img
+*-handoff
