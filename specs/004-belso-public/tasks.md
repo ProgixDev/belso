@@ -14,13 +14,14 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 ## Phase 1 — foundation: tokens, routing, shell (AC-1, AC-10)
 
 - [x] T1.1 Promote the scene palette + Archivo scale into oklch role tokens, light + dark (files: `src/app/globals.css`) · done: no raw hex outside the token block; existing home renders unchanged — see note
-- [ ] T1.2 [P] Shared primitives: `button`, `input`, `field`, `badge`, `skeleton` (files: `src/components/ui/*.tsx`) · done: each has a colocated test rendering all variants
+- [x] T1.2 [P] Shared primitives: `button`, `input`, `field`, `badge`, `skeleton` (files: `src/components/ui/*.tsx`) · done: each has a colocated test rendering all variants — see note
 - [x] T1.3 Rename `src/middleware.ts` → `src/proxy.ts` for the Next 16 convention, **no behaviour change** (files: `src/proxy.ts`) · done: build emits no deprecation warning; `/account` still redirects when signed out
 - [x] T1.4 Locale config: locale list, default `fr`, segment map (`biens`↔`properties`, `contact`, `legal`), detection helper (files: `src/core/i18n.ts`, `src/core/i18n.test.ts`) · done: `i18n.test.ts` green incl. segment-map round-trip (**AC-1 unit**)
 - [x] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr` and `/account` unaffected — see note
 - [ ] **T1.5a** Proxy unit tests — the segment rewrite and the auth-cookie composition are currently proven only by manual request checks and (later) the Phase 4 e2e (files: `src/proxy.test.ts`)
-- [ ] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically — **partial, see note**
-- [ ] T1.7 Locale shell: header with working nav, footer with contact + legal links, locale switcher that stays on the current page (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`, `src/features/i18n/components/locale-switcher.tsx`) · done: switcher preserves path across locales
+- [x] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically — see note
+- [ ] T1.7 Locale shell: header with working nav, footer with contact + legal links (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`) · **moved to the head of Phase 2 — see note**
+- [x] T1.7b Locale switcher that stays on the current page (files: `src/features/i18n/components/locale-switcher.tsx`) · done: built on the `switchLocalePath` helper, which is unit-tested
 - [ ] **T1.7a** `<html lang>` / `dir` per locale — **blocks AC-1 sign-off**, see note
 - [x] T1.8 Move the home route under the locale segment (files: `src/app/[locale]/page.tsx`, delete `src/app/page.tsx`) · done: CUJ-01 passes against `/fr` — see note
 - [ ] T1.9 `pnpm verify` + `pnpm e2e` green; conventional commit · done: both green
@@ -77,5 +78,13 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 **T1.7a — `<html lang>` is wrong on French pages.** The root layout hardcodes `lang="en"` and cannot see the locale, because `[locale]/layout.tsx` nests inside it. `dir` is applied to a wrapper div so RTL has a hook, but `lang` is not per-locale. The fix is per-group root layouts via route groups (`src/app/(storefront)/[locale]/layout.tsx` + `src/app/(system)/layout.tsx`), each owning its own `<html>`. Deferred deliberately: it relocates every existing route and was too large to bolt onto T1.8.
 
 **T1.8 — pulled forward, out of order.** T1.5 activated the locale redirect while no `/[locale]` route existed, so `/` → `/fr` → 404 and the site was broken between the two tasks. The ordering in this file was wrong: T1.5 and T1.8 have to land together.
+
+**T1.2 — most primitives already existed.** `button`, `input`, `card`, `empty-state` and `skeleton` were already in `src/components/ui` and already token-driven, so they needed nothing. Added `field` and `badge`. `Field` is the one that matters: it owns the `htmlFor` / `aria-invalid` / `aria-describedby` plumbing that AC-7 depends on and that is invisible when it is missing — a sighted user sees a red message, a screen-reader user gets silence.
+
+**Harness bug found and fixed while writing those tests.** `vitest.setup.ts` only imported jest-dom, and the project runs with `globals: false`, so Testing Library's auto-cleanup was never registered. Every rendered tree stayed in `document.body` and `screen` queries matched elements from earlier tests — which presents as a component bug that does not exist. Fixed centrally with `afterEach(cleanup)` rather than per-file, since it would have bitten every future component test. All pre-existing tests still pass.
+
+**T1.6 — dictionaries done.** `fr.ts` is the source of truth and `en.ts` is typed as `Dictionary`, so adding a French key fails the build until it is translated. A missing string cannot reach a page.
+
+**T1.7 — deliberately re-sequenced to the head of Phase 2.** Two reasons, both discovered while starting it. First, AC-10 requires every header and footer link to resolve; the properties, contact and legal pages do not exist until Phases 2–3, so a shell built now ships guaranteed dead links and an AC that cannot pass. Second, the home scene supplies its own header, whose nav items are staggered in by the splash via `--in-n1`…`--in-n5`; adding a shared header above it would double the navigation, and removing the scene's own would break the intro. The shell therefore belongs with the first content page that needs it, not before.
 
 **Gotcha for whoever picks this up.** Running `pnpm build` while `pnpm dev` is live corrupts the shared `.next` chunks. The symptom is both CUJs failing with intact SSR HTML but dead client JS, which looks exactly like a real regression. Clear `.next` and restart rather than chasing it.
