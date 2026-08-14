@@ -119,33 +119,47 @@ export function useCinematicScroll(sightCount: number) {
     let introRunning = false;
 
     /**
-     * The house plate is a cover-fitted 1448×1431 image. This returns how much of
-     * it is cropped off vertically, which is exactly how far it can rise during
-     * the intro without revealing an edge.
+     * The house plate is a cover-fitted 1977×1954 image. This is how much of it
+     * is cropped off vertically, which is exactly how far it can rise during the
+     * intro without revealing an edge. Only the plate's aspect ratio matters here,
+     * so these two must stay in step with the asset.
+     *
+     * Cached: reading the rect per frame forces a layout on every intro frame,
+     * which is what made the splash stutter. Only the viewport invalidates it.
      */
+    const PLATE_W = 1977;
+    const PLATE_H = 1954;
+    let cachedRiseSlack: number | null = null;
     const riseSlack = () => {
+      if (cachedRiseSlack !== null) return cachedRiseSlack;
       const r = world.getBoundingClientRect();
       if (!r.width || !r.height) return 0;
-      const scale = Math.max(r.width / 1448, r.height / 1431);
-      return Math.max(0, (1431 * scale - r.height) / 2);
+      const scale = Math.max(r.width / PLATE_W, r.height / PLATE_H);
+      cachedRiseSlack = Math.max(0, (PLATE_H * scale - r.height) / 2);
+      return cachedRiseSlack;
     };
 
+    /**
+     * Intro timeline, in normalized 0→1 of `introDuration`. The plate's rise owns
+     * the full envelope; the type runs on tighter, more closely spaced windows so
+     * the chrome and copy resolve well before it, leaving the CTA as the last beat.
+     */
     const applyIntro = (t: number) => {
       set("--rise", `${((1 - seg(t, 0, 0.86)) * riseSlack()).toFixed(2)}px`);
-      set("--in-logo", seg(t, 0.16, 0.34).toFixed(4));
+      set("--in-logo", seg(t, 0.14, 0.27).toFixed(4));
       for (let i = 1; i <= 5; i++) {
-        set("--in-n" + i, seg(t, 0.2 + (i - 1) * 0.045, 0.36 + (i - 1) * 0.045).toFixed(4));
+        set("--in-n" + i, seg(t, 0.18 + (i - 1) * 0.033, 0.3 + (i - 1) * 0.033).toFixed(4));
       }
-      set("--in-contact", seg(t, 0.44, 0.6).toFixed(4));
+      set("--in-contact", seg(t, 0.36, 0.48).toFixed(4));
       for (let i = 1; i <= 3; i++) {
-        set("--in-s" + i, seg(t, 0.6 + (i - 1) * 0.05, 0.76 + (i - 1) * 0.05).toFixed(4));
+        set("--in-s" + i, seg(t, 0.5 + (i - 1) * 0.038, 0.62 + (i - 1) * 0.038).toFixed(4));
       }
       for (let i = 1; i <= 4; i++) {
-        set("--in-l" + i, seg(t, 0.66 + (i - 1) * 0.055, 0.84 + (i - 1) * 0.055).toFixed(4));
+        set("--in-l" + i, seg(t, 0.56 + (i - 1) * 0.042, 0.7 + (i - 1) * 0.042).toFixed(4));
       }
-      set("--in-cta", seg(t, 0.86, 1).toFixed(4));
-      set("--in-note", seg(t, 0.88, 1).toFixed(4));
-      return seg(t, 0.3, 0.8);
+      set("--in-cta", seg(t, 0.76, 0.9).toFixed(4));
+      set("--in-note", seg(t, 0.78, 0.92).toFixed(4));
+      return seg(t, 0.26, 0.66);
     };
 
     const getScrollDistance = () =>
@@ -301,7 +315,10 @@ export function useCinematicScroll(sightCount: number) {
     }
 
     const onScroll = () => requestTick();
-    const onResize = () => requestTick();
+    const onResize = () => {
+      cachedRiseSlack = null;
+      requestTick();
+    };
     const onPointer = (e: PointerEvent) => {
       targetMouseX = e.clientX / window.innerWidth - 0.5;
       targetMouseY = e.clientY / window.innerHeight - 0.5;
