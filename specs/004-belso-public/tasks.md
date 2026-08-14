@@ -9,21 +9,25 @@ This spec is large. **Phases 1–3 are each independently shippable** — the si
 - [x] T0.1 Create branch `feat/004-belso-public` · done: `git status` clean on new branch
 - [x] T0.2 Scaffold the three slices (files: `src/features/{i18n,properties,enquiries}/index.ts`) · done: `pnpm lint` green, each `index.ts` exports nothing yet
       <!-- Deviation: created by hand rather than via /new-module. The canonical scaffold ships a
-          Zustand store + provider + action stub; none of these three slices needs a store (locale is
-          URL+cookie, listings are RSC + searchParams, the form uses local state), so the scaffold
-          would have added dead code for reviewers to flag. Patterns are still mirrored from
-          src/features/task-list/ — index.ts public API, zod types.ts, painted-door actions.ts. -->
+              Zustand store + provider + action stub; none of these three slices needs a store (locale is
+              URL+cookie, listings are RSC + searchParams, the form uses local state), so the scaffold
+              would have added dead code for reviewers to flag. Patterns are still mirrored from
+              src/features/task-list/ — index.ts public API, zod types.ts, painted-door actions.ts. -->
 
 ## Phase 1 — foundation: tokens, routing, shell (AC-1, AC-10)
 
 - [x] T1.1 Promote the scene palette + Archivo scale into oklch role tokens, light + dark (files: `src/app/globals.css`) · done: no raw hex outside the token block; existing home renders unchanged
       <!-- Palette converted from the scene hexes, not eyeballed. All 20 WCAG pairs pass in both
-          themes; `border` and `input` were split because a control boundary owes 3:1 (WCAG 1.4.11)
-          and a decorative divider does not. Added `@custom-variant dark` so the `dark:` utilities and
-          the tokens switch on the same signal — they were previously media- vs class-based. -->
+              themes; `border` and `input` were split because a control boundary owes 3:1 (WCAG 1.4.11)
+              and a decorative divider does not. Added `@custom-variant dark` so the `dark:` utilities and
+              the tokens switch on the same signal — they were previously media- vs class-based. -->
 - [ ] T1.2 [P] Shared primitives: `button`, `input`, `field`, `badge`, `skeleton` (files: `src/components/ui/*.tsx`) · done: each has a colocated test rendering all variants
-- [ ] T1.3 Rename `src/middleware.ts` → `src/proxy.ts` for the Next 16 convention, **no behaviour change** (files: `src/proxy.ts`) · done: build emits no deprecation warning; `/account` still redirects when signed out
-- [ ] T1.4 Locale config: locale list, default `fr`, segment map (`biens`↔`properties`, `contact`, `legal`), detection helper (files: `src/core/i18n.ts`, `src/core/i18n.test.ts`) · done: `i18n.test.ts` green incl. segment-map round-trip (**AC-1 unit**)
+- [x] T1.3 Rename `src/middleware.ts` → `src/proxy.ts` for the Next 16 convention, **no behaviour change** (files: `src/proxy.ts`) · done: build emits no deprecation warning; `/account` still redirects when signed out
+      <!-- Verified: build warning gone; GET /account → 307 → /sign-in?next=%2Faccount. -->
+- [x] T1.4 Locale config: locale list, default `fr`, segment map (`biens`↔`properties`, `contact`, `legal`), detection helper (files: `src/core/i18n.ts`, `src/core/i18n.test.ts`) · done: `i18n.test.ts` green incl. segment-map round-trip (**AC-1 unit**)
+      <!-- 17 tests. Covers q-value ordering, cookie-beats-header, malformed cookie, and that a
+          planned-but-unshipped locale (ar) never resolves. -->
+
 - [ ] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr`, `/en/properties` and `/fr/biens` both resolve, `/account` unaffected
 - [ ] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)`, `formatPrice` via `Intl` (files: `src/features/i18n/{dictionaries,index,lib}.ts`, `lib.test.ts`) · done: `formatPrice` unit test covers MAD/EUR and the `≈` conversion form
 - [ ] T1.7 Locale layout + shell: `<html lang dir>`, header with working nav, footer with contact + legal links, locale switcher that stays on the current page (files: `src/app/[locale]/layout.tsx`, `src/app/[locale]/_components/{site-header,site-footer}.tsx`, `src/features/i18n/components/locale-switcher.tsx`) · done: switcher preserves path across locales

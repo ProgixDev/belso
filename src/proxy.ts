@@ -4,8 +4,10 @@ import { updateSession } from "@/lib/supabase/middleware";
 /**
  * Refresh the Supabase session on every request and gate protected routes.
  * The matcher skips static assets and images for performance.
+ *
+ * Named `proxy` per the Next 16 file convention — `middleware` is deprecated.
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return updateSession(request);
 }
 
