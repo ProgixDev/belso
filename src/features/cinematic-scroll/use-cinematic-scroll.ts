@@ -36,6 +36,7 @@ const REFERENCE_RUNWAY = 6600;
  */
 const JUMPING_CLASS = styles.isJumping ?? "isJumping";
 const READY_CLASS = styles.isReady ?? "isReady";
+const REVEALED_CLASS = styles.isRevealed ?? "isRevealed";
 
 const clamp = (v: number, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -85,6 +86,7 @@ export function useCinematicScroll(sightCount: number) {
   const worldRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
   const controlsRef = useRef<HTMLDivElement | null>(null);
+  const galleryRef = useRef<HTMLUListElement | null>(null);
 
   // Start on the middle copy of the tripled card list so both directions loop.
   const [activeSight, setActiveSight] = useState(sightCount);
@@ -232,12 +234,13 @@ export function useCinematicScroll(sightCount: number) {
       const aboutLeave = smoothstep(0.62, 1, aboutOut);
       set("--about-opacity", (aboutCover * (1 - aboutLeave)).toFixed(4));
       /*
-       * Drives the collage. It has to track the sheet's *lifetime*, not the
-       * raw entrance ramp: `aboutOut` starts long before the sheet fades, so
-       * multiplying by it emptied the collage while the paper was still fully
-       * covering the hero. Reuses `aboutLeave` so squares and sheet go together.
+       * The collage is armed by a class, not scrubbed by scroll. Tying the rise
+       * to scroll position means it freezes half-done when you stop and is
+       * skipped entirely when you flick past — so it is never actually seen.
+       * Crossing the threshold hands it to CSS, which plays it out over real
+       * time with a stagger. Untoggling on the way out lets it replay.
        */
-      set("--about-reveal", (aboutIn * (1 - aboutLeave)).toFixed(4));
+      galleryRef.current?.classList.toggle(REVEALED_CLASS, aboutIn > 0.3 && aboutLeave < 0.9);
       set("--about-y", `${((1 - aboutIn) * 100 - aboutOut * 46).toFixed(2)}%`);
 
       /*
@@ -424,6 +427,7 @@ export function useCinematicScroll(sightCount: number) {
     worldRef,
     trackRef,
     controlsRef,
+    galleryRef,
     activeSight,
     moveSlider,
     selectSight,

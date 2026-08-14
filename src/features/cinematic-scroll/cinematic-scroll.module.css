@@ -821,8 +821,6 @@
 }
 
 .aboutShot {
-  --shot-t: clamp(0, calc((var(--about-reveal, 0) - 0.3 - 0.34 * var(--shot-delay, 0)) * 4.5), 1);
-
   position: relative;
   grid-row: 1;
   grid-column: var(--shot-col, 1) / span var(--shot-span, 2);
@@ -831,9 +829,22 @@
   overflow: hidden;
   border-radius: 2px;
   background: rgba(36, 28, 22, 0.06);
-  opacity: var(--shot-t);
-  transform: translate3d(0, calc(46px * (1 - var(--shot-t))), 0);
+
+  /* At rest: below its place and invisible. The scene arms `.isRevealed` once
+   * the sheet is on its way in, and this plays out over real time rather than
+   * being scrubbed by the scrollbar. */
+  opacity: 0;
+  transform: translate3d(0, 72px, 0);
+  transition:
+    opacity 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--shot-delay, 0) * 700ms);
   will-change: transform, opacity;
+}
+
+.aboutGallery.isRevealed .aboutShot {
+  opacity: 1;
+  transform: none;
 }
 
 /* The rise is decoration; without motion the squares are simply present. */
@@ -841,6 +852,7 @@
   .aboutShot {
     opacity: 1;
     transform: none;
+    transition: none;
   }
 }
 

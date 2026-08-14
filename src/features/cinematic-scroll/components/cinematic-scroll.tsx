@@ -22,8 +22,16 @@ const vars = (v: Record<`--${string}`, string>) => v as CssVars;
 const loopedSights = [...sights, ...sights, ...sights];
 
 export function CinematicScroll() {
-  const { sectionRef, worldRef, trackRef, controlsRef, activeSight, moveSlider, selectSight } =
-    useCinematicScroll(sights.length);
+  const {
+    sectionRef,
+    worldRef,
+    trackRef,
+    controlsRef,
+    galleryRef,
+    activeSight,
+    moveSlider,
+    selectSight,
+  } = useCinematicScroll(sights.length);
 
   const onCardKeyDown = (event: KeyboardEvent<HTMLElement>, index: number) => {
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -296,7 +304,7 @@ export function CinematicScroll() {
               </div>
             </div>
 
-            <ul className={styles.aboutGallery}>
+            <ul className={styles.aboutGallery} ref={galleryRef}>
               {aboutShots.map((shot) => (
                 <li
                   className={styles.aboutShot}
