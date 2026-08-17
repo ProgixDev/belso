@@ -62,7 +62,7 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 - [x] T5.1 Run `/review`; fix P0/P1 findings · done: no open P0/P1
 - [x] T5.2 Run `/security-review` — the enquiry action is the only untrusted input path · done: no open SEC finding
 - [x] T5.3 Run `/feature-report` → `docs/reports/004-belso-public.md` · done: report exists with screenshots
-- [ ] T5.4 Open PR (template filled, spec + report linked) · done: PR open
+- [x] T5.4 Open PR (template filled, spec + report linked) · done: PR open
 - [ ] T5.5 After merge: `/update-docs` — feature doc, CUJ table, specs index status → `shipped` · done: `pnpm check:docs` green
 
 ## Implementation notes

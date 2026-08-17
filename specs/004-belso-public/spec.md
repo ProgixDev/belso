@@ -1,6 +1,6 @@
 # Spec 004 — Belso Luxury public storefront
 
-- **Status:** draft
+- **Status:** in review — [PR #1](https://github.com/ProgixDev/BESTO/pull/1)
 - **Type:** feature
 - **Requested by / owner:** Houssem Ferrani
 - **Date:** 2026-08-14
