@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Locale } from "@/core/i18n";
-import { MOTION } from "@/features/cinematic-scroll";
+import { CHROME_BAND } from "@/features/cinematic-scroll";
 import { type Dictionary, LocaleSwitcher } from "@/features/i18n";
 import { cn } from "@/lib/utils";
-import { type NavItem, primaryNav } from "./navigation";
+import { primaryNav } from "./navigation";
 
 /**
  * The one header, on every page including the home scene.
@@ -20,9 +20,12 @@ import { type NavItem, primaryNav } from "./navigation";
  *
  * Over the scene it carries no background at all — nothing opaque crosses the
  * frame. It stays legible because the scene publishes `--chrome-on-light`
- * (0..1) on the document as its backdrop swings from dark sky to the cream
- * about and amenities sheets; type and rule are mixed between the two ends of
- * that range. Continuous, so there is no threshold to snap at.
+ * (0..1) on the document as its backdrop swings from the dark sky to the cream
+ * about sheet; type and rule are mixed between the two ends of that range.
+ * Continuous, so there is no threshold to snap at.
+ *
+ * Past the scene it is an ordinary solid header with no halo, because the page
+ * below is flat colour and a halo on flat colour is grime.
  */
 
 /** Type and rule track the scene's backdrop; no fill, so the frame reads through. */
@@ -55,30 +58,41 @@ export function SiteHeader({
   locale,
   dict,
   overlay = false,
-  items,
 }: {
   locale: Locale;
   dict: Dictionary;
   /** Sits over the cinematic scene, tinting itself to it. Landing page only. */
   overlay?: boolean;
-  /** Defaults to the site nav; the landing page adds its own scene beats. */
-  items?: NavItem[];
 }) {
   const [overScene, setOverScene] = useState(true);
 
   useEffect(() => {
     if (!overlay) return;
 
-    // The sticky stage releases after the runway; past that the page is
-    // ordinary content and the header stops tracking the scene.
-    const onScroll = () => setOverScene(window.scrollY < MOTION.runway);
+    /*
+     * Measured against the scene's own box, not a scroll number.
+     *
+     * `scrollY < MOTION.runway` looked equivalent and was wrong by a full
+     * viewport: the sticky stage is still pinned at the end of the runway, so
+     * the scene occupies `100vh + runway`. The header spent that last screenful
+     * in scene mode over the ordinary page below — no background, and its
+     * legibility halo printing grey smudges around the wordmark on cream.
+     */
+    const onScroll = () => {
+      const scene = document.getElementById("scene");
+      setOverScene((scene?.getBoundingClientRect().bottom ?? 0) > CHROME_BAND);
+    };
     onScroll(); // A reload partway down must not start in scene mode.
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, [overlay]);
 
   const onScene = overlay && overScene;
-  const nav = items ?? primaryNav(locale, dict);
+  const nav = primaryNav(locale, dict);
 
   return (
     <header

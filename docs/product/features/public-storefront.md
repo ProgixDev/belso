@@ -1,6 +1,6 @@
 # Public storefront
 
-**Status:** live · **Slices:** `src/features/{i18n,properties,enquiries,cinematic-scroll}` · **Routes:** `/[locale]`, `/[locale]/{biens|properties}`, `/[locale]/{biens|properties}/[slug]`, `/[locale]/contact`, `/[locale]/legal/[doc]`
+**Status:** live · **Slices:** `src/features/{i18n,properties,enquiries,cinematic-scroll}` · **Routes:** `/[locale]`, `/[locale]/{biens|properties}`, `/[locale]/{biens|properties}/[slug]`, `/[locale]/{a-propos|about}`, `/[locale]/contact`, `/[locale]/legal/[doc]`
 **Spec history:** specs/004-belso-public (shipped 2026-08-17)
 
 ## What it does (user terms)
@@ -19,9 +19,13 @@ The whole site is in French and English, with the language in the address; switc
 - **`features/enquiries`** — a zod schema, a painted-door Server Action that validates like the real thing and persists nothing, and the form. The action returns error _keys_, never sentences, because it cannot know the page's language.
 - **`features/i18n`** — `fr.ts` is the source of truth and `en.ts` is typed against it, so adding a French key fails the build until it is translated. A missing string cannot reach a page.
 - **`app`** — two root layouts via route groups (`(storefront)`, `(system)`) so `<html lang>` can name the actual language; a nested `(content)` group carries the header and footer for every page except the home scene, which supplies its own.
+- **`features/cinematic-scroll`** — two beats, hero then about sheet, over a 2400px runway. Everything the scene says arrives as a `CinematicCopy` prop, because the slice may not reach the i18n slice.
 
 ## Decisions & gotchas
 
+- **2026-08-17 — The scene ends on the about sheet; what follows is an ordinary page.** It used to run six beats over a 6600px runway — split frames, a residences bridge, an amenities panel, a sliding card deck over a photo collage. Each spoke a different motion language and together they held the scroll for four thousand pixels to say what three static sections say better. The runway is now 2400px, the about sheet has no exit (the page carries it away when the sticky stage releases), and ~630 lines of CSS, the pointer-parallax loop and the whole slider went with them.
+- **2026-08-17 — Navigation is routes, never scroll positions.** `#about`, `#residences` and `#amenities` were markers placed down the scene's runway: not shareable, not indexable, meaningless from any other page, and broken outright from all of them. `/[locale]/{a-propos|about}` is now a real page and the header is the same four links everywhere.
+- **2026-08-17 — The header leaves scene mode on the scene's box, not a scroll number.** `scrollY < MOTION.runway` reads as equivalent and is wrong by a full viewport — the sticky stage is still pinned at the end of the runway, so the scene occupies `100vh + runway`. The header spent that last screenful transparent over ordinary page content, printing its legibility halo as grey smudges around the wordmark on cream. It now measures `#scene`'s bottom against the shared `CHROME_BAND`.
 - **2026-08-17 — A `loading.tsx` anywhere above a route turns its 404 into a soft 200.** The shell streams before `notFound()` throws, so the status is already sent; the page renders correctly and returns 200 to every crawler. The listings skeleton therefore lives in `properties/(index)/`, which does not wrap `[slug]`, and the detail, contact and legal routes ship no `loading.tsx`. If one of them ever needs streaming, put `<Suspense>` _inside_ the page below the `notFound()` decision — never above it. **This contradicts `.claude/rules/app-router.md`**, which mandates `loading.tsx` on every feature route.
 - **2026-08-17 — Next strips its own router headers before `proxy` runs.** `rsc`, `next-router-prefetch` and `next-router-segment-prefetch` are absent there, so a prefetch cannot be detected that way. This mattered because the locale switcher sits in every header, so Next prefetches the _other_ language's URL and the proxy counted it as a choice — silently overwriting the visitor's language. The proxy now records a locale only on `sec-fetch-dest: document`, and the switcher writes the cookie itself on click.
 - **2026-08-17 — Prices sort on a converted value, not the raw number.** The fixtures mix MAD and EUR; comparing digits ranked a 12.8M MAD villa above a €3.9M estate. `similarityScore` deliberately does _not_ convert — there a stale rate shifts weighting invisibly, while here not converting produces a visibly false order.
@@ -32,7 +36,6 @@ The whole site is in French and English, with the language in the address; switc
 
 ## Known gaps
 
-- **The home scene is not translated.** Its nav, lede, headings and Contact button are hardcoded English in `cinematic-scroll/data.ts`, so `/fr` shows French search chrome inside an English scene. Its nav also points at in-page anchors and its Contact is a dead `<button>`.
 - **Legal copy is placeholder.** The GDPR-expected sections exist and each is marked as unwritten; pages are `noindex` until real text arrives. No owner has been named.
 - **Enquiries go nowhere.** Painted door by design (`docs/process/painted-door.md`); the back-office inbox is spec 003. The action is unthrottled, which is harmless while it persists nothing and must be rate-limited before it does not.
 - **Content and photography are fixtures.** Twelve Marrakech listings; thirteen stock frames stand in for real photography.

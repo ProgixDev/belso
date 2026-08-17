@@ -16,25 +16,19 @@ export type NavItem = {
 };
 
 /**
- * The landing page's own beats, added to its header.
+ * Header navigation. Kept short: this is chrome, not a sitemap.
  *
- * These are in-page scroll targets, not routes — markers placed down the scene's
- * runway (`sceneAnchors` in the cinematic-scroll slice). They belong only on the
- * page that has the scene; every other page gets `primaryNav` alone.
+ * Every entry is a route. The landing page used to add three more — `#about`,
+ * `#residences`, `#amenities` — pointing at markers down the scene's scroll
+ * runway. Those were not addresses: they could not be shared or indexed, they
+ * meant nothing from any other page, and the header changed shape depending on
+ * where you were standing. The beats they pointed at are now real pages.
  */
-export function sceneNav(dict: Dictionary): NavItem[] {
-  return [
-    { href: "#about", label: dict.nav.about },
-    { href: "#residences", label: dict.nav.residences },
-    { href: "#amenities", label: dict.nav.amenities },
-  ];
-}
-
-/** Header navigation. Kept short: this is chrome, not a sitemap. */
 export function primaryNav(locale: Locale, dict: Dictionary): NavItem[] {
   return [
     { href: `/${locale}`, label: dict.nav.home },
     { href: toPublicPath("/properties", locale), label: dict.nav.properties },
+    { href: toPublicPath("/about", locale), label: dict.nav.about },
     { href: toPublicPath("/contact", locale), label: dict.nav.contact },
   ];
 }

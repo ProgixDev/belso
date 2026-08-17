@@ -25,6 +25,82 @@ export const en: Dictionary = {
     searchLabel: "Describe the property you’re looking for",
     searchPlaceholder: "Modern villa in Marrakech with Atlas views, between 8 and 12M MAD",
     searchSubmit: "Search",
+    scene: {
+      sceneLabel: "Belso, in pictures",
+      heroLabel: "Belso overview",
+      stats: [
+        { value: "30+", label: "Private residences" },
+        { value: "06", label: "Residential levels" },
+        { value: "24/7", label: "Secure living" },
+      ],
+      lede: ["Where", "heritage", "meets", "home"],
+      note: "A modern residence inspired by warm stone, desert calm, and the lasting beauty of timeless design.",
+      scrollHint: "Scroll to explore",
+      about: {
+        name: "About Belso",
+        place: "Marrakech · Palmeraie",
+        statement: "A quieter kind of address",
+        lede: "Belso is a private address in the Palmeraie — thirty residences drawn in warm stone, shaded timber and still water.",
+        body: "It is built for the way Marrakech actually lives: slowly, in the shade, with the doors open. Every home is dual-aspect and turned away from the road, so light crosses it all day and the city never quite arrives.",
+        facts: [
+          { value: "2027", label: "Completion" },
+          { value: "1.4 ha", label: "Grounds" },
+          { value: "Marrakech", label: "Palmeraie" },
+        ],
+        shots: {
+          facade: "Planted balconies stepping down a timber-clad facade at golden hour",
+          walkway: "A sunlit walkway running along the inner courtyard",
+          bedroom: "A bedroom in warm neutrals with a woven throw across the bed",
+          terraces: "Planted terraces above the garden, seen from below",
+        },
+      },
+    },
+    residences: {
+      index: "02",
+      name: "Properties",
+      place: "Marrakech and around",
+      statement: "Where to begin",
+      lede: "Every property is visited, photographed and documented by us before it is published.",
+      cta: "Browse all properties",
+    },
+    grounds: {
+      index: "03",
+      name: "The grounds",
+      place: "Inside the walls",
+      statement: "Everything close, nothing near",
+      lede: "A lap pool under the colonnade, a hammam cut into stone, an olive grove and water gardens — all behind one gate.",
+      items: [
+        "Lap pool under the colonnade",
+        "Hammam and treatment room",
+        "Olive grove and water gardens",
+        "24-hour security and concierge",
+      ],
+      cta: "See the grounds",
+    },
+    enquire: {
+      index: "04",
+      name: "Write to us",
+      place: "Answered within 24 hours",
+      statement: "Tell us what you’re looking for",
+      lede: "Describe the property, the district, the timing. We come back with a shortlist, not a catalogue.",
+      cta: "Contact us",
+    },
+  },
+  about: {
+    title: "About",
+    lede: "A private address in the Palmeraie, drawn for the way Marrakech actually lives.",
+    storyTitle: "The address",
+    storyBody:
+      "Belso occupies 1.4 hectares of palm grove, twenty minutes from the medina and ten from the golf course. The land was an olive grove; it still is. The thirty residences are set between the existing trees rather than in place of them, and none rises above six levels.",
+    designTitle: "The design",
+    designBody:
+      "Warm stone, shaded timber, still water. Every home is dual-aspect and turned away from the road: light crosses it all day, air moves through it without air conditioning for half the year, and the city never quite arrives.",
+    groundsTitle: "The grounds",
+    groundsBody:
+      "The lap pool runs under the colonnade, shaded all day. The hammam is cut into stone quarried on site. The water gardens follow the line of the seguias that once irrigated the olive grove.",
+    teamTitle: "Getting in touch",
+    teamBody:
+      "Belso is represented by one team, in Marrakech. Viewings are by appointment, Monday to Saturday.",
   },
   properties: {
     title: "Our properties",

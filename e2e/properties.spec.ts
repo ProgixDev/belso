@@ -10,7 +10,7 @@ import { shot } from "./utils/shot";
  * that does not exist.
  */
 
-const SCENE = 'section[aria-label="Belso cinematic scroll story"]';
+const SCENE = "#scene";
 
 test("@cuj CUJ-03: visitor searches from the home scene and opens a listing", async ({ page }) => {
   await page.goto("/fr");

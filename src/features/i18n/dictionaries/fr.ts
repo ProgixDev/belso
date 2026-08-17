@@ -4,6 +4,19 @@
  *
  * Copy follows docs/conventions/copy.md: curly apostrophes, sentence case.
  */
+/**
+ * Fixed-length copy, annotated where the length is load-bearing.
+ *
+ * The scene's splash timeline staggers exactly three stats (`--in-s1..3`) and
+ * four lede lines (`--in-l1..4`), so a translation offering a different number
+ * would animate some of them and not others. Written as tuples, that is a build
+ * error rather than a missing fade. (Declared here rather than imported from the
+ * scene slice: features may not import features.)
+ */
+type Figure = { value: string; label: string };
+type Three<T> = [T, T, T];
+type Four<T> = [T, T, T, T];
+
 // Deliberately not `as const`: that would make every value a literal type, so
 // `Dictionary` would demand the exact French strings and no translation could
 // ever satisfy it. We want the shape enforced, not the words.
@@ -28,6 +41,88 @@ export const fr = {
     searchLabel: "Décrivez le bien que vous cherchez",
     searchPlaceholder: "Villa moderne à Marrakech avec vue sur l’Atlas, entre 8 et 12 M MAD",
     searchSubmit: "Rechercher",
+    // The cinematic scene. It used to hold its own English copy, so /fr played
+    // French search chrome inside an English film.
+    scene: {
+      sceneLabel: "Belso, en images",
+      heroLabel: "Présentation de Belso",
+      stats: [
+        { value: "30+", label: "Résidences privées" },
+        { value: "06", label: "Niveaux d’habitation" },
+        { value: "24/7", label: "Gardiennage" },
+      ] as Three<Figure>,
+      // Four lines, staggered one at a time by the splash timeline.
+      lede: ["Là où", "l’héritage", "rencontre", "le foyer"] as Four<string>,
+      note: "Une résidence contemporaine inspirée par la pierre chaude, le calme du désert et la beauté durable du dessin intemporel.",
+      scrollHint: "Faites défiler",
+      about: {
+        name: "À propos de Belso",
+        place: "Marrakech · Palmeraie",
+        statement: "Une adresse plus calme",
+        lede: "Belso est une adresse privée dans la Palmeraie — trente résidences dessinées dans la pierre chaude, le bois d’ombrage et l’eau immobile.",
+        body: "Elle est bâtie pour la façon dont Marrakech vit vraiment : lentement, à l’ombre, portes ouvertes. Chaque maison est traversante et tournée loin de la route, si bien que la lumière l’habite tout le jour et que la ville n’arrive jamais tout à fait.",
+        facts: [
+          { value: "2027", label: "Livraison" },
+          { value: "1,4 ha", label: "Terrain" },
+          { value: "Marrakech", label: "Palmeraie" },
+        ] as Three<Figure>,
+        // Written against the photograph, not the file name — the stock names
+        // describe something else entirely.
+        shots: {
+          facade: "Balcons plantés descendant une façade habillée de bois, à l’heure dorée",
+          walkway: "Une allée ensoleillée le long de la cour intérieure",
+          bedroom: "Une chambre dans des tons neutres, un plaid tissé jeté sur le lit",
+          terraces: "Les terrasses plantées au-dessus du jardin, vues d’en bas",
+        },
+      },
+    },
+    // The three sections below the scene. Each is a doorway to a real page.
+    residences: {
+      index: "02",
+      name: "Les biens",
+      place: "Marrakech et alentours",
+      statement: "Par où commencer",
+      lede: "Chaque bien est visité, photographié et documenté par nos soins avant d’être publié.",
+      cta: "Voir tous les biens",
+    },
+    grounds: {
+      index: "03",
+      name: "Le domaine",
+      place: "Dans les murs",
+      statement: "Tout à portée, rien à proximité",
+      lede: "Un bassin sous la colonnade, un hammam taillé dans la pierre, une oliveraie et des jardins d’eau — le tout derrière un seul portail.",
+      items: [
+        "Bassin de nage sous la colonnade",
+        "Hammam et salle de soins",
+        "Oliveraie et jardins d’eau",
+        "Gardiennage et conciergerie 24 h/24",
+      ],
+      cta: "Découvrir le domaine",
+    },
+    enquire: {
+      index: "04",
+      name: "Nous écrire",
+      place: "Réponse sous 24 h",
+      statement: "Dites-nous ce que vous cherchez",
+      lede: "Décrivez le bien, le quartier, le calendrier. Nous revenons vers vous avec une sélection, pas un catalogue.",
+      cta: "Nous contacter",
+    },
+  },
+  about: {
+    title: "À propos",
+    lede: "Une adresse privée dans la Palmeraie, dessinée pour la façon dont Marrakech vit vraiment.",
+    storyTitle: "L’adresse",
+    storyBody:
+      "Belso occupe 1,4 hectare de palmeraie, à vingt minutes de la médina et à dix du golf. Le terrain était une oliveraie ; il l’est resté. Les trente résidences sont posées entre les arbres existants plutôt qu’à leur place, et aucune ne dépasse six niveaux.",
+    designTitle: "Le dessin",
+    designBody:
+      "Pierre chaude, bois d’ombrage, eau immobile. Chaque maison est traversante et tournée loin de la route : la lumière la traverse tout le jour, l’air circule sans climatisation la moitié de l’année, et la ville n’arrive jamais tout à fait.",
+    groundsTitle: "Le domaine",
+    groundsBody:
+      "Le bassin de nage court sous la colonnade, à l’ombre toute la journée. Le hammam est taillé dans la pierre du site. Les jardins d’eau reprennent le tracé des séguias qui irriguaient l’oliveraie.",
+    teamTitle: "Nous joindre",
+    teamBody:
+      "Belso est représenté par une seule équipe, à Marrakech. Les visites se font sur rendez-vous, du lundi au samedi.",
   },
   properties: {
     title: "Nos biens",
