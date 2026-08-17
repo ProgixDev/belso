@@ -1,8 +1,34 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/core/i18n";
 import { site } from "@/core/site";
 import type { Dictionary } from "@/features/i18n";
 import { footerSections } from "./navigation";
+
+/**
+ * The scene's own sky plate, carried down to the foot of the page.
+ *
+ * It is anchored to its top edge because that is the moody end of it — the
+ * lower two thirds are a lit skyline, palms and a road, which at this size read
+ * as clutter behind type rather than atmosphere. Everything below the horizon
+ * is cropped away.
+ */
+const SKY = "/design/belso-sky-bg.png";
+
+/**
+ * How far the shell is pulled back over the sky, top to bottom.
+ *
+ * The plate is a pale gold dusk — the *lightest* thing in the palette — so it
+ * cannot sit under cream type unscreened; measured raw, the small caps came out
+ * near 1:1. The scrim is what turns a photograph into a glow: enough shell to
+ * hold contrast, little enough that the warmth still reaches the eye. It
+ * deepens toward the bottom so the legal bar sits on near-solid ground.
+ */
+const SKY_SCRIM =
+  "linear-gradient(180deg," +
+  " color-mix(in oklab, var(--color-shell) 80%, transparent) 0%," +
+  " color-mix(in oklab, var(--color-shell) 88%, transparent) 52%," +
+  " color-mix(in oklab, var(--color-shell) 96%, transparent) 100%)";
 
 /**
  * Storefront footer, on the shell the cinematic scene is mounted on.
@@ -21,7 +47,13 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
   const sections = footerSections(locale, dict);
 
   return (
-    <footer className="bg-shell text-shell-foreground">
+    <footer className="bg-shell text-shell-foreground relative isolate">
+      {/* Decorative: the page already says where it is, in words. */}
+      <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden">
+        <Image src={SKY} alt="" fill sizes="100vw" className="object-cover object-top" />
+        <div className="absolute inset-0" style={{ background: SKY_SCRIM }} />
+      </div>
+
       <div className="container-page py-[clamp(48px,8vh,104px)]">
         {/* Signature left, links right — the sections are a short list, and
          * stretching two of them across four columns leaves half the footer
