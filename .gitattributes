@@ -1,0 +1,21 @@
+# Normalise line endings.
+#
+# Git for Windows defaults to core.autocrlf=true, which checks every file out
+# with CRLF. Prettier's endOfLine default is "lf", so without this a fresh
+# clone on Windows fails `pnpm format:check` — and therefore `pnpm verify` —
+# on every file in the repo, before anyone has changed anything.
+#
+# `text=auto eol=lf` stores LF (as the repo already does) and checks LF out on
+# every platform, which is what the toolchain expects.
+* text=auto eol=lf
+
+# Binaries must never be touched.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
