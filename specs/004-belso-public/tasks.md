@@ -49,13 +49,13 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 
 ## Phase 4 — verification
 
-- [ ] T4.1 E2E: `e2e/browse-to-enquiry.spec.ts` — the full CUJ-03 path with `shot()` at each step · done: `pnpm e2e:shots` green (**AC-2, AC-3, AC-5, AC-6**)
-- [ ] T4.2 E2E: `e2e/properties-states.spec.ts` — empty results, bad email, unknown slug · done: green (**AC-4, AC-7, AC-8**)
-- [ ] T4.3 E2E: `e2e/i18n.spec.ts` — default locale, switch, persistence, translated URLs, fallback note, full nav/footer link crawl · done: green (**AC-1, AC-9, AC-10**)
-- [ ] T4.4 E2E: `e2e/a11y.spec.ts` — keyboard tab-through with visible focus, `reducedMotion: 'reduce'` render · done: green (**AC-11**)
+- [x] T4.1 E2E: `e2e/browse-to-enquiry.spec.ts` — the full CUJ-03 path with `shot()` at each step · done: `pnpm e2e:shots` green (**AC-2, AC-3, AC-5, AC-6**)
+- [x] T4.2 E2E: `e2e/properties-states.spec.ts` — empty results, bad email, unknown slug · done: green (**AC-4, AC-7, AC-8**)
+- [x] T4.3 E2E: `e2e/i18n.spec.ts` — default locale, switch, persistence, translated URLs, fallback note, full nav/footer link crawl · done: green (**AC-1, AC-9, AC-10**)
+- [x] T4.4 E2E: `e2e/a11y.spec.ts` — keyboard tab-through with visible focus, `reducedMotion: 'reduce'` render · done: green (**AC-11**)
 - [x] T4.5 Register CUJ-03 and update CUJ-01's row (files: `docs/product/critical-user-journeys.md`) · done: `pnpm check:docs` green
-- [ ] T4.6 Run `/verify-ui` — inspect every screenshot against the ACs and `docs/design/quality-bar.md`; fix what you see · done: no unaddressed visual defect
-- [ ] T4.7 `pnpm verify` + `pnpm e2e` green; history clean · done: both green
+- [x] T4.6 Run `/verify-ui` — inspect every screenshot against the ACs and `docs/design/quality-bar.md`; fix what you see · done: no unaddressed visual defect
+- [x] T4.7 `pnpm verify` + `pnpm e2e` green; history clean · done: both green
 
 ## Phase 5 — review & ship
 
@@ -146,3 +146,24 @@ First cut repeated the same "being written" sentence under all nine headings, wh
 **Two more strict-mode collisions, both from new copy landing near old assertions.** `getByText("Référence")` began matching both the key-facts term and the form's "portera la référence BL-1102" sentence; `getByText(/Villa vue Atlas/)` matched both the page heading and the confirmation naming it back. In both cases the app was right and the locator was too loose — fixed with `{ exact: true }` and by scoping to the confirmation's `role="status"`. Worth knowing that adding copy to a page breaks tests elsewhere on it.
 
 **Contact and legal ship `error.tsx` but no `loading.tsx`, deliberately.** Neither fetches anything, so a skeleton would flash for zero milliseconds while putting the route behind a Suspense boundary — which is what turns `notFound()` into a soft 200 (see the T2.8 note). For `legal/[doc]` that is not hypothetical: an unknown document must 404, and it does. This is a considered deviation from the "every feature route ships loading.tsx and error.tsx" rule in `.claude/rules/app-router.md`; that rule is a soft-404 generator for any route that can call `notFound()`, and is worth an `/encode-lesson` pass.
+
+## Phase 4 notes
+
+**Spec files are consolidated, not one-per-task.** The plan named `browse-to-enquiry.spec.ts` and `properties-states.spec.ts`; the coverage lives in `properties.spec.ts` (search → results → detail, empty results, sorting, fallback, unknown slug) and `enquiry.spec.ts` (the enquiry half of CUJ-03, bad email, contact, the AC-10 link crawl, unknown legal doc). `i18n.spec.ts` and `a11y.spec.ts` are as named. Every AC in the plan's verification table is covered; the file boundaries follow the journey rather than the task numbering.
+
+**A prefetch was silently overwriting the visitor's chosen language (AC-1).** The locale switcher sits in the header of every page, so Next prefetches the _other_ language's URL as soon as it is in view. The proxy persisted the locale on any localed request, so those prefetches rewrote the cookie — a language preference that worked, then randomly did not. It surfaced as a flaky e2e, not as a report, which is the only reason it was found at all: the test was right and the app was wrong.
+
+Two wrong fixes preceded the right one, both worth recording:
+
+1. Guarding on `Next-Router-Prefetch` does nothing. **Next strips its own router headers before `proxy` runs** — `rsc`, `next-router-prefetch`, `next-router-segment-prefetch` are all absent. Confirmed by temporarily having the proxy echo the header names it actually receives, after two rounds of guessing failed.
+2. Broadening to `purpose` / `sec-purpose` fixed those cases and left the real one, because Next's router prefetch is a plain `fetch()` and sends neither.
+
+The working signal is `Sec-Fetch-Dest`: a browser header, not settable from JavaScript, and `document` only for top-level navigations. The proxy now records a language only on real navigations. Clicking the switcher is a _client-side_ navigation and so is not one — that choice is written by the switcher itself, which is more truthful anyway, since it is the one place a visitor actually chooses. Five consecutive clean runs of `i18n.spec.ts` after the change, against three flakes in four before it.
+
+The cookie write lives at module scope because the React Compiler's `react-hooks/immutability` rule correctly rejects `document.cookie = …` from a closure defined in the component body.
+
+**No listing showed a focus ring, and only a keyboard test found it.** `property-card.tsx` set `focus-visible:outline-none` on the stretched title link — deliberately, because the ring would otherwise draw a box around the title text mid-card — but never added a replacement. Every listing in the grid was therefore unreachable-looking to a keyboard user, on a page that screenshots perfectly. The card now rings itself via `has-[a:focus-visible]`, and the a11y helper looks for the indicator on the focused element _or_ the card containing it, anchored with `closest()` rather than a fixed number of parent hops.
+
+**`reducedMotion` is not a top-level `test.use` option in Playwright 1.60**; it is set through `contextOptions`. The scene's reduced-motion path was already implemented (no lerp, no parallax, splash skipped outright) — the tests confirm it rather than having driven it.
+
+**Screenshot review (T4.6) found four defects the assertions did not:** the detail page labelling its type row "En bref" (a section heading) instead of "Type"; the legal pages repeating one placeholder sentence under all nine headings; the enquiry submit button stretching full width because `sm:w-auto` cannot shrink a flex-column item without `self-start`; and, earlier, the CUJ-01 language mismatch. One thing that looked like a defect was not: the sticky header appears mid-page in full-page screenshots, which is a Chromium artifact — checked against a real viewport before touching it.

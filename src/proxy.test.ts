@@ -27,8 +27,16 @@ function sessionWithAuthCookie() {
   return response;
 }
 
-function request(path: string, init?: { acceptLanguage?: string; cookies?: string }) {
+/**
+ * A real browser navigation unless told otherwise: `sec-fetch-dest: document`
+ * is what separates a visit from a prefetch, and the proxy keys off it.
+ */
+function request(
+  path: string,
+  init?: { acceptLanguage?: string; cookies?: string; dest?: string },
+) {
   const headers = new Headers();
+  headers.set("sec-fetch-dest", init?.dest ?? "document");
   if (init?.acceptLanguage) headers.set("accept-language", init.acceptLanguage);
   if (init?.cookies) headers.set("cookie", init.cookies);
   return new NextRequest(new URL(`http://localhost:3000${path}`), { headers });
@@ -146,7 +154,22 @@ describe("composition with the session response", () => {
 });
 
 describe("locale persistence", () => {
-  it("records the locale in the URL when it differs from the stored one", async () => {
+  it("ignores a prefetch of the other language", async () => {
+    // The bug this pins: the switcher is in the header of every page, so Next
+    // prefetches the other language's URL as soon as it is in view. Counting
+    // that as a choice silently flipped the stored language.
+    //
+    // Note the signal. Next strips its own `next-router-prefetch` header before
+    // the proxy runs, so it cannot be used; `sec-fetch-dest` is a browser
+    // header and reports `empty` for every fetch.
+    const response = await proxy(
+      request("/fr/biens", { cookies: `${LOCALE_COOKIE}=en`, dest: "empty" }),
+    );
+
+    expect(response.cookies.get(LOCALE_COOKIE)).toBeUndefined();
+  });
+
+  it("records the choice on a real navigation", async () => {
     const response = await proxy(request("/en", { cookies: `${LOCALE_COOKIE}=fr` }));
 
     expect(response.cookies.get(LOCALE_COOKIE)?.value).toBe("en");

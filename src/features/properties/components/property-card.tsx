@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { displayCurrency } from "@/core/currency";
 import { type Locale, toPublicPath } from "@/core/i18n";
 import { formatApproxPrice, formatArea, formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import type { LocalizedProperty } from "../types";
 
 /**
@@ -49,7 +50,15 @@ export function PropertyCard({
           : null;
 
   return (
-    <article className="group border-border/70 bg-card relative flex flex-col overflow-hidden rounded-xl border">
+    <article
+      className={cn(
+        "group border-border/70 bg-card relative flex flex-col overflow-hidden rounded-xl border",
+        // The focus ring belongs to the whole card, because the whole card is
+        // the target. `has-[a:focus-visible]` rather than `focus-within` so it
+        // does not light up on a mouse click.
+        "has-[a:focus-visible]:ring-ring has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-offset-2",
+      )}
+    >
       <div className="bg-muted relative aspect-[4/3] overflow-hidden">
         {cover ? (
           <Image
@@ -80,6 +89,12 @@ export function PropertyCard({
            * The whole card is the target — a stretched link keeps the hit area
            * large without nesting the image inside the anchor, which would make
            * the accessible name the alt text plus the title.
+           *
+           * The link's own outline is suppressed because it would draw a box
+           * around the title text alone, mid-card. The card draws the ring
+           * instead (see the `has-[a:focus-visible]` rules above) — suppressing
+           * it here *without* that replacement left keyboard users with no
+           * focus indicator on any listing at all, which is how this was found.
            */}
           <Link href={href} className="after:absolute after:inset-0 focus-visible:outline-none">
             {property.title}
