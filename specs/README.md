@@ -30,4 +30,4 @@ ship → /update-docs                           status: shipped; learnings disti
 | #                               | Spec                           | Status  |
 | ------------------------------- | ------------------------------ | ------- |
 | [001](001-task-list/spec.md)    | Task list demo feature         | shipped |
-| [004](004-belso-public/spec.md) | Belso Luxury public storefront | active  |
+| [004](004-belso-public/spec.md) | Belso Luxury public storefront | shipped |
