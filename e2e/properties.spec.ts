@@ -48,7 +48,8 @@ test("@cuj CUJ-03: visitor searches from the home scene and opens a listing", as
   // AC-5: the listing itself.
   await expect(page).toHaveURL(/\/fr\/biens\/[a-z0-9-]+$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByText("Référence")).toBeVisible();
+  // Exact, because the enquiry form below also says "référence" in a sentence.
+  await expect(page.getByText("Référence", { exact: true })).toBeVisible();
   await shot(page, "03-detail");
 
   // The gallery advances.

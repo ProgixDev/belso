@@ -33,3 +33,5 @@ export function interpolate(template: string, values: Record<string, string | nu
 }
 
 export { LocaleSwitcher } from "./components/locale-switcher";
+
+export { isLegalDoc, legalDocs, legalSections, type LegalDoc } from "./dictionaries/legal";

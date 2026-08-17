@@ -20,7 +20,7 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 - [x] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr` and `/account` unaffected — see note
 - [x] **T1.5a** Proxy unit tests — the segment rewrite and the auth-cookie composition are currently proven only by manual request checks and (later) the Phase 4 e2e (files: `src/proxy.test.ts`) · done: 18 tests green — see note
 - [x] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically — see note
-- [ ] T1.7 Locale shell: header with working nav, footer with contact + legal links (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`) · **moved to the head of Phase 2 — see note**
+- [x] T1.7 Locale shell: header with working nav, footer with contact + legal links (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`) · **moved to the head of Phase 2 — see note**
 - [x] T1.7b Locale switcher that stays on the current page (files: `src/features/i18n/components/locale-switcher.tsx`) · done: built on the `switchLocalePath` helper, which is unit-tested
 - [x] **T1.7a** `<html lang>` / `dir` per locale — **blocks AC-1 sign-off**, see note · done: `/fr` serves `lang="fr-MA"`, `/en` `lang="en-GB"`, `/sign-in` `lang="en"` — see note
 - [x] T1.8 Move the home route under the locale segment (files: `src/app/[locale]/page.tsx`, delete `src/app/page.tsx`) · done: CUJ-01 passes against `/fr` — see note
@@ -40,12 +40,12 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 
 ## Phase 3 — enquiries, contact, legal (AC-6, AC-7, AC-10)
 
-- [ ] T3.1 Enquiry action: `"use server"`, zod schema, typed result, **painted-door no-op with the no-op commented** (files: `src/features/enquiries/{actions,types}.ts`, `actions.test.ts`) · done: `actions.test.ts` proves invalid email returns a typed error and no success (**AC-7 unit**)
-- [ ] T3.2 Enquiry form: per-field errors in the page's language, input preserved on failure, success naming the property (files: `src/features/enquiries/components/enquiry-form.tsx`) · done: failing submit keeps every other field's value
-- [ ] T3.3 Wire the pre-filled form into listing detail, quoting the reference (files: `src/app/[locale]/properties/[slug]/page.tsx`) · done: reference appears without typing (**AC-6**)
-- [ ] T3.4 [P] General contact page reusing the same form without a property (files: `src/app/[locale]/contact/{page,loading,error}.tsx`) · done: submits and confirms
-- [ ] T3.5 [P] Legal pages: one template, three docs, GDPR-expected headings as marked placeholders (files: `src/app/[locale]/legal/[doc]/page.tsx`, `src/features/i18n/dictionaries/legal.ts`) · done: all three resolve in both locales (**AC-10**)
-- [ ] T3.6 `pnpm verify` green; conventional commit · done: green
+- [x] T3.1 Enquiry action: `"use server"`, zod schema, typed result, **painted-door no-op with the no-op commented** (files: `src/features/enquiries/{actions,types}.ts`, `actions.test.ts`) · done: `actions.test.ts` proves invalid email returns a typed error and no success (**AC-7 unit**)
+- [x] T3.2 Enquiry form: per-field errors in the page's language, input preserved on failure, success naming the property (files: `src/features/enquiries/components/enquiry-form.tsx`) · done: failing submit keeps every other field's value
+- [x] T3.3 Wire the pre-filled form into listing detail, quoting the reference (files: `src/app/[locale]/properties/[slug]/page.tsx`) · done: reference appears without typing (**AC-6**)
+- [x] T3.4 [P] General contact page reusing the same form without a property (files: `src/app/[locale]/contact/{page,loading,error}.tsx`) · done: submits and confirms
+- [x] T3.5 [P] Legal pages: one template, three docs, GDPR-expected headings as marked placeholders (files: `src/app/[locale]/legal/[doc]/page.tsx`, `src/features/i18n/dictionaries/legal.ts`) · done: all three resolve in both locales (**AC-10**)
+- [x] T3.6 `pnpm verify` green; conventional commit · done: green
 
 ## Phase 4 — verification
 
@@ -126,3 +126,23 @@ The resolution is structural. The listings page keeps its skeleton by living in 
 **Verification note.** `pnpm e2e` against the dev server is flaky under parallel workers — Turbopack compiles each route on first request and assertions time out, with different tests failing between runs. Run it the way CI does (`CI=true pnpm e2e`, which builds and serves the production output, one worker) before believing a failure. Two rounds of "failures" in Phase 2 were this, not the app.
 
 **A screenshot caught what the assertions did not.** CUJ-01 failed looking for a French submit label. The page was correct and the test was wrong: Playwright's browser announces `en-US`, so `/` resolves to `/en` and the button reads "Search". Nothing in the DOM assertions said so — the failure screenshot did, immediately. The test now asserts the redirect target explicitly rather than assuming it. The same pass caught the detail page labelling its type row "En bref" (a section heading) instead of "Type".
+
+**T3.1 — the action returns error _keys_, never sentences.** It runs on the server and cannot know which language the page is in, so returning "Indiquez votre nom." would hardcode French into a slice that must serve both locales — and AC-7 is explicit that the problem is explained _in the language they are reading_. Zod's `message` argument carries the field key instead, and the form maps keys onto its dictionary. A test asserts the values coming back are always keys, because a helpful-looking sentence is exactly what a future contributor would add.
+
+`z.email()` was not used: it accepts `a@b`, which is valid per spec and a typo in practice. The regex requires a dot in the domain, which rejects the mistake people actually make without pretending to check deliverability.
+
+**T3.1 — the action logs the field names that failed, never the payload.** The payload is a name, an email and a phone number. `logger` redacts on sensitive keys, but the right call on a plain validation failure is not to hand it the object at all.
+
+**T3.2 — the failure that matters is not "invalid input is accepted".** It is the quieter one where a rejected submit also empties the form and the visitor has to retype everything. The action returns the values verbatim and the form refills from them; both a unit test and an e2e assert that name, phone and message survive a bad email, including the offending value itself so it can be seen and corrected.
+
+Built on `useActionState` with a real `<form action>`, so it submits and repopulates without JavaScript — not a purity exercise, given the form sits below a fifteen-frame gallery and the pre-hydration window is exactly when an impatient buyer types.
+
+**T3.5 — the placeholder is structured, and says so twice over.** Real legal copy is out of scope and nobody has been named to supply it (still an open question on the spec). What is not placeholder is the shape: the eight sections a GDPR privacy notice is expected to carry, the four for cookies, the five for terms. When the copy arrives it drops into sections that already exist. The pages are `noindex` — a half-written legal notice is precisely what should not be ranking — and that flips in the same commit that brings the real text.
+
+First cut repeated the same "being written" sentence under all nine headings, which reads as a rendering bug rather than an honest placeholder. Caught by looking at the page. The banner now states it once and each section carries a short, dimmer marker.
+
+**T1.7 — closed, now that its links exist.** Header, footer and `PageShell` were built in Phase 2 with only the routes that existed; contact and the three legal documents joined `_components/navigation.ts` here, alongside the routes themselves. The legal column is derived from `legalDocs` rather than listed by hand, so adding a document cannot leave the footer out of sync with the routing. AC-10 is now verified by crawling every `header`/`footer` link on both locales and asserting 200 — a dead link in the chrome is on every page at once, so it is crawled rather than spot-checked.
+
+**Two more strict-mode collisions, both from new copy landing near old assertions.** `getByText("Référence")` began matching both the key-facts term and the form's "portera la référence BL-1102" sentence; `getByText(/Villa vue Atlas/)` matched both the page heading and the confirmation naming it back. In both cases the app was right and the locator was too loose — fixed with `{ exact: true }` and by scoping to the confirmation's `role="status"`. Worth knowing that adding copy to a page breaks tests elsewhere on it.
+
+**Contact and legal ship `error.tsx` but no `loading.tsx`, deliberately.** Neither fetches anything, so a skeleton would flash for zero milliseconds while putting the route behind a Suspense boundary — which is what turns `notFound()` into a soft 200 (see the T2.8 note). For `legal/[doc]` that is not hypothetical: an unknown document must 404, and it does. This is a considered deviation from the "every feature route ships loading.tsx and error.tsx" rule in `.claude/rules/app-router.md`; that rule is a soft-404 generator for any route that can call `notFound()`, and is worth an `/encode-lesson` pass.

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
+import { EnquiryForm } from "@/features/enquiries";
 import { getDictionary } from "@/features/i18n";
+import { enquiryLabels } from "../../../_components/enquiry-labels";
 import {
   Gallery,
   getPropertyBySlug,
@@ -193,6 +195,26 @@ export default async function PropertyDetailPage({
           </section>
         </aside>
       </div>
+
+      {/*
+       * AC-6: the form already knows which property this is. It sits after the
+       * description and before the similar row — a visitor convinced by what
+       * they just read should not have to scroll past four other listings to
+       * act on it.
+       */}
+      <section aria-labelledby="enquiry-heading" className="mt-20 max-w-2xl">
+        <h2 id="enquiry-heading" className="sr-only">
+          {dict.enquiry.title}
+        </h2>
+        <EnquiryForm
+          labels={enquiryLabels(dict, {
+            reference: property.reference,
+            subject: property.title,
+          })}
+          reference={property.reference}
+          subject={property.title}
+        />
+      </section>
 
       {similar.length > 0 ? (
         <section aria-labelledby="similar-heading" className="mt-20">

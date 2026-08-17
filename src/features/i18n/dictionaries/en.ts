@@ -107,6 +107,9 @@ export const en: Dictionary = {
     errorEmail: "Enter a valid email address.",
     errorMessage: "Write a line or two about what you’re looking for.",
     errorGeneric: "The enquiry couldn’t be sent. Try again in a moment.",
+    errorPhone: "That phone number is too long.",
+    successBodyGeneral: "We’ll come back to you within 24 hours.",
+    referenceNote: "Your enquiry will quote reference {reference}.",
   },
   contact: {
     title: "Contact us",
@@ -117,6 +120,7 @@ export const en: Dictionary = {
     cookies: "Cookies",
     terms: "Terms of use",
     placeholder: "This text is being drafted and will be published before launch.",
+    sectionPlaceholder: "Section to be written.",
   },
   footer: {
     tagline: "A private address in Marrakech.",

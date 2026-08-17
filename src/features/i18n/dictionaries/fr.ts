@@ -110,6 +110,9 @@ export const fr = {
     errorEmail: "Indiquez une adresse e-mail valide.",
     errorMessage: "Écrivez quelques mots sur ce que vous cherchez.",
     errorGeneric: "La demande n’a pas pu être envoyée. Réessayez dans un instant.",
+    errorPhone: "Ce numéro de téléphone est trop long.",
+    successBodyGeneral: "Nous revenons vers vous sous 24 heures.",
+    referenceNote: "Votre demande portera la référence {reference}.",
   },
   contact: {
     title: "Nous contacter",
@@ -120,6 +123,7 @@ export const fr = {
     cookies: "Cookies",
     terms: "Conditions d’utilisation",
     placeholder: "Ce texte est en cours de rédaction et sera publié avant la mise en ligne.",
+    sectionPlaceholder: "Section à rédiger.",
   },
   footer: {
     tagline: "Une adresse privée à Marrakech.",
