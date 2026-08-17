@@ -40,18 +40,6 @@
   --input: oklch(0.585 0.022 66);
   --ring: oklch(0.556 0.075 68);
   --radius: 0.25rem;
-
-  /*
-   * The shell — the deep warm brown the cinematic scene is mounted on (#17110d).
-   *
-   * A brand surface, not a themed one: it is the same colour in light and dark
-   * because it is the colour of the film. It is deliberately darker than
-   * `--foreground` (the ink the sections use), so a page can close on it
-   * without the last band and the footer reading as one undifferentiated slab.
-   * Defined only here, so `.dark` cannot override it.
-   */
-  --shell: oklch(0.184 0.013 55.5);
-  --shell-foreground: oklch(0.948 0.019 72.6);
 }
 
 .dark {
@@ -96,8 +84,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-shell: var(--shell);
-  --color-shell-foreground: var(--shell-foreground);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);
