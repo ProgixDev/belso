@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion";
 import { site } from "@/core/site";
 import "../globals.css";
@@ -26,6 +26,21 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+/**
+ * Navigation face. A classical serif against the grotesque brand face is the
+ * register a private estate agency is read in — and it is the typographic form
+ * of the site's own line, "where heritage meets home".
+ *
+ * Set mixed-case rather than in caps: Cormorant's whole character is in its
+ * ascenders and its lowercase, and letterspaced caps flatten it into something
+ * anonymous.
+ */
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 // Display face for the cinematic landing scene (matches the Claude Design source).
@@ -79,7 +94,7 @@ export function RootShell({
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${cormorant.variable} font-sans antialiased`}
       >
         <script
           type="application/ld+json"

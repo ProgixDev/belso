@@ -94,6 +94,9 @@
   --font-sans: var(--font-archivo);
   --font-display: var(--font-archivo);
   --font-mono: var(--font-geist-mono);
+  /* Cormorant carries the navigation only — heritage against Archivo's
+   * architecture. Not a body face: at text sizes it is too fine to read well. */
+  --font-serif: var(--font-cormorant);
 
   /* Display scale for headings — the editorial sizes the scene establishes.
    * Body text keeps Tailwind's default ~1.2 ramp. */

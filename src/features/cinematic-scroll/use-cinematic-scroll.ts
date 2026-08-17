@@ -167,6 +167,54 @@ export function useCinematicScroll(sightCount: number) {
     const getScrollDistance = () =>
       clamp(-section.getBoundingClientRect().top, 0, section.offsetHeight - window.innerHeight);
 
+    /*
+     * How light the backdrop is *behind the header*, 0..1, for the site header
+     * to tint its type against.
+     *
+     * Measured, not inferred. The first version read the light layers' own
+     * opacity, which says whether the cream sheets are visible **somewhere** —
+     * not whether they are behind the header. They usually are not: the sheets
+     * rise from below, so for most of the runway the header band still shows
+     * dark photography while the sheet is fully opaque further down. Contrast
+     * measured 1.32:1 at its worst, dark type on dark image.
+     *
+     * So this asks the only question that matters: does a light layer actually
+     * cover the band the header occupies, and how opaque is it there.
+     *
+     * Published on the document because the header is fixed *outside* this
+     * subtree, and CSS variables only cascade downwards.
+     */
+    const CHROME_BAND = 96;
+    let lightLayers: HTMLElement[] = [];
+
+    const publishChromeTone = () => {
+      if (lightLayers.length === 0) {
+        lightLayers = Array.from(
+          section.querySelectorAll<HTMLElement>('[data-chrome-tone="light"]'),
+        );
+      }
+
+      let cover = 0;
+      for (const layer of lightLayers) {
+        const r = layer.getBoundingClientRect();
+        if (r.width === 0 || r.top >= CHROME_BAND || r.bottom <= 0) continue;
+        const overlap = (Math.min(CHROME_BAND, r.bottom) - Math.max(0, r.top)) / CHROME_BAND;
+        const opacity = Number.parseFloat(getComputedStyle(layer).opacity) || 0;
+        cover = Math.max(cover, clamp(overlap) * opacity);
+      }
+
+      /*
+       * Deliberately steep. Mixing type linearly toward the midpoint produces a
+       * mid-grey that fails against *both* ends — measured 1.59:1 mid-crossfade,
+       * worse than either extreme. The type should commit quickly and spend as
+       * little time as possible in between.
+       */
+      document.documentElement.style.setProperty(
+        "--chrome-on-light",
+        smoothstep(0.34, 0.56, cover).toFixed(4),
+      );
+    };
+
     const update = () => {
       const rm = reduceMotion.matches;
 
@@ -232,7 +280,8 @@ export function useCinematicScroll(sightCount: number) {
        */
       const aboutCover = Math.min(1, aboutIn * 5);
       const aboutLeave = smoothstep(0.62, 1, aboutOut);
-      set("--about-opacity", (aboutCover * (1 - aboutLeave)).toFixed(4));
+      const aboutOpacity = aboutCover * (1 - aboutLeave);
+      set("--about-opacity", aboutOpacity.toFixed(4));
       /*
        * The collage is armed by a class, not scrubbed by scroll. Tying the rise
        * to scroll position means it freezes half-done when you stop and is
@@ -241,7 +290,19 @@ export function useCinematicScroll(sightCount: number) {
        * time with a stagger. Untoggling on the way out lets it replay.
        */
       galleryRef.current?.classList.toggle(REVEALED_CLASS, aboutIn > 0.3 && aboutLeave < 0.9);
-      set("--about-y", `${((1 - aboutIn) * 100 - aboutOut * 46).toFixed(2)}%`);
+      /*
+       * Entrance and exit are driven separately, and applied to different
+       * elements, because they need different treatment at the top edge.
+       *
+       * The entrance slides the whole sheet up from below — it has to, since the
+       * sheet's job on the way in is to cover the hero. The exit only moves the
+       * *content*, inside a box clipped to below the site header. Moving the
+       * whole sheet on the way out sent the masthead up behind the header, and
+       * with the header transparent over the scene, two sets of dark type ended
+       * up overlapping on cream.
+       */
+      set("--about-y", `${((1 - aboutIn) * 100).toFixed(2)}%`);
+      set("--about-exit-y", `${(-aboutOut * 46).toFixed(2)}%`);
 
       /*
        * As the sheet rises the hero settles back rather than just shrinking:
@@ -296,7 +357,10 @@ export function useCinematicScroll(sightCount: number) {
       set("--split-right-scale", (1 + sharedHeroScale + frame2.enter * 0.74).toFixed(4));
 
       set("--split-opacity", smoothstep(2260 * k, 2620 * k, s).toFixed(4));
-      set("--sheet-opacity", smoothstep(4000 * k, 4580 * k, s).toFixed(4));
+      const sheetOpacity = smoothstep(4000 * k, 4580 * k, s);
+      set("--sheet-opacity", sheetOpacity.toFixed(4));
+
+      publishChromeTone();
       set("--frame2-opacity", frame2Opacity.toFixed(4));
       set("--frame2-x", `calc(-50% + ${(mX * 10).toFixed(2)}px)`);
       set("--frame2-y", `calc(-50% + ${(mY * 8 - frame2.exit * 150).toFixed(2)}px)`);
@@ -367,6 +431,8 @@ export function useCinematicScroll(sightCount: number) {
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", onVisible);
       if (raf) cancelAnimationFrame(raf);
+      // Leaving the scene must not strand the chrome mid-tint on the next page.
+      document.documentElement.style.removeProperty("--chrome-on-light");
     };
   }, []);
 

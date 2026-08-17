@@ -54,6 +54,18 @@
   height: calc(100vh + var(--runway, 6600px));
 }
 
+/* Nav scroll targets. Zero-size markers positioned down the runway, so a plain
+ * `href="#id"` lands on the right beat without JavaScript. `--anchor-at` is a
+ * fraction of the runway, so they follow if its length changes. */
+.sceneAnchor {
+  position: absolute;
+  top: calc(var(--runway, 6600px) * var(--anchor-at, 0));
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
 .stage {
   position: sticky;
   top: 0;
@@ -88,84 +100,6 @@
 }
 
 /* --- Header --------------------------------------------------------------- */
-
-.siteHeader {
-  position: absolute;
-  z-index: 12;
-  top: 0;
-  right: 0;
-  left: 0;
-  display: grid;
-  grid-template-columns: minmax(140px, 1fr) auto minmax(140px, 1fr);
-  align-items: end;
-  gap: 20px;
-  padding: 28px clamp(26px, 5.4vw, 86px) 14px;
-  border-bottom: 1px solid rgba(249, 242, 232, 0.28);
-  pointer-events: auto;
-}
-
-.siteLogo {
-  justify-self: start;
-  color: #f9f2e8;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  text-decoration: none;
-  text-shadow: 0 2px 20px rgba(23, 17, 13, 0.35);
-  white-space: nowrap;
-  opacity: var(--in-logo, 1);
-  transform: translate3d(0, calc((1 - var(--in-logo, 1)) * 16px), 0);
-}
-
-.siteNav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(16px, 1.7vw, 30px);
-}
-
-.siteNav::-webkit-scrollbar {
-  display: none;
-}
-
-.navLink {
-  color: rgba(249, 242, 232, 0.88);
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-decoration: none;
-  text-shadow: 0 2px 16px rgba(23, 17, 13, 0.35);
-  opacity: var(--nav-in, 1);
-  transform: translate3d(0, calc((1 - var(--nav-in, 1)) * 16px), 0);
-}
-
-.siteContact {
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 0 3px;
-  border-bottom: 1px solid #f9f2e8;
-  background: transparent;
-  color: #f9f2e8;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  opacity: var(--in-contact, 1);
-  transform: translate3d(0, calc((1 - var(--in-contact, 1)) * 16px), 0);
-}
-
-.siteContactMark {
-  font-size: 13px;
-  line-height: 1;
-}
 
 /* --- Receding back stack -------------------------------------------------- */
 
@@ -591,6 +525,17 @@
 .introVignette {
   position: absolute;
   inset: 0;
+  /* Counter the parent's exit slide.
+   *
+   * `.introCopy` translates down by `--intro-copy-y` (0 → 90px) as the hero
+   * copy leaves. The vignette is a legibility scrim for the *scene*, not part
+   * of that copy — letting it ride along drags its 0.5-alpha top edge down
+   * across the header, so a hard horizontal seam sweeps through the nav and
+   * reads as a shadow appearing out of nowhere.
+   *
+   * Cancelling the translation pins the scrim where it belongs while it still
+   * fades out with the parent's opacity, which is the part that was intended. */
+  transform: translate3d(0, calc(-1 * var(--intro-copy-y, 0px)), 0);
   background:
     linear-gradient(
       180deg,
@@ -796,10 +741,11 @@
   position: absolute;
   z-index: 11;
   inset: clamp(14px, 2.1vw, 32px);
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: clamp(16px, 3vh, 40px);
-  padding: clamp(28px, 4vw, 74px);
+  /* The top pad clears the fixed site header, which floats over this sheet —
+   * without it the masthead rule sits ~12px under the header's own rule and the
+   * two read as one confused double line. It is also the band the content is
+   * clipped to on exit; see `.aboutClip`. */
+  padding: clamp(52px, 8vh, 92px) clamp(28px, 4vw, 74px) clamp(22px, 3vw, 48px);
   background: var(--paper, #f6ece0);
   color: #241c16;
   opacity: var(--about-opacity, 0);
@@ -808,29 +754,80 @@
   will-change: transform, opacity;
 }
 
-.aboutEyebrow {
+/*
+ * The exit happens in here, not on the sheet.
+ *
+ * `overflow: hidden` clips at the padding box, so this box — which starts below
+ * the header clearance — is what stops the content passing *through* the fixed
+ * site header on the way out. The sheet itself stays put and keeps covering the
+ * hero with clean paper while its content slides away underneath the nav.
+ */
+.aboutClip {
+  height: 100%;
+  overflow: hidden;
+}
+
+.aboutInner {
+  display: grid;
+  /* masthead · statement+copy · photography · credentials */
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: clamp(20px, 3.4vh, 46px);
+  height: 100%;
+  transform: translate3d(0, var(--about-exit-y, 0%), 0);
+  will-change: transform;
+}
+
+/* --- Section masthead ------------------------------------------------------ */
+
+.aboutMasthead {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(36, 28, 22, 0.62);
+  align-items: baseline;
+  gap: clamp(12px, 1.4vw, 22px);
+}
+
+.aboutIndex {
+  color: rgba(36, 28, 22, 0.32);
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.aboutKicker {
+  margin: 0;
+  color: #241c16;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.5rem, 2vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* The rule is what makes the header read as a chapter opening rather than a
+ * stray line of text — it carries the eye across the full measure. */
+.aboutRule {
+  flex: 1 1 auto;
+  height: 1px;
+  min-width: 24px;
+  background: rgba(36, 28, 22, 0.22);
+  transform: translateY(-0.35em);
+}
+
+.aboutPlace {
+  color: rgba(36, 28, 22, 0.5);
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.aboutEyebrowMark {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border: 1px solid rgba(36, 28, 22, 0.42);
-  border-right: none;
-  border-bottom: none;
-}
+/* --- Statement and copy ---------------------------------------------------- */
 
-/* Copy sits on the same 12-column grid as the collage, so the heading starts on
- * the first square's edge and the paragraphs start on the third's. Before this
- * the two used different grids and nothing lined up. */
+/* Copy sits on the same 12-column grid as the photography, so the statement
+ * starts on the first frame's edge and the prose on the third's. */
 .aboutBody {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -838,51 +835,66 @@
   gap: clamp(8px, 1vw, 18px);
 }
 
-.aboutBody h2 {
-  grid-column: 1 / span 5;
-  max-width: 11ch;
+/* A `p`, not a heading: the section already has its `h2` in the masthead, and
+ * two headings would read as two sections to anything navigating by structure. */
+/* `.aboutBody p` is (0,1,1) and would otherwise win the font-size — which is
+ * exactly what happened, and shrank the statement to body copy. */
+.aboutBody p.aboutStatement {
+  grid-column: 1 / span 6;
+  max-width: 13ch;
   margin: 0;
   color: #241c16;
-  font-size: clamp(1.9rem, 3.2vw, 3.4rem);
+  font-size: clamp(1.9rem, 3.4vw, 3.6rem);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
+  line-height: 0.98;
+  letter-spacing: -0.025em;
   text-transform: uppercase;
 }
 
 .aboutCopy {
-  grid-column: 7 / span 6;
+  grid-column: 8 / span 5;
   display: flex;
   flex-direction: column;
   gap: clamp(12px, 1.6vh, 20px);
 }
 
 .aboutBody p {
-  max-width: 56ch;
+  max-width: 46ch;
   margin: 0;
-  color: rgba(36, 28, 22, 0.78);
-  font-size: clamp(0.95rem, 1.05vw, 1.15rem);
+  color: rgba(36, 28, 22, 0.72);
+  font-size: clamp(0.92rem, 0.95vw, 1.02rem);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
-/* Supporting photography. Each shot resolves a beat after the one before it,
- * driven by --about-reveal (the raw entrance ramp) rather than the sheet's own
- * opacity, which snaps to 1 early so the paper never goes see-through. */
-/* Scattered square collage. Placement comes from data (--shot-col/span/offset)
- * so the arrangement can be retuned without touching this file.
+/* One step of hierarchy inside the prose, so the eye is given somewhere to
+ * land first instead of meeting two identical blocks. */
+.aboutBody p.aboutLede {
+  color: rgba(36, 28, 22, 0.92);
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+/* --- Photography ----------------------------------------------------------- */
+
+/* A composed band, not a scatter. Each frame is a fraction of the band's height
+ * and hangs from one edge or the other; the alternation is what gives rhythm.
  *
- * Each square rises on --about-reveal, which tracks the sheet's own lifetime —
- * it must not follow the raw entrance ramp, or the squares fade out while the
- * paper is still fully covering the hero. --shot-delay is deliberately out of
- * reading order, so they arrive scattered rather than sweeping left to right. */
+ * The previous version tiled squares nudged by a free margin, which let the
+ * tallest run past the bottom of the sheet and read as ragged rather than
+ * arranged. Heights are fractions of the row, so nothing can overflow it.
+ *
+ * Each frame rises on --about-reveal, which tracks the sheet's own lifetime —
+ * it must not follow the raw entrance ramp, or the frames fade while the paper
+ * is still covering the hero. --shot-delay is out of reading order, so they
+ * arrive scattered rather than sweeping left to right. */
 .aboutGallery {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 100%;
   gap: clamp(8px, 1vw, 18px);
-  /* Anchored to the bottom of its track. Starting from the top left a band of
-   * dead paper between the squares and the credentials on tall viewports. */
-  align-content: end;
+  min-height: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -892,8 +904,8 @@
   position: relative;
   grid-row: 1;
   grid-column: var(--shot-col, 1) / span var(--shot-span, 2);
-  aspect-ratio: 1;
-  margin-block-start: calc(var(--shot-offset, 0) * 1%);
+  align-self: end;
+  height: calc(var(--shot-height, 1) * 100%);
   overflow: hidden;
   border-radius: 2px;
   background: rgba(36, 28, 22, 0.06);
@@ -902,7 +914,7 @@
    * the sheet is on its way in, and this plays out over real time rather than
    * being scrubbed by the scrollbar. */
   opacity: 0;
-  transform: translate3d(0, 72px, 0);
+  transform: translate3d(0, 64px, 0);
   transition:
     opacity 640ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -910,12 +922,16 @@
   will-change: transform, opacity;
 }
 
+.aboutShot[data-align="top"] {
+  align-self: start;
+}
+
 .aboutGallery.isRevealed .aboutShot {
   opacity: 1;
   transform: none;
 }
 
-/* The rise is decoration; without motion the squares are simply present. */
+/* The rise is decoration; without motion the frames are simply present. */
 @media (prefers-reduced-motion: reduce) {
   .aboutShot {
     opacity: 1;
@@ -924,53 +940,36 @@
   }
 }
 
-/* Narrow: the copy stacks, and five squares across twelve columns would be
- * ~90px each. Three at a usable size says the same thing. */
-@media (max-width: 900px) {
-  .aboutBody h2,
-  .aboutCopy {
-    grid-column: 1 / -1;
-  }
-
-  .aboutShot {
-    grid-column: auto / span 4;
-    margin-block-start: 0;
-  }
-
-  .aboutShot:nth-child(n + 4) {
-    display: none;
-  }
-
-  .aboutFacts {
-    flex-wrap: wrap;
-  }
-}
+/* --- Credentials ----------------------------------------------------------- */
 
 .aboutFoot {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px;
+  padding-top: clamp(14px, 1.8vh, 24px);
+  border-top: 1px solid rgba(36, 28, 22, 0.16);
 }
 
 .aboutFacts {
   display: flex;
-  gap: clamp(24px, 4vw, 64px);
+  gap: clamp(28px, 4.6vw, 76px);
   margin: 0;
 }
 
 .aboutFact {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .aboutFactValue {
   color: #241c16;
-  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
-  font-weight: 700;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.5rem, 2.1vw, 2.2rem);
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .aboutFactLabel {
@@ -988,6 +987,31 @@
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
+}
+
+/* Narrow: the copy stacks and the band drops to three frames of usable size. */
+@media (max-width: 900px) {
+  .aboutBody p.aboutStatement,
+  .aboutCopy {
+    grid-column: 1 / -1;
+  }
+
+  .aboutPlace {
+    display: none;
+  }
+
+  .aboutShot {
+    grid-column: auto / span 4;
+    height: 100%;
+  }
+
+  .aboutShot:nth-child(n + 4) {
+    display: none;
+  }
+
+  .aboutFacts {
+    flex-wrap: wrap;
+  }
 }
 
 /* --- Story panels --------------------------------------------------------- */
@@ -1125,10 +1149,6 @@
 /* --- Responsive ----------------------------------------------------------- */
 
 @media (max-height: 700px) {
-  .siteHeader {
-    padding-top: 12px;
-    padding-bottom: 8px;
-  }
 }
 
 @media (max-height: 780px) {
@@ -1187,21 +1207,6 @@
 @media (max-width: 640px) {
   .stage {
     min-height: 640px;
-  }
-
-  .siteHeader {
-    grid-template-columns: 1fr auto;
-    gap: 18px;
-    padding: 24px;
-  }
-
-  .siteNav {
-    grid-column: 1/-1;
-    grid-row: 2;
-    justify-content: flex-start;
-    gap: 18px;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
 
   .heroTitle {

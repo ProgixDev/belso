@@ -8,6 +8,7 @@ export const en: Dictionary = {
   nav: {
     home: "Home",
     properties: "Properties",
+    residences: "Residences",
     about: "About",
     amenities: "Amenities",
     location: "Location",

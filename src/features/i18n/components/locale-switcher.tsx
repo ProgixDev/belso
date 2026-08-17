@@ -39,11 +39,18 @@ export function LocaleSwitcher({
   locale,
   label,
   slugOverrides,
+  tone = "default",
 }: {
   locale: Locale;
   label: string;
   /** Per-locale slug for the current record, when the page has one. */
   slugOverrides?: Partial<Record<Locale, string>>;
+  /**
+   * `chrome` inherits `--chrome-ink` from the site header's glass capsule, so
+   * the switcher tints with it over the cinematic scene instead of holding a
+   * fixed colour that disappears against half the beats.
+   */
+  tone?: "default" | "chrome";
 }) {
   const pathname = usePathname() ?? `/${locale}`;
 
@@ -59,9 +66,13 @@ export function LocaleSwitcher({
             aria-current={isCurrent ? "true" : undefined}
             onClick={() => rememberLocale(target)}
             className={
-              isCurrent
-                ? "rounded-sm px-2 py-1 text-xs font-semibold tracking-widest uppercase"
-                : "text-muted-foreground hover:text-foreground rounded-sm px-2 py-1 text-xs tracking-widest uppercase transition-colors"
+              tone === "chrome"
+                ? isCurrent
+                  ? "rounded-full px-1.5 py-1 font-serif text-[15px] leading-none font-semibold tracking-[0.1em] text-[var(--chrome-ink,currentColor)] uppercase [text-shadow:0_1px_1px_var(--chrome-halo,transparent),0_0_3px_var(--chrome-halo,transparent),0_0_13px_var(--chrome-halo,transparent)]"
+                  : "rounded-full px-1.5 py-1 font-serif text-[15px] leading-none tracking-[0.1em] text-[var(--chrome-ink,currentColor)]/55 uppercase transition-opacity [text-shadow:0_1px_1px_var(--chrome-halo,transparent),0_0_3px_var(--chrome-halo,transparent),0_0_13px_var(--chrome-halo,transparent)] hover:text-[var(--chrome-ink,currentColor)] motion-reduce:transition-none"
+                : isCurrent
+                  ? "rounded-sm px-2 py-1 text-xs font-semibold tracking-widest uppercase"
+                  : "text-muted-foreground hover:text-foreground rounded-sm px-2 py-1 text-xs tracking-widest uppercase transition-colors"
             }
           >
             {target}

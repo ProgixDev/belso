@@ -11,6 +11,7 @@ export const fr = {
   nav: {
     home: "Accueil",
     properties: "Biens",
+    residences: "Résidences",
     about: "À propos",
     amenities: "Prestations",
     location: "Situation",
