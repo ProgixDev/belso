@@ -19,9 +19,51 @@ export type CollageTile = {
   span?: number;
 };
 
+/**
+ * A square photograph in the about sheet's scattered collage.
+ * Placement is data rather than CSS so the scatter can be retuned without
+ * touching the stylesheet.
+ */
+export type AboutShot = {
+  id: string;
+  image: string;
+  imageAlt: string;
+  /** 1-based start column on the 12-column collage grid. */
+  column: number;
+  /** How many of the 12 columns the square occupies. */
+  span: number;
+  /** Vertical nudge, in % of the square's own width. Creates the scatter. */
+  offset: number;
+  /**
+   * Position in the reveal sequence, 0–1. Deliberately out of reading order so
+   * the squares appear to arrive at random rather than sweeping left to right.
+   */
+  delay: number;
+};
+
+/** A short credential shown along the foot of the about sheet. */
+export type AboutFact = {
+  value: string;
+  label: string;
+};
+
 /** A headline number rendered both in the hero column and on the cream sheet. */
 export type Stat = {
   value: string;
   /** Two lines, rendered with a hard break between them. */
   label: readonly [string, string];
+};
+
+/**
+ * The hero search field (AC-2). Strings and the destination are passed in from
+ * `app` rather than read here: this slice may not import the i18n slice
+ * (docs/architecture/module-boundaries.md), and the listings path is a
+ * translated segment only `core/i18n` can build.
+ */
+export type HeroSearch = {
+  /** Where the form submits — already locale- and segment-translated. */
+  action: string;
+  label: string;
+  placeholder: string;
+  submitLabel: string;
 };

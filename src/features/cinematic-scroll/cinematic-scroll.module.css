@@ -69,8 +69,8 @@
   inset: clamp(14px, 2.1vw, 32px);
   overflow: hidden;
   background: #b9a289;
-  transform: scale(calc(1 - 0.05 * var(--hero-recede, 0)))
-    translate3d(0, calc(-4vh * var(--hero-recede, 0)), 0);
+  transform: scale(calc(1 - 0.085 * var(--hero-recede, 0)))
+    translate3d(0, calc(-7vh * var(--hero-recede, 0)), 0);
   transform-origin: 50% 42%;
 }
 
@@ -80,7 +80,10 @@
   inset: 0;
   overflow: hidden;
   opacity: 1;
-  filter: blur(var(--blur-px, 0px)) brightness(var(--back-brightness, 1));
+  /* Two independent depth pulls compose here: the frame-2/3 backdrop blur, and
+   * the focus pull as the about sheet rises over the hero. */
+  filter: blur(calc(var(--blur-px, 0px) + var(--hero-recede-blur, 0px)))
+    brightness(calc(var(--back-brightness, 1) * var(--hero-recede-dim, 1)));
   pointer-events: auto;
 }
 
@@ -707,6 +710,67 @@
   font-size: 15px;
 }
 
+.heroSearch {
+  display: flex;
+  align-items: stretch;
+  width: min(100%, 470px);
+  height: clamp(42px, 5.4vh, 52px);
+  background: #fffaf3;
+  box-shadow: 0 18px 40px rgba(23, 17, 13, 0.22);
+  pointer-events: auto;
+  opacity: var(--in-cta, 1);
+  transform: translate3d(0, calc((1 - var(--in-cta, 1)) * 16px), 0);
+}
+
+.heroSearchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 clamp(14px, 1.5vw, 20px);
+  border: none;
+  background: transparent;
+  color: #241c16;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  outline: none;
+}
+
+.heroSearchInput::placeholder {
+  color: rgba(36, 28, 22, 0.5);
+  /* The placeholder is a full example sentence and the field is narrow —
+     without this it is clipped mid-word on every viewport under ~1400px. */
+  text-overflow: ellipsis;
+}
+
+/* The form owns the focus ring: a ring on the bare input would sit inside the
+   cream bar and read as a rectangle floating in a rectangle. */
+.heroSearch:focus-within {
+  outline: 2px solid #241c16;
+  outline-offset: 2px;
+}
+
+.heroSearchSubmit {
+  display: inline-flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  padding: 0;
+  border: none;
+  border-left: 1px solid rgba(36, 28, 22, 0.22);
+  background: transparent;
+  color: #241c16;
+  cursor: pointer;
+}
+
+.heroSearchSubmit > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 clamp(14px, 1.4vw, 22px);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 .heroNote {
   position: absolute;
   right: clamp(26px, 5.4vw, 86px);
@@ -733,8 +797,8 @@
   z-index: 11;
   inset: clamp(14px, 2.1vw, 32px);
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: clamp(20px, 4vh, 48px);
+  grid-template-rows: auto auto 1fr auto;
+  gap: clamp(16px, 3vh, 40px);
   padding: clamp(28px, 4vw, 74px);
   background: var(--paper, #f6ece0);
   color: #241c16;
@@ -764,14 +828,18 @@
   border-bottom: none;
 }
 
+/* Copy sits on the same 12-column grid as the collage, so the heading starts on
+ * the first square's edge and the paragraphs start on the third's. Before this
+ * the two used different grids and nothing lined up. */
 .aboutBody {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
   align-items: start;
-  gap: clamp(24px, 5vw, 90px);
+  gap: clamp(8px, 1vw, 18px);
 }
 
 .aboutBody h2 {
+  grid-column: 1 / span 5;
   max-width: 11ch;
   margin: 0;
   color: #241c16;
@@ -780,6 +848,13 @@
   line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+}
+
+.aboutCopy {
+  grid-column: 7 / span 6;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.6vh, 20px);
 }
 
 .aboutBody p {
@@ -791,6 +866,86 @@
   line-height: 1.55;
 }
 
+/* Supporting photography. Each shot resolves a beat after the one before it,
+ * driven by --about-reveal (the raw entrance ramp) rather than the sheet's own
+ * opacity, which snaps to 1 early so the paper never goes see-through. */
+/* Scattered square collage. Placement comes from data (--shot-col/span/offset)
+ * so the arrangement can be retuned without touching this file.
+ *
+ * Each square rises on --about-reveal, which tracks the sheet's own lifetime —
+ * it must not follow the raw entrance ramp, or the squares fade out while the
+ * paper is still fully covering the hero. --shot-delay is deliberately out of
+ * reading order, so they arrive scattered rather than sweeping left to right. */
+.aboutGallery {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 18px);
+  /* Anchored to the bottom of its track. Starting from the top left a band of
+   * dead paper between the squares and the credentials on tall viewports. */
+  align-content: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aboutShot {
+  position: relative;
+  grid-row: 1;
+  grid-column: var(--shot-col, 1) / span var(--shot-span, 2);
+  aspect-ratio: 1;
+  margin-block-start: calc(var(--shot-offset, 0) * 1%);
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(36, 28, 22, 0.06);
+
+  /* At rest: below its place and invisible. The scene arms `.isRevealed` once
+   * the sheet is on its way in, and this plays out over real time rather than
+   * being scrubbed by the scrollbar. */
+  opacity: 0;
+  transform: translate3d(0, 72px, 0);
+  transition:
+    opacity 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--shot-delay, 0) * 700ms);
+  will-change: transform, opacity;
+}
+
+.aboutGallery.isRevealed .aboutShot {
+  opacity: 1;
+  transform: none;
+}
+
+/* The rise is decoration; without motion the squares are simply present. */
+@media (prefers-reduced-motion: reduce) {
+  .aboutShot {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Narrow: the copy stacks, and five squares across twelve columns would be
+ * ~90px each. Three at a usable size says the same thing. */
+@media (max-width: 900px) {
+  .aboutBody h2,
+  .aboutCopy {
+    grid-column: 1 / -1;
+  }
+
+  .aboutShot {
+    grid-column: auto / span 4;
+    margin-block-start: 0;
+  }
+
+  .aboutShot:nth-child(n + 4) {
+    display: none;
+  }
+
+  .aboutFacts {
+    flex-wrap: wrap;
+  }
+}
+
 .aboutFoot {
   display: flex;
   align-items: flex-end;
@@ -798,13 +953,33 @@
   gap: 32px;
 }
 
-.aboutThumb {
-  position: relative;
-  width: clamp(150px, 15vw, 226px);
-  aspect-ratio: 4/3;
-  overflow: hidden;
-  border-radius: 2px;
-  pointer-events: auto;
+.aboutFacts {
+  display: flex;
+  gap: clamp(24px, 4vw, 64px);
+  margin: 0;
+}
+
+.aboutFact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.aboutFactValue {
+  color: #241c16;
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.aboutFactLabel {
+  margin: 0;
+  color: rgba(36, 28, 22, 0.5);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .aboutHint {

@@ -6,10 +6,11 @@ Adding or changing a CUJ is a product decision — PR must be approved by the pr
 
 ## Registry
 
-| ID     | Journey                     | Steps (user's words)                                                                                                              | E2E spec                | Screenshots |
-| ------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ----------- |
-| CUJ-01 | Land and travel the story   | Open `/` → watch the splash intro resolve → scroll through about, the residences, and the amenities → browse the residence slider | `e2e/home.spec.ts`      | `0*-*`      |
-| CUJ-02 | Manage tasks (demo feature) | Open `/examples/tasks` → add a task → see it appear (animated) → toggle it done → remaining count updates                         | `e2e/task-list.spec.ts` | `tasks-*`   |
+| ID     | Journey                     | Steps (user's words)                                                                                                                                              | E2E spec                 | Screenshots |
+| ------ | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------- |
+| CUJ-01 | Land and travel the story   | Open `/` → land in the detected language → watch the splash intro resolve → scroll through about, the residences, and the amenities → browse the residence slider | `e2e/home.spec.ts`       | `0*-*`      |
+| CUJ-02 | Manage tasks (demo feature) | Open `/examples/tasks` → add a task → see it appear (animated) → toggle it done → remaining count updates                                                         | `e2e/task-list.spec.ts`  | `tasks-*`   |
+| CUJ-03 | Browse to enquiry           | Open the site → describe what you want in the hero search → read the results with your words echoed back → open a listing → browse its gallery and price          | `e2e/properties.spec.ts` | `0*-*`      |
 
 ## Rules
 

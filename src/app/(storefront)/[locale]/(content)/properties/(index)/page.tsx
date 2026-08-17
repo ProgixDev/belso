@@ -1,0 +1,125 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
+import { getDictionary, interpolate } from "@/features/i18n";
+import {
+  listProperties,
+  propertySearchParamsSchema,
+  PropertyCard,
+  ResultsHeader,
+  SortControl,
+} from "@/features/properties";
+import { formatCount } from "@/lib/format";
+import { cn } from "@/lib/utils";
+
+type SearchParams = Promise<{ q?: string; sort?: string }>;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const dict = getDictionary(locale);
+
+  // Every page below the locale root must set its own canonical, or it inherits
+  // the layout's `/fr` and the whole storefront collapses to one URL (T1.7a note).
+  return {
+    title: dict.properties.title,
+    alternates: {
+      canonical: toPublicPath("/properties", locale),
+      languages: Object.fromEntries(
+        locales.map((l) => [localeTag[l], toPublicPath("/properties", l)]),
+      ),
+    },
+  };
+}
+
+export default async function PropertiesPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: SearchParams;
+}) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+
+  const dict = getDictionary(locale);
+  // SEC-INPUT-001: the query string is a trust boundary. `catch` on both fields
+  // means a stale link with a dead `?sort=` degrades to the default instead of
+  // throwing a 500 at the visitor.
+  const { q: query, sort } = propertySearchParamsSchema.parse(await searchParams);
+
+  const properties = await listProperties({ query, sort, locale });
+  const listingsHref = toPublicPath("/properties", locale);
+
+  const count =
+    properties.length === 1
+      ? dict.properties.resultCountOne
+      : interpolate(dict.properties.resultCount, { count: formatCount(properties.length, locale) });
+
+  return (
+    <div className="mx-auto w-full max-w-7xl px-6 py-12">
+      <ResultsHeader
+        title={dict.properties.title}
+        count={count}
+        query={query || undefined}
+        searchedForLabel={dict.properties.searchedFor}
+        clearLabel={dict.properties.clearSearch}
+        clearHref={listingsHref}
+        sortControl={
+          <SortControl
+            value={sort}
+            label={dict.properties.sortLabel}
+            applyLabel={dict.properties.apply}
+            optionLabels={{
+              newest: dict.properties.sortNewest,
+              priceAsc: dict.properties.sortPriceAsc,
+              priceDesc: dict.properties.sortPriceDesc,
+            }}
+          />
+        }
+      />
+
+      {properties.length === 0 ? (
+        // AC-4: never a bare empty grid — say so, and offer the way out.
+        <EmptyState
+          className="py-24"
+          title={dict.properties.emptyTitle}
+          description={dict.properties.emptyBody}
+          action={
+            <Link href={listingsHref} className={cn(buttonVariants({ variant: "default" }))}>
+              {dict.properties.browseAll}
+            </Link>
+          }
+        />
+      ) : (
+        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {properties.map((property, index) => (
+            <li key={property.id}>
+              <PropertyCard
+                property={property}
+                locale={locale}
+                priority={index < 3}
+                labels={{
+                  bedrooms: dict.properties.bedrooms,
+                  builtArea: dict.properties.builtArea,
+                  perMonth: dict.properties.perMonth,
+                  statusUnderOffer: dict.properties.statusUnderOffer,
+                  statusSold: dict.properties.statusSold,
+                  statusRented: dict.properties.statusRented,
+                  type: dict.propertyType[property.type],
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

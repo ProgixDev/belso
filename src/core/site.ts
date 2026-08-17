@@ -4,9 +4,9 @@
  * drives canonical + Open Graph URLs).
  */
 export const site = {
-  name: "Besto Residences",
-  shortName: "Besto",
-  description: "Besto — a private residence of thirty homes in warm stone, water, and shade.",
+  name: "Belso Residences",
+  shortName: "Belso",
+  description: "Belso — a private residence of thirty homes in warm stone, water, and shade.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "en_US",
 } as const;
