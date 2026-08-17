@@ -42,6 +42,7 @@ export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
  */
 export const routeSegments = {
   properties: { fr: "biens", en: "properties" },
+  about: { fr: "a-propos", en: "about" },
   contact: { fr: "contact", en: "contact" },
   legal: { fr: "legal", en: "legal" },
 } as const satisfies Record<string, Record<Locale, string>>;

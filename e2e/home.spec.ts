@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { shot } from "./utils/shot";
 
-const SCENE = 'section[aria-label="Belso cinematic scroll story"]';
+const SCENE = "#scene";
 
 /**
  * The scene lerps toward the scroll target over ~2s, so a shot taken too early
@@ -13,7 +13,7 @@ async function settle(page: import("@playwright/test").Page) {
     (selector) => {
       const el = document.querySelector<HTMLElement>(selector);
       if (!el) return false;
-      const value = el.style.getPropertyValue("--back-scale");
+      const value = el.style.getPropertyValue("--about-y");
       if (!value) return false;
       const stable = el.dataset.settleValue === value ? Number(el.dataset.settleCount ?? 0) + 1 : 0;
       el.dataset.settleValue = value;
@@ -40,8 +40,39 @@ async function scrollTo(page: import("@playwright/test").Page, y: number) {
   await settle(page);
 }
 
-// CUJ-01 — Land and travel the Belso scroll story (docs/product/critical-user-journeys.md)
-test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async ({ page }) => {
+/**
+ * Scroll a section to the top of the viewport and wait until it has *arrived*.
+ *
+ * `scroll-behavior: smooth` is set globally, so `scrollIntoView` returns while
+ * the page is still travelling — a screenshot taken straight after catches the
+ * header a third of the way through its 500ms handover from scene chrome to
+ * page chrome, which reads as a bug that is not there. Waits on the element's
+ * own position holding still rather than on a duration.
+ */
+async function scrollToSection(page: import("@playwright/test").Page, id: string) {
+  await page.evaluate((sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView();
+  }, id);
+
+  await page.waitForFunction(
+    (sectionId) => {
+      const el = document.getElementById(sectionId);
+      if (!el) return false;
+      const top = Math.round(el.getBoundingClientRect().top);
+      const stable = el.dataset.restTop === String(top) ? Number(el.dataset.restCount ?? 0) + 1 : 0;
+      el.dataset.restTop = String(top);
+      el.dataset.restCount = String(stable);
+      return stable >= 20;
+    },
+    id,
+    { timeout: 15_000, polling: "raf" },
+  );
+}
+
+// CUJ-01 — Land and travel the Belso story (docs/product/critical-user-journeys.md)
+test("@cuj CUJ-01: visitor lands, watches the scene, and reaches the catalogue", async ({
+  page,
+}) => {
   await page.goto("/");
 
   // The splash intro staggers the chrome in over ~2.6s; wait for its last beat.
@@ -64,30 +95,58 @@ test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async
   await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
   await shot(page, "01-hero", { fullPage: false });
 
+  // The scene's second and last beat. The section's heading is the masthead
+  // ("About Belso"); the big line beneath it is a statement, not a second
+  // heading — two headings would read as two sections to anything navigating
+  // by structure.
   await scrollTo(page, 1500);
-  // The section's heading is now the masthead ("About Belso"); the big line
-  // beneath it is a statement, not a second heading — two headings would read
-  // as two sections to anything navigating by structure.
   await expect(page.getByRole("heading", { name: "About Belso" })).toBeVisible();
   await expect(page.getByText("A quieter kind of address")).toBeVisible();
   await shot(page, "02-about", { fullPage: false });
 
-  await scrollTo(page, 2900);
-  await expect(page.getByRole("heading", { name: "A slower way to live." })).toBeVisible();
+  // Past the runway the page is ordinary content. Each section below is a door
+  // to a real page rather than a scroll position, which is the whole point of
+  // the rework — so each is asserted by its heading and its link.
+  const residences = page.locator("#residences");
+  await scrollToSection(page, "residences");
+  await expect(page.getByRole("heading", { name: "Properties", exact: true })).toBeVisible();
+  // The shelf is one row drawn from the real catalogue, not fixture cards that
+  // only exist on this page.
+  await expect(
+    residences.getByRole("listitem").filter({ has: page.getByRole("link") }),
+  ).toHaveCount(3);
   await shot(page, "03-residences", { fullPage: false });
 
-  await scrollTo(page, 4800);
-  await expect(
-    page.getByRole("heading", { name: "Everything close, nothing near." }),
-  ).toBeVisible();
-  await shot(page, "04-amenities", { fullPage: false });
+  await scrollToSection(page, "grounds");
+  await expect(page.getByRole("heading", { name: "The grounds" })).toBeVisible();
+  await expect(page.getByText("Everything close, nothing near")).toBeVisible();
+  await shot(page, "04-grounds", { fullPage: false });
 
-  await scrollTo(page, 6600);
-  const slider = page.getByRole("region", { name: "Belso residences slider" });
-  await expect(slider).toBeVisible();
-  await shot(page, "05-residences-slider", { fullPage: false });
+  await scrollToSection(page, "enquire");
+  await expect(page.getByRole("heading", { name: "Write to us" })).toBeVisible();
+  await shot(page, "05-enquire", { fullPage: false });
 
-  // The slider loops infinitely, so the next card is always reachable.
-  await page.getByRole("button", { name: "Next residence" }).click();
-  await shot(page, "06-slider-advanced", { fullPage: false });
+  // The journey ends where it is supposed to: in the catalogue.
+  await residences.getByRole("link", { name: "Browse all properties" }).click();
+  await expect(page).toHaveURL(/\/en\/properties$/);
+  await shot(page, "06-catalogue", { fullPage: false });
+});
+
+test("AC-10: the header navigation is routes, not scroll positions", async ({ page }) => {
+  await page.goto("/en");
+
+  const header = page.getByRole("navigation", { name: "Main menu" });
+  // Every entry must be an address — reachable, shareable, and meaningful from
+  // any page. The scene's beats used to sit here as `#about`, `#residences` and
+  // `#amenities`, which were none of those things.
+  for (const href of await header
+    .getByRole("link")
+    .evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""))) {
+    expect(href, `"${href}" is an in-page anchor, not a route`).not.toMatch(/^#/);
+  }
+
+  await header.getByRole("link", { name: "About" }).click();
+  await expect(page).toHaveURL(/\/en\/about$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await shot(page, "07-about-page");
 });
