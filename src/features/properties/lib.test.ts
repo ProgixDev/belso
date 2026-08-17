@@ -10,7 +10,7 @@ import {
   sortProperties,
   tokenize,
 } from "./lib";
-import type { Property } from "./types";
+import { propertySearchParamsSchema, type Property } from "./types";
 
 const byReference = (reference: string): Property => {
   const found = propertyFixtures.find((p) => p.reference === reference);
@@ -230,5 +230,30 @@ describe("similarity (AC-5)", () => {
     for (const property of propertyFixtures) {
       expect(pickSimilar(property, propertyFixtures).length, property.reference).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("propertySearchParamsSchema (SEC-INPUT-001)", () => {
+  it("passes an ordinary search through untouched", () => {
+    expect(propertySearchParamsSchema.parse({ q: "riad medina", sort: "priceAsc" })).toEqual({
+      q: "riad medina",
+      sort: "priceAsc",
+    });
+  });
+
+  it("falls back rather than throwing on a stale or hostile sort", () => {
+    // A dead `?sort=` in a shared link is a typo, not a 500 for the visitor.
+    expect(propertySearchParamsSchema.parse({ sort: "; drop table" }).sort).toBe("newest");
+    expect(propertySearchParamsSchema.parse({}).sort).toBe("newest");
+  });
+
+  it("bounds the query so an unbounded string cannot be echoed or matched", () => {
+    const parsed = propertySearchParamsSchema.parse({ q: "x".repeat(5000) });
+
+    expect(parsed.q).toBe("");
+  });
+
+  it("trims, so a whitespace-only search is treated as no search", () => {
+    expect(propertySearchParamsSchema.parse({ q: "   " }).q).toBe("");
   });
 });

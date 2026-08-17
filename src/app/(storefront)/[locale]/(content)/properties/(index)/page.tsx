@@ -6,8 +6,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { getDictionary, interpolate } from "@/features/i18n";
 import {
-  isPropertySort,
   listProperties,
+  propertySearchParamsSchema,
   PropertyCard,
   ResultsHeader,
   SortControl,
@@ -49,11 +49,11 @@ export default async function PropertiesPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const { q, sort: rawSort } = await searchParams;
   const dict = getDictionary(locale);
-  const query = q?.trim() ?? "";
-  // An unknown ?sort= is a typo or a stale link, not an error worth a 500.
-  const sort = isPropertySort(rawSort) ? rawSort : "newest";
+  // SEC-INPUT-001: the query string is a trust boundary. `catch` on both fields
+  // means a stale link with a dead `?sort=` degrades to the default instead of
+  // throwing a 500 at the visitor.
+  const { q: query, sort } = propertySearchParamsSchema.parse(await searchParams);
 
   const properties = await listProperties({ query, sort, locale });
   const listingsHref = toPublicPath("/properties", locale);

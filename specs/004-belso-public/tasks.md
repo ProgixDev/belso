@@ -59,9 +59,9 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 
 ## Phase 5 — review & ship
 
-- [ ] T5.1 Run `/review`; fix P0/P1 findings · done: no open P0/P1
-- [ ] T5.2 Run `/security-review` — the enquiry action is the only untrusted input path · done: no open SEC finding
-- [ ] T5.3 Run `/feature-report` → `docs/reports/004-belso-public.md` · done: report exists with screenshots
+- [x] T5.1 Run `/review`; fix P0/P1 findings · done: no open P0/P1
+- [x] T5.2 Run `/security-review` — the enquiry action is the only untrusted input path · done: no open SEC finding
+- [x] T5.3 Run `/feature-report` → `docs/reports/004-belso-public.md` · done: report exists with screenshots
 - [ ] T5.4 Open PR (template filled, spec + report linked) · done: PR open
 - [ ] T5.5 After merge: `/update-docs` — feature doc, CUJ table, specs index status → `shipped` · done: `pnpm check:docs` green
 
@@ -167,3 +167,15 @@ The cookie write lives at module scope because the React Compiler's `react-hooks
 **`reducedMotion` is not a top-level `test.use` option in Playwright 1.60**; it is set through `contextOptions`. The scene's reduced-motion path was already implemented (no lerp, no parallax, splash skipped outright) — the tests confirm it rather than having driven it.
 
 **Screenshot review (T4.6) found four defects the assertions did not:** the detail page labelling its type row "En bref" (a section heading) instead of "Type"; the legal pages repeating one placeholder sentence under all nine headings; the enquiry submit button stretching full width because `sm:w-auto` cannot shrink a flex-column item without `self-start`; and, earlier, the CUJ-01 language mismatch. One thing that looked like a defect was not: the sticky header appears mid-page in full-page screenshots, which is a Chromium artifact — checked against a real viewport before touching it.
+
+## Phase 5 notes
+
+**T5.1/T5.2 — reviewed inline, not via the persona subagents.** This session was instructed not to spawn subagents, so the architecture and security passes were done directly against `docs/personas/` and `docs/security/checklist.md` rather than through `/review`'s parallel reviewers. The findings and verdicts are in `docs/reports/004-belso-public.md`. A persona pass through the skill is still worth running before merge — a second set of eyes is the point of it, and self-review is exactly where a reviewer is weakest.
+
+**Two security findings, both fixed.**
+
+`SEC-INPUT-001` — the listings page read `searchParams` raw: `q` was untrimmed of length and `sort` used a type guard rather than a schema, while the rule names `searchParams` explicitly. Nothing reached a database or a shell, but `q` is echoed into the page and tokenised against every listing on every request. Now `propertySearchParamsSchema`, with `catch` on both fields so a stale `?sort=` in a shared link degrades to the default instead of throwing a 500 at the visitor.
+
+`SEC-SUPPLY-001` — `next@16.2.7` carried nine advisories, four high, and one of them is **"Middleware / Proxy bypass in App Router applications using Turbopack and single locale"**: precisely this app's shape, on precisely the code path that gates `/account`. Two others (Server Actions DoS, SSRF in rewrites) also land on code written in this spec. Bumped to `16.3.1`; all nine cleared along with `sharp`'s libvips CVEs, taking the audit from 39 advisories/24 high to 24/15. Everything green afterwards — 115 unit tests, 28 e2e — so the bump is verified, not assumed. The remainder are transitive build and dev dependencies (postcss, nanoid, eslint, commitlint, jsdom/undici) with no upstream fix; recorded as OPEN P2 in the report rather than silently accepted.
+
+**Rate limiting is the one knowingly open item.** The enquiry action is unthrottled. That is harmless while it persists nothing, and genuinely dangerous the moment spec 003 wires it to an inbox — recorded as OPEN P3 so it cannot be forgotten at exactly the wrong time.

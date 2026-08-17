@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { Currency } from "@/core/currency";
 import type { Locale } from "@/core/i18n";
 
@@ -109,6 +110,22 @@ export type PropertySort = (typeof propertySorts)[number];
 export function isPropertySort(value: unknown): value is PropertySort {
   return typeof value === "string" && (propertySorts as readonly string[]).includes(value);
 }
+
+/**
+ * The listings URL, validated (SEC-INPUT-001).
+ *
+ * `searchParams` is a trust boundary: anyone can put anything in a query
+ * string. Nothing here reaches a database or a shell, but `q` is echoed back
+ * into the page and tokenised against every listing on every request, so it is
+ * bounded rather than taken on faith. Both fields `catch` instead of throwing —
+ * a stale link with a dead `?sort=` is a typo, not a 500.
+ */
+export const propertySearchParamsSchema = z.object({
+  q: z.string().trim().max(200).catch(""),
+  sort: z.enum(propertySorts).catch("newest"),
+});
+
+export type PropertySearchParams = z.infer<typeof propertySearchParamsSchema>;
 
 /** What the listings page asks the repository for. */
 export type PropertyQuery = {

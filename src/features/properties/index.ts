@@ -20,6 +20,7 @@ export type {
   Property,
   PropertyMedia,
   PropertyQuery,
+  PropertySearchParams,
   PropertySort,
   PropertyTranslation,
   PropertyType,
@@ -27,6 +28,7 @@ export type {
 
 export {
   amenities,
+  propertySearchParamsSchema,
   isPropertySort,
   listingKinds,
   listingStatuses,
