@@ -2,7 +2,21 @@ import type { Metadata } from "next";
 import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import { MotionProvider } from "@/components/motion";
 import { site } from "@/core/site";
-import "./globals.css";
+import "../globals.css";
+
+/**
+ * The one `<html>`/`<body>` shell, shared by the two root layouts.
+ *
+ * There are two roots because `<html lang>` has to name the language of the
+ * document, and only the `[locale]` segment knows it — a single root layout
+ * nests *above* that segment and can never see it, which left French pages
+ * claiming `lang="en"` (T1.7a). Route groups let `(storefront)` and `(system)`
+ * each own a root, so the storefront can pass the locale down while the
+ * unlocalised app routes stay English.
+ *
+ * Fonts are instantiated here, once: `next/font` dedupes by call site, so
+ * calling it in both layouts would ship two copies of the same face.
+ */
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +35,8 @@ const archivo = Archivo({
   weight: ["400", "500", "600", "700", "800"],
 });
 
-export const metadata: Metadata = {
+/** Metadata common to both roots. Each root spreads this and adds its own. */
+export const baseMetadata: Metadata = {
   metadataBase: new URL(site.url),
   applicationName: site.name,
   title: {
@@ -29,14 +44,12 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.description,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: site.name,
     title: site.name,
     description: site.description,
     url: site.url,
-    locale: site.locale,
   },
   twitter: {
     card: "summary_large_image",
@@ -46,9 +59,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export function RootShell({
+  lang,
+  dir = "ltr",
   children,
 }: Readonly<{
+  lang: string;
+  dir?: "ltr" | "rtl";
   children: React.ReactNode;
 }>) {
   const jsonLd = {
@@ -60,7 +77,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} dir={dir} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} font-sans antialiased`}
       >

@@ -18,13 +18,13 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 - [x] T1.3 Rename `src/middleware.ts` → `src/proxy.ts` for the Next 16 convention, **no behaviour change** (files: `src/proxy.ts`) · done: build emits no deprecation warning; `/account` still redirects when signed out
 - [x] T1.4 Locale config: locale list, default `fr`, segment map (`biens`↔`properties`, `contact`, `legal`), detection helper (files: `src/core/i18n.ts`, `src/core/i18n.test.ts`) · done: `i18n.test.ts` green incl. segment-map round-trip (**AC-1 unit**)
 - [x] T1.5 Locale routing in the proxy: `/` → `/fr`, `Accept-Language` on first visit, cookie persistence, translated-segment rewrite — composing with `updateSession`, not replacing it (files: `src/proxy.ts`) · done: `/`→`/fr` and `/account` unaffected — see note
-- [ ] **T1.5a** Proxy unit tests — the segment rewrite and the auth-cookie composition are currently proven only by manual request checks and (later) the Phase 4 e2e (files: `src/proxy.test.ts`)
+- [x] **T1.5a** Proxy unit tests — the segment rewrite and the auth-cookie composition are currently proven only by manual request checks and (later) the Phase 4 e2e (files: `src/proxy.test.ts`) · done: 18 tests green — see note
 - [x] T1.6 Dictionaries + accessor: fr/en UI strings, `getDictionary(locale)` (files: `src/features/i18n/{dictionaries,index}.ts`) · done: both locales typed identically — see note
 - [ ] T1.7 Locale shell: header with working nav, footer with contact + legal links (files: `src/app/[locale]/_components/{site-header,site-footer}.tsx`) · **moved to the head of Phase 2 — see note**
 - [x] T1.7b Locale switcher that stays on the current page (files: `src/features/i18n/components/locale-switcher.tsx`) · done: built on the `switchLocalePath` helper, which is unit-tested
-- [ ] **T1.7a** `<html lang>` / `dir` per locale — **blocks AC-1 sign-off**, see note
+- [x] **T1.7a** `<html lang>` / `dir` per locale — **blocks AC-1 sign-off**, see note · done: `/fr` serves `lang="fr-MA"`, `/en` `lang="en-GB"`, `/sign-in` `lang="en"` — see note
 - [x] T1.8 Move the home route under the locale segment (files: `src/app/[locale]/page.tsx`, delete `src/app/page.tsx`) · done: CUJ-01 passes against `/fr` — see note
-- [ ] T1.9 `pnpm verify` + `pnpm e2e` green; conventional commit · done: both green
+- [x] T1.9 `pnpm verify` + `pnpm e2e` green; conventional commit · done: both green
 
 ## Phase 2 — properties: index and detail (AC-2, AC-3, AC-4, AC-5, AC-9)
 
@@ -75,7 +75,15 @@ Findings and deviations are recorded in [Implementation notes](#implementation-n
 
 **T1.6 — partial.** Formatting is done and tested (`src/lib/format.ts`, `src/core/currency.ts`, 8 tests); the dictionaries themselves are not written. Placement is corrected from `plan.md`: formatting went to `shared` and rates to `core`, because the properties slice needs both and features may not import each other. Dictionaries will reach feature components as props from `app`. Finding: our French locale is `fr-MA`, whose CLDR grouping separator is `.` — prices render `12.000.000 MAD`, not `12 000 000`. A French-from-France buyer may read that as wrong. Pinned by a test; raised with B-7. Switching to `fr-FR` is a one-line change in `core/i18n` `localeTag`.
 
-**T1.7a — `<html lang>` is wrong on French pages.** The root layout hardcodes `lang="en"` and cannot see the locale, because `[locale]/layout.tsx` nests inside it. `dir` is applied to a wrapper div so RTL has a hook, but `lang` is not per-locale. The fix is per-group root layouts via route groups (`src/app/(storefront)/[locale]/layout.tsx` + `src/app/(system)/layout.tsx`), each owning its own `<html>`. Deferred deliberately: it relocates every existing route and was too large to bolt onto T1.8.
+**T1.7a — fixed by splitting the root layout in two.** The old root hardcoded `lang="en"` and could not see the locale, because `[locale]/layout.tsx` nested inside it. Every route now sits in a route group with its own root: `(storefront)/[locale]/layout.tsx` reads the segment and renders `<html lang dir>`, `(system)/layout.tsx` covers the unlocalised routes. `src/app/layout.tsx` is gone — Next accepts a group whose root layout is nested under `[locale]`, because no route in that group resolves without passing through it. Verified by request: `/fr` → `lang="fr-MA"`, `/en` → `lang="en-GB"`, `/sign-in` and `/examples/tasks` → `lang="en"`. The wrapper `<div dir>` is gone with it; `dir` belongs on `<html>`.
+
+Three things fell out of the split that are worth knowing:
+
+- **`lang` carries the region** (`fr-MA`, not `fr`), reusing `localeTag`. That is the same tag `Intl` formats with, so the document cannot claim one language while its prices are grouped by another.
+- **Fonts moved to `src/app/_shell/root-shell.tsx`**, which both roots import. `next/font` dedupes per call site, so instantiating them in two layouts would have shipped two copies of each face.
+- **The `(system)` group is now `noindex`.** Splitting the shared metadata forced the question, and a sign-in form and an account screen have nothing to offer a search engine. This is a deliberate behaviour change, not a carry-over. Storefront metadata is unchanged apart from per-locale `og:locale` and `hreflang` alternates; the locale-root `canonical` is coarse and **every Phase 2 page must set its own**, or the whole storefront canonicalises to `/fr`.
+
+**T1.5a — 18 proxy tests, `@vitest-environment node`.** `updateSession` is mocked; the point is that the proxy _composes with_ whatever it returns. The two that matter are the ones covering the silent failures: refreshed auth cookies surviving a translated-URL rewrite, and a protected-route redirect outranking the locale work. Note the environment directive — `NextRequest` needs real `Request`/`Response` globals, which the project's default jsdom environment does not provide.
 
 **T1.8 — pulled forward, out of order.** T1.5 activated the locale redirect while no `/[locale]` route existed, so `/` → `/fr` → 404 and the site was broken between the two tasks. The ordering in this file was wrong: T1.5 and T1.8 have to land together.
 
