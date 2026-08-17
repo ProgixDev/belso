@@ -1,4 +1,4 @@
-import type { CollageTile, SightCard, Stat } from "./types";
+import type { AboutFact, AboutShot, CollageTile, SightCard, Stat } from "./types";
 
 /** Headline numbers. Shown in the hero column and repeated on the cream sheet. */
 export const stats: readonly Stat[] = [
@@ -18,6 +18,72 @@ export const navLinks = [
 
 /** The four words of the hero lede, staggered in one line at a time. */
 export const heroLede = ["Where", "heritage", "meets", "home"] as const;
+
+/**
+ * The scattered square collage on the about sheet. Squares rise from below,
+ * out of reading order, so they read as arriving rather than sweeping across.
+ *
+ * Alt text describes what is actually in each frame — the stock file names do
+ * not. `grid-pool-dusk` is a planted facade, `grid-stone-detail` is a bedroom,
+ * and `door-right` is a skylit stairwell. Placeholder imagery until the real
+ * Marrakech shoot lands (plan.md phase 5).
+ */
+export const aboutShots: readonly AboutShot[] = [
+  {
+    id: "facade",
+    image: "/design/stock/grid-pool-dusk.jpg",
+    imageAlt: "Planted balconies stepping down a timber-clad facade at golden hour",
+    column: 1,
+    span: 3,
+    offset: -6,
+    delay: 0,
+  },
+  {
+    id: "walkway",
+    image: "/design/stock/grid-courtyard.jpg",
+    imageAlt: "A sunlit walkway running along the inner courtyard",
+    column: 4,
+    span: 2,
+    offset: 34,
+    delay: 0.52,
+  },
+  {
+    id: "bedroom",
+    image: "/design/stock/grid-stone-detail.jpg",
+    imageAlt: "A bedroom in warm neutrals with a woven throw across the bed",
+    column: 6,
+    span: 2,
+    offset: 10,
+    delay: 0.18,
+  },
+  {
+    // Not door-right.jpg: that is the same stairwell as `walkway` above and the
+    // pair read as a duplicate in the collage.
+    id: "terraces",
+    image: "/design/stock/grid-terrace.jpg",
+    imageAlt: "A pale facade with planted terraces and timber shutters",
+    column: 8,
+    span: 2,
+    offset: 44,
+    delay: 0.78,
+  },
+  {
+    id: "joinery",
+    image: "/design/stock/grid-living-wide.jpg",
+    imageAlt: "Lit oak joinery and marble beside a bedroom doorway",
+    column: 10,
+    span: 3,
+    offset: 18,
+    delay: 0.34,
+  },
+] as const;
+
+/** Credentials along the foot of the about sheet. */
+export const aboutFacts: readonly AboutFact[] = [
+  { value: "2027", label: "Completion" },
+  { value: "1.4 ha", label: "Grounds" },
+  { value: "Marrakech", label: "Palmeraie" },
+] as const;
 
 export const sights: readonly SightCard[] = [
   {
@@ -101,10 +167,10 @@ export const collage: readonly CollageTile[] = [
 
 /** Static scene plates. Paths are public/ assets exported from the design bundle. */
 export const scene = {
-  sky: "/design/besto-sky-bg.png",
-  housePlate: "/design/besto-house-plate.png",
-  heroTall: "/design/besto-hero-tall.png",
-  street: "/design/besto-hero.png",
+  sky: "/design/belso-sky-bg.png",
+  housePlate: "/design/belso-house-plate.png",
+  heroTall: "/design/belso-hero-tall.png",
+  street: "/design/belso-hero.png",
   doorLeft: "/design/stock/door-left.jpg",
   doorRight: "/design/stock/door-right.jpg",
   reveal: "/design/stock/reveal-interior.jpg",

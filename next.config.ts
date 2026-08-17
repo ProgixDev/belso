@@ -42,6 +42,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Don't advertise the framework version.
   poweredByHeader: false,
+  images: {
+    /*
+     * The hero scene plates are photoreal architectural renders shown full-bleed.
+     * At the default quality of 75 the optimizer crushes the 1.1MB source PNG to a
+     * 66KB WebP, which bands the sky gradient and smears the glass and foliage.
+     * Next 16 only permits qualities declared here.
+     */
+    qualities: [75, 90],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
