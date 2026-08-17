@@ -710,6 +710,67 @@
   font-size: 15px;
 }
 
+.heroSearch {
+  display: flex;
+  align-items: stretch;
+  width: min(100%, 470px);
+  height: clamp(42px, 5.4vh, 52px);
+  background: #fffaf3;
+  box-shadow: 0 18px 40px rgba(23, 17, 13, 0.22);
+  pointer-events: auto;
+  opacity: var(--in-cta, 1);
+  transform: translate3d(0, calc((1 - var(--in-cta, 1)) * 16px), 0);
+}
+
+.heroSearchInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 clamp(14px, 1.5vw, 20px);
+  border: none;
+  background: transparent;
+  color: #241c16;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  outline: none;
+}
+
+.heroSearchInput::placeholder {
+  color: rgba(36, 28, 22, 0.5);
+  /* The placeholder is a full example sentence and the field is narrow —
+     without this it is clipped mid-word on every viewport under ~1400px. */
+  text-overflow: ellipsis;
+}
+
+/* The form owns the focus ring: a ring on the bare input would sit inside the
+   cream bar and read as a rectangle floating in a rectangle. */
+.heroSearch:focus-within {
+  outline: 2px solid #241c16;
+  outline-offset: 2px;
+}
+
+.heroSearchSubmit {
+  display: inline-flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  padding: 0;
+  border: none;
+  border-left: 1px solid rgba(36, 28, 22, 0.22);
+  background: transparent;
+  color: #241c16;
+  cursor: pointer;
+}
+
+.heroSearchSubmit > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 clamp(14px, 1.4vw, 22px);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 .heroNote {
   position: absolute;
   right: clamp(26px, 5.4vw, 86px);

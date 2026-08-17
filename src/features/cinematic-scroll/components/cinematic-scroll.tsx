@@ -5,6 +5,7 @@ import type { CSSProperties, KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 import styles from "../cinematic-scroll.module.css";
 import { aboutFacts, aboutShots, collage, heroLede, navLinks, scene, sights, stats } from "../data";
+import type { HeroSearch } from "../types";
 import { useCinematicScroll } from "../use-cinematic-scroll";
 
 /**
@@ -21,7 +22,7 @@ const vars = (v: Record<`--${string}`, string>) => v as CssVars;
 /** The card list is tripled so the slider can loop in both directions. */
 const loopedSights = [...sights, ...sights, ...sights];
 
-export function CinematicScroll() {
+export function CinematicScroll({ search }: { search: HeroSearch }) {
   const {
     sectionRef,
     worldRef,
@@ -270,12 +271,37 @@ export function CinematicScroll() {
                     </span>
                   ))}
                 </h2>
-                <button className={styles.heroCta} type="button">
-                  <span className={styles.heroCtaLabel}>Book a call</span>
-                  <span aria-hidden="true" className={styles.heroCtaMark}>
-                    »
-                  </span>
-                </button>
+
+                {/*
+                 * A plain GET form, deliberately: it puts the visitor's words in
+                 * the URL (AC-2) and works before this client component has
+                 * hydrated — which on a page this animation-heavy is not a
+                 * hypothetical window.
+                 */}
+                <form
+                  className={styles.heroSearch}
+                  action={search.action}
+                  method="get"
+                  role="search"
+                >
+                  <label className="sr-only" htmlFor="hero-search">
+                    {search.label}
+                  </label>
+                  <input
+                    className={styles.heroSearchInput}
+                    id="hero-search"
+                    name="q"
+                    type="search"
+                    placeholder={search.placeholder}
+                    autoComplete="off"
+                  />
+                  <button className={styles.heroSearchSubmit} type="submit">
+                    <span>{search.submitLabel}</span>
+                    <span aria-hidden="true" className={styles.heroCtaMark}>
+                      »
+                    </span>
+                  </button>
+                </form>
               </div>
             </div>
             <p className={styles.heroNote}>

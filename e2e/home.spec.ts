@@ -53,7 +53,15 @@ test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async
     { timeout: 15_000 },
   );
   await expect(page.getByRole("heading", { level: 1, name: "Belso" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Book a call" })).toBeVisible();
+  // The test browser announces en-US, so the proxy lands this visitor on /en
+  // rather than the default French (AC-1). Asserted rather than assumed —
+  // getting it wrong is how this test came to expect a French label on an
+  // English page.
+  await expect(page).toHaveURL(/\/en$/);
+  // Spec 004 replaced the "Book a call" CTA with the search field that opens
+  // the catalogue — the hero's one call to action (AC-2).
+  await expect(page.getByRole("searchbox")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Search" })).toBeVisible();
   await shot(page, "01-hero", { fullPage: false });
 
   await scrollTo(page, 1500);

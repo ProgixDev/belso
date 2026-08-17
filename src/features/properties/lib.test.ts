@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { convert, displayCurrency } from "@/core/currency";
 import { propertyFixtures } from "./fixtures";
 import {
   localizeProperty,
@@ -16,6 +17,9 @@ const byReference = (reference: string): Property => {
   if (!found) throw new Error(`fixture ${reference} is gone — update this test`);
   return found;
 };
+
+/** What the comparators actually order on — see `comparablePrice` in lib.ts. */
+const comparable = (p: Property) => convert(p.price, p.currency, displayCurrency) ?? p.price;
 
 /** The listing with no English translation — the AC-9 case. */
 const untranslated = byReference("BL-1108");
@@ -143,21 +147,41 @@ describe("matchScore (AC-2, AC-4)", () => {
 
 describe("sortProperties (AC-3)", () => {
   it("orders by price ascending", () => {
-    const prices = sortProperties(propertyFixtures, "priceAsc").map((p) => p.price);
+    // Asserted on the converted value, not `price`: the fixtures mix MAD and
+    // EUR, so raw digits are not an ordering at all.
+    const values = sortProperties(propertyFixtures, "priceAsc").map(comparable);
 
-    expect(prices).toEqual([...prices].sort((a, b) => a - b));
+    expect(values).toEqual([...values].sort((a, b) => a - b));
   });
 
   it("orders by price descending", () => {
-    const prices = sortProperties(propertyFixtures, "priceDesc").map((p) => p.price);
+    const values = sortProperties(propertyFixtures, "priceDesc").map(comparable);
 
-    expect(prices).toEqual([...prices].sort((a, b) => b - a));
+    expect(values).toEqual([...values].sort((a, b) => b - a));
   });
 
   it("puts the most recently listed first by default", () => {
     const dates = sortProperties(propertyFixtures).map((p) => Date.parse(p.listedAt));
 
     expect(dates).toEqual([...dates].sort((a, b) => b - a));
+  });
+
+  it("compares across currencies, not on raw digits", () => {
+    // The regression: a 12 800 000 MAD villa is about €1.2M, so it must rank
+    // *below* a €3 900 000 estate. Sorting on the bare number puts the cheaper
+    // property first and the grid states it with total confidence.
+    const mad = byReference("BL-1101"); // 12 800 000 MAD
+    const eur = byReference("BL-1104"); // 3 900 000 EUR
+
+    expect(mad.price).toBeGreaterThan(eur.price);
+    expect(sortProperties([mad, eur], "priceDesc").map((p) => p.reference)).toEqual([
+      "BL-1104",
+      "BL-1101",
+    ]);
+    expect(sortProperties([mad, eur], "priceAsc").map((p) => p.reference)).toEqual([
+      "BL-1101",
+      "BL-1104",
+    ]);
   });
 
   it("does not mutate the input", () => {

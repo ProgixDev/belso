@@ -1,3 +1,4 @@
+import { convert, displayCurrency } from "@/core/currency";
 import { defaultLocale, type Locale } from "@/core/i18n";
 import type { LocalizedProperty, Property, PropertySort, PropertyTranslation } from "./types";
 
@@ -186,6 +187,23 @@ export function matchScore(property: Property, query: string): number {
 export const defaultSort: PropertySort = "newest";
 
 /**
+ * Comparable value for ordering: every price converted to one currency.
+ *
+ * Sorting on the raw number is wrong the moment two currencies are in the same
+ * set — a 12 800 000 MAD villa (about €1.2M) outranks a €3 900 000 estate on
+ * digits alone, and the grid confidently shows the cheaper property first.
+ *
+ * This does lean on the provisional rate table (B-4). That is the lesser evil:
+ * a slightly stale rate shifts neighbouring listings, while not converting at
+ * all produces an order that is simply false. Note the difference from
+ * `similarityScore`, which refuses to convert — there the effect would be an
+ * invisible change in weighting rather than a visibly wrong sequence.
+ */
+function comparablePrice(property: Property): number {
+  return convert(property.price, property.currency, displayCurrency) ?? property.price;
+}
+
+/**
  * Comparators, keyed by the sort a visitor picked. Each falls back to the
  * reference so equal-priced listings keep a stable order between renders —
  * without it a grid reshuffles on every request and looks broken.
@@ -193,8 +211,10 @@ export const defaultSort: PropertySort = "newest";
 export const sortComparators: Record<PropertySort, (a: Property, b: Property) => number> = {
   newest: (a, b) =>
     Date.parse(b.listedAt) - Date.parse(a.listedAt) || a.reference.localeCompare(b.reference),
-  priceAsc: (a, b) => a.price - b.price || a.reference.localeCompare(b.reference),
-  priceDesc: (a, b) => b.price - a.price || a.reference.localeCompare(b.reference),
+  priceAsc: (a, b) =>
+    comparablePrice(a) - comparablePrice(b) || a.reference.localeCompare(b.reference),
+  priceDesc: (a, b) =>
+    comparablePrice(b) - comparablePrice(a) || a.reference.localeCompare(b.reference),
 };
 
 export function sortProperties(

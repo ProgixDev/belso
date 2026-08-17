@@ -2,10 +2,14 @@
  * Public API of the properties slice — the only file other layers may import
  * (docs/architecture/module-boundaries.md).
  *
- * `repository.ts` is deliberately **not** re-exported here. It is `server-only`,
- * and routing it through the barrel would pull that constraint into every
- * client component that imports a card from this slice.
- * Server pages import it directly: `@/features/properties/repository`.
+ * `repository.ts` is re-exported here even though it is `server-only`, because
+ * the boundary rule admits no second entry point and relaxing it would need an
+ * ADR. The consequence to know about: importing **anything** from this barrel
+ * into a client component pulls `server-only` with it and fails the build. That
+ * is the guard doing its job, not a bug — but the error names `server-only`
+ * rather than the barrel, so the cause is not obvious from the message. Server
+ * pages compose this slice; client islands inside it import their neighbours
+ * by relative path.
  */
 
 export type {
@@ -31,3 +35,12 @@ export {
 } from "./types";
 
 export { defaultSort } from "./lib";
+
+export { Gallery } from "./components/gallery";
+export { KeyFacts } from "./components/key-facts";
+export { Price } from "./components/price";
+export { PropertyCard, type PropertyCardLabels } from "./components/property-card";
+export { ResultsHeader } from "./components/results-header";
+export { SortControl } from "./components/sort-control";
+
+export { countProperties, getPropertyBySlug, getSimilar, listProperties } from "./repository";

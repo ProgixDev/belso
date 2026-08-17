@@ -53,3 +53,17 @@ export type Stat = {
   /** Two lines, rendered with a hard break between them. */
   label: readonly [string, string];
 };
+
+/**
+ * The hero search field (AC-2). Strings and the destination are passed in from
+ * `app` rather than read here: this slice may not import the i18n slice
+ * (docs/architecture/module-boundaries.md), and the listings path is a
+ * translated segment only `core/i18n` can build.
+ */
+export type HeroSearch = {
+  /** Where the form submits — already locale- and segment-translated. */
+  action: string;
+  label: string;
+  placeholder: string;
+  submitLabel: string;
+};
