@@ -65,7 +65,11 @@ test("@cuj CUJ-01: visitor lands and scrolls through the residence story", async
   await shot(page, "01-hero", { fullPage: false });
 
   await scrollTo(page, 1500);
-  await expect(page.getByRole("heading", { name: "A quieter kind of address" })).toBeVisible();
+  // The section's heading is now the masthead ("About Belso"); the big line
+  // beneath it is a statement, not a second heading — two headings would read
+  // as two sections to anything navigating by structure.
+  await expect(page.getByRole("heading", { name: "About Belso" })).toBeVisible();
+  await expect(page.getByText("A quieter kind of address")).toBeVisible();
   await shot(page, "02-about", { fullPage: false });
 
   await scrollTo(page, 2900);

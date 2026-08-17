@@ -8,12 +8,38 @@ export const stats: readonly Stat[] = [
 ] as const;
 
 /** Primary navigation. Each entry maps to a section anchor inside the scroll runway. */
+/**
+ * Scroll targets for the nav.
+ *
+ * The scene's "sections" are not laid out down the page — they are visual
+ * states of one sticky stage, driven by how far the window has scrolled. Their
+ * elements therefore have no meaningful document position: before this, every
+ * anchor resolved to the top of the page (or above it — `#bazaar` reported
+ * -213px), so clicking the nav did nothing at all.
+ *
+ * These markers are real elements placed *in the runway* at the scroll offset
+ * where each beat is fully on screen, so a plain `href="#id"` lands correctly
+ * with no JavaScript and the back button behaves.
+ *
+ * `at` is a fraction of the runway, not a pixel value, so the beats stay in
+ * step if `MOTION.runway` changes — the same rescaling the animation itself
+ * uses. Values are the midpoint of each beat's fully-visible window in
+ * `use-cinematic-scroll.ts`.
+ */
+export const sceneAnchors = [
+  /** About sheet, "A quieter kind of address" — fully in over 1500–2100 of 6600. */
+  { id: "about", at: 0.273 },
+  /** Residences, "A slower way to live." — frame 2 holds over 3160–3680. */
+  { id: "residences", at: 0.518 },
+  /** Amenities, "Everything close, nothing near." — frame 3 holds over 4680–5220. */
+  { id: "amenities", at: 0.75 },
+] as const;
+
 export const navLinks = [
   { label: "Home", href: "#cinema" },
-  { label: "About", href: "#bridge" },
-  { label: "Projects", href: "#bridge" },
-  { label: "Amenities", href: "#bazaar" },
-  { label: "Location", href: "#routes" },
+  { label: "About", href: "#about" },
+  { label: "Residences", href: "#residences" },
+  { label: "Amenities", href: "#amenities" },
 ] as const;
 
 /** The four words of the hero lede, staggered in one line at a time. */
@@ -34,26 +60,29 @@ export const aboutShots: readonly AboutShot[] = [
     image: "/design/stock/grid-pool-dusk.jpg",
     imageAlt: "Planted balconies stepping down a timber-clad facade at golden hour",
     column: 1,
-    span: 3,
-    offset: -6,
+    span: 4,
+    height: 1,
+    align: "bottom",
     delay: 0,
   },
   {
     id: "walkway",
     image: "/design/stock/grid-courtyard.jpg",
     imageAlt: "A sunlit walkway running along the inner courtyard",
-    column: 4,
+    column: 5,
     span: 2,
-    offset: 34,
+    height: 0.62,
+    align: "top",
     delay: 0.52,
   },
   {
     id: "bedroom",
     image: "/design/stock/grid-stone-detail.jpg",
     imageAlt: "A bedroom in warm neutrals with a woven throw across the bed",
-    column: 6,
-    span: 2,
-    offset: 10,
+    column: 7,
+    span: 3,
+    height: 0.8,
+    align: "bottom",
     delay: 0.18,
   },
   {
@@ -61,24 +90,15 @@ export const aboutShots: readonly AboutShot[] = [
     // pair read as a duplicate in the collage.
     id: "terraces",
     image: "/design/stock/grid-terrace.jpg",
-    imageAlt: "A pale facade with planted terraces and timber shutters",
-    column: 8,
-    span: 2,
-    offset: 44,
-    delay: 0.78,
-  },
-  {
-    id: "joinery",
-    image: "/design/stock/grid-living-wide.jpg",
-    imageAlt: "Lit oak joinery and marble beside a bedroom doorway",
+    imageAlt: "Planted terraces above the garden, seen from below",
     column: 10,
     span: 3,
-    offset: 18,
+    height: 0.94,
+    align: "top",
     delay: 0.34,
   },
-] as const;
+];
 
-/** Credentials along the foot of the about sheet. */
 export const aboutFacts: readonly AboutFact[] = [
   { value: "2027", label: "Completion" },
   { value: "1.4 ha", label: "Grounds" },

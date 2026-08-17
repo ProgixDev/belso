@@ -4,7 +4,16 @@ import Image from "next/image";
 import type { CSSProperties, KeyboardEvent } from "react";
 import { cn } from "@/lib/utils";
 import styles from "../cinematic-scroll.module.css";
-import { aboutFacts, aboutShots, collage, heroLede, navLinks, scene, sights, stats } from "../data";
+import {
+  aboutFacts,
+  aboutShots,
+  collage,
+  heroLede,
+  scene,
+  sceneAnchors,
+  sights,
+  stats,
+} from "../data";
 import type { HeroSearch } from "../types";
 import { useCinematicScroll } from "../use-cinematic-scroll";
 
@@ -41,13 +50,28 @@ export function CinematicScroll({ search }: { search: HeroSearch }) {
   };
 
   return (
-    <main className={styles.siteShell}>
+    <main id="main" className={styles.siteShell}>
       <section
         ref={sectionRef}
         className={styles.cinemaScroll}
         id="cinema"
         aria-label="Belso cinematic scroll story"
       >
+        {/*
+         * Scroll targets for the nav. They sit in the runway rather than in the
+         * sticky stage, because only the runway has real scroll positions —
+         * see `sceneAnchors` in ../data.
+         */}
+        {sceneAnchors.map((anchor) => (
+          <span
+            key={anchor.id}
+            id={anchor.id}
+            className={styles.sceneAnchor}
+            style={vars({ "--anchor-at": String(anchor.at) })}
+            aria-hidden="true"
+          />
+        ))}
+
         <div className={styles.stage}>
           <div ref={worldRef} className={styles.world}>
             <div className={styles.skyImg}>
@@ -61,30 +85,6 @@ export function CinematicScroll({ search }: { search: HeroSearch }) {
                 quality={PLATE_QUALITY}
               />
             </div>
-
-            <header className={styles.siteHeader} aria-label="Primary navigation">
-              <a className={styles.siteLogo} href="#cinema">
-                Belso
-              </a>
-              <nav className={styles.siteNav} aria-label="Main menu">
-                {navLinks.map((link, i) => (
-                  <a
-                    key={link.label}
-                    className={styles.navLink}
-                    href={link.href}
-                    style={vars({ "--nav-in": `var(--in-n${i + 1}, 1)` })}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-              <button className={styles.siteContact} type="button">
-                <span>Contact</span>
-                <span aria-hidden="true" className={styles.siteContactMark}>
-                  ↗
-                </span>
-              </button>
-            </header>
 
             <div className={styles.backStack}>
               <div className={styles.backFour} />
@@ -118,7 +118,7 @@ export function CinematicScroll({ search }: { search: HeroSearch }) {
                 </div>
               </section>
 
-              <div className={styles.creamSheet}>
+              <div className={styles.creamSheet} data-chrome-tone="light">
                 <div className={styles.creamHead}>
                   <span className={styles.creamEyebrow}>
                     <span aria-hidden="true" className={styles.creamEyebrowRule} />
@@ -310,65 +310,80 @@ export function CinematicScroll({ search }: { search: HeroSearch }) {
             </p>
           </section>
 
-          <section className={styles.aboutPanel} id="about" aria-label="About Belso">
-            <div className={styles.aboutEyebrow}>
-              <span aria-hidden="true" className={styles.aboutEyebrowMark} />
-              <span>About Belso</span>
-            </div>
-            <div className={styles.aboutBody}>
-              <h2>A quieter kind of address</h2>
-              <div className={styles.aboutCopy}>
-                <p>
-                  Belso is a private address in the Palmeraie — thirty residences drawn in warm
-                  stone, shaded timber and still water. It is built for the way Marrakech actually
-                  lives: slowly, in the shade, with the doors open.
-                </p>
-                <p>
-                  Every home is dual-aspect and turned away from the road, so light crosses it all
-                  day and the city never quite arrives. Heritage craft, held to a contemporary plan.
-                </p>
-              </div>
-            </div>
+          <section className={styles.aboutPanel} data-chrome-tone="light" aria-label="About Belso">
+            {/*
+             * A real section header, not a whispered label. The index, the name
+             * and a rule running to the edge is the editorial convention for
+             * "a new chapter starts here" — it announces the section without
+             * competing with the headline underneath it.
+             */}
+            <div className={styles.aboutClip}>
+              <div className={styles.aboutInner}>
+                <header className={styles.aboutMasthead}>
+                  <span aria-hidden="true" className={styles.aboutIndex}>
+                    01
+                  </span>
+                  <h2 className={styles.aboutKicker}>About Belso</h2>
+                  <span aria-hidden="true" className={styles.aboutRule} />
+                  <span className={styles.aboutPlace}>Marrakech · Palmeraie</span>
+                </header>
 
-            <ul className={styles.aboutGallery} ref={galleryRef}>
-              {aboutShots.map((shot) => (
-                <li
-                  className={styles.aboutShot}
-                  key={shot.id}
-                  style={vars({
-                    "--shot-col": String(shot.column),
-                    "--shot-span": String(shot.span),
-                    "--shot-offset": String(shot.offset),
-                    "--shot-delay": String(shot.delay),
-                  })}
-                >
-                  <Image
-                    src={shot.image}
-                    alt={shot.imageAlt}
-                    fill
-                    sizes="(max-width: 900px) 40vw, 18vw"
-                    className={styles.slotImg}
-                  />
-                </li>
-              ))}
-            </ul>
-
-            <div className={styles.aboutFoot}>
-              <dl className={styles.aboutFacts}>
-                {aboutFacts.map((fact) => (
-                  <div className={styles.aboutFact} key={fact.label}>
-                    <dt className={styles.aboutFactValue}>{fact.value}</dt>
-                    <dd className={styles.aboutFactLabel}>{fact.label}</dd>
+                <div className={styles.aboutBody}>
+                  <p className={styles.aboutStatement}>A quieter kind of address</p>
+                  <div className={styles.aboutCopy}>
+                    <p className={styles.aboutLede}>
+                      Belso is a private address in the Palmeraie — thirty residences drawn in warm
+                      stone, shaded timber and still water.
+                    </p>
+                    <p>
+                      It is built for the way Marrakech actually lives: slowly, in the shade, with
+                      the doors open. Every home is dual-aspect and turned away from the road, so
+                      light crosses it all day and the city never quite arrives.
+                    </p>
                   </div>
-                ))}
-              </dl>
-              <span className={styles.aboutHint}>Scroll to explore</span>
+                </div>
+
+                <ul className={styles.aboutGallery} ref={galleryRef}>
+                  {aboutShots.map((shot) => (
+                    <li
+                      className={styles.aboutShot}
+                      key={shot.id}
+                      data-align={shot.align}
+                      style={vars({
+                        "--shot-col": String(shot.column),
+                        "--shot-span": String(shot.span),
+                        "--shot-height": String(shot.height),
+                        "--shot-delay": String(shot.delay),
+                      })}
+                    >
+                      <Image
+                        src={shot.image}
+                        alt={shot.imageAlt}
+                        fill
+                        sizes="(max-width: 900px) 45vw, 26vw"
+                        className={styles.slotImg}
+                      />
+                    </li>
+                  ))}
+                </ul>
+
+                <div className={styles.aboutFoot}>
+                  <dl className={styles.aboutFacts}>
+                    {aboutFacts.map((fact) => (
+                      <div className={styles.aboutFact} key={fact.label}>
+                        <dt className={styles.aboutFactValue}>{fact.value}</dt>
+                        <dd className={styles.aboutFactLabel}>{fact.label}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <span className={styles.aboutHint}>Scroll to explore</span>
+                </div>
+              </div>
             </div>
           </section>
 
           <section
             className={`${styles.storyPanel} ${styles.storyPanelBridge}`}
-            id="bridge"
             aria-label="Residence details"
           >
             <span className={styles.bridgeEyebrow}>The residences</span>
@@ -391,7 +406,6 @@ export function CinematicScroll({ search }: { search: HeroSearch }) {
 
           <section
             className={`${styles.storyPanel} ${styles.storyPanelBazaar}`}
-            id="bazaar"
             aria-label="Amenities details"
           >
             <span className={styles.bazaarEyebrow}>Amenities</span>
