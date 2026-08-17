@@ -201,6 +201,7 @@ export const en: Dictionary = {
   },
   footer: {
     tagline: "A private address in Marrakech.",
+    place: "Marrakech · Palmeraie",
     sections: { explore: "Explore", legal: "Legal" },
     rights: "All rights reserved.",
   },

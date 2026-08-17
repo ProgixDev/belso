@@ -223,6 +223,7 @@ export const fr = {
   },
   footer: {
     tagline: "Une adresse privée à Marrakech.",
+    place: "Marrakech · Palmeraie",
     sections: { explore: "Explorer", legal: "Informations légales" },
     rights: "Tous droits réservés.",
   },
