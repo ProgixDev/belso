@@ -99,7 +99,7 @@ test("@cuj CUJ-01: visitor lands, watches the scene, and reaches the catalogue",
   // ("About Belso"); the big line beneath it is a statement, not a second
   // heading — two headings would read as two sections to anything navigating
   // by structure.
-  await scrollTo(page, 1500);
+  await scrollTo(page, 1350);
   await expect(page.getByRole("heading", { name: "About Belso" })).toBeVisible();
   await expect(page.getByText("A quieter kind of address")).toBeVisible();
   await shot(page, "02-about", { fullPage: false });
@@ -244,3 +244,64 @@ for (const [width, height] of [
     expect(clearance, `the lede overlaps the wordmark by ${-clearance}px`).toBeGreaterThan(0);
   });
 }
+
+/*
+ * The scene pins the stage for the whole runway, so scroll that maps to no
+ * change is scroll where the page flatly does not respond — you turn the wheel
+ * and nothing happens. It shipped with 1300px of 2400 dead: 400px before the
+ * first beat started and 900px after the last one finished, 54% of the scene.
+ *
+ * `reducedMotion` makes the scroll position map straight to the scene state
+ * with no lerp, so each sample is exactly what that offset renders.
+ */
+test.describe("the cinematic scene", () => {
+  test.use({ contextOptions: { reducedMotion: "reduce" } });
+
+  test("every part of the runway drives motion", async ({ page }) => {
+    await page.goto("/en");
+
+    const MOTION_VARS = [
+      "--about-y",
+      "--about-opacity",
+      "--hero-recede",
+      "--title-y",
+      "--title-opacity",
+      "--intro-copy-y",
+      "--intro-copy-opacity",
+    ];
+    const STEP = 25;
+
+    const runway = await page
+      .locator(SCENE)
+      .evaluate((el) => (el as HTMLElement).offsetHeight - window.innerHeight);
+
+    const states: string[] = [];
+    for (let y = 0; y <= runway; y += STEP) {
+      states.push(
+        await page.evaluate(
+          ([offset, selector, vars]) => {
+            window.scrollTo({ top: offset as number, behavior: "instant" });
+            return new Promise<string>((resolve) => {
+              requestAnimationFrame(() =>
+                requestAnimationFrame(() => {
+                  const el = document.querySelector<HTMLElement>(selector as string);
+                  resolve((vars as string[]).map((v) => el?.style.getPropertyValue(v)).join("|"));
+                }),
+              );
+            });
+          },
+          [y, SCENE, MOTION_VARS] as const,
+        ),
+      );
+    }
+
+    let frozen = 0;
+    for (let i = 1; i < states.length; i++) if (states[i] === states[i - 1]) frozen += STEP;
+
+    // The only hold left is the ~100px at the end, long enough to read the
+    // about sheet at rest before the stage releases.
+    expect(frozen, `${frozen}px of the ${runway}px runway renders no change`).toBeLessThanOrEqual(
+      200,
+    );
+  });
+});

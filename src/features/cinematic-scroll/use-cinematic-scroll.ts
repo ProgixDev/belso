@@ -16,8 +16,15 @@ import styles from "./cinematic-scroll.module.css";
  * for four thousand pixels. What comes after about is an ordinary page.
  */
 export const MOTION = {
-  /** Extra scroll length beyond the sticky viewport, in px. */
-  runway: 2400,
+  /**
+   * Extra scroll length beyond the sticky viewport, in px.
+   *
+   * Every pixel of it has to move something. The stage is pinned for the whole
+   * runway, so scroll that maps to no change is scroll where the page simply
+   * does not respond — measured at 2400px, 1300px of it was dead: 400px before
+   * the first beat began and 900px after the last one finished.
+   */
+  runway: 1400,
   /** Scroll lerp factor — lower is heavier. */
   smoothing: 0.14,
   /** Splash intro duration, in ms. */
@@ -29,11 +36,10 @@ export const MOTION = {
 
 /**
  * The runway the timings below were authored against, so `k` is 1 as shipped.
- * Re-baselined from 6600 when the scene was cut back to two beats: the stops
- * are absolute scroll pixels, so leaving the old reference in place would have
- * compressed the whole film into the first 550px.
+ * Re-baselined whenever the runway changes: the stops are absolute scroll
+ * pixels, so leaving a stale reference in place rescales the whole film.
  */
-const REFERENCE_RUNWAY = 2400;
+const REFERENCE_RUNWAY = 1400;
 
 /**
  * Toggled imperatively inside the animation loop. `noUncheckedIndexedAccess`
@@ -235,9 +241,17 @@ export function useCinematicScroll() {
         }
       }
 
+      /*
+       * The two beats span the runway end to end, deliberately.
+       *
+       * The hero copy starts leaving on the first pixel of scroll rather than
+       * after 420 of it, and the about sheet finishes 100px before the stage
+       * releases rather than 900. That last stretch is the only hold left: long
+       * enough to read the sheet at rest, short enough not to feel stuck.
+       */
       const s = smoothScroll;
-      const aboutIn = smoothstep(640 * k, 1500 * k, s);
-      const introExit = smoothstep(420 * k, 1020 * k, s);
+      const introExit = smoothstep(0, 520 * k, s);
+      const aboutIn = smoothstep(280 * k, 1300 * k, s);
 
       /*
        * The about sheet is an opaque sheet of paper, so it must never be
