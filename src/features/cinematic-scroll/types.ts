@@ -75,7 +75,10 @@ export type CinematicCopy = {
 export type HeroSearch = {
   /** Where the form submits — already locale- and segment-translated. */
   action: string;
+  /** Shown above the field, not hidden: this is the site's primary action. */
   label: string;
   placeholder: string;
   submitLabel: string;
+  /** One line under the field saying it reads a sentence, not keywords. */
+  hint: string;
 };

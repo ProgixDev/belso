@@ -44,6 +44,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             label: dict.home.searchLabel,
             placeholder: dict.home.searchPlaceholder,
             submitLabel: dict.home.searchSubmit,
+            hint: dict.home.searchHint,
           }}
         />
 

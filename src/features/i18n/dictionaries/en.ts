@@ -23,7 +23,8 @@ export const en: Dictionary = {
   },
   home: {
     searchLabel: "Describe the property you’re looking for",
-    searchPlaceholder: "Modern villa in Marrakech with Atlas views, between 8 and 12M MAD",
+    searchHint: "Natural-language search — write a sentence, not keywords.",
+    searchPlaceholder: "Villa in Marrakech, Atlas views, 8–12M MAD",
     searchSubmit: "Search",
     scene: {
       sceneLabel: "Belso, in pictures",
