@@ -294,6 +294,10 @@
   width: min(100%, 700px);
   padding: clamp(14px, 1.8vh, 20px) clamp(16px, 1.4vw, 22px) clamp(12px, 1.5vh, 16px);
   background: var(--paper, #f6ece0);
+  /* Softly rounded, not a pill: a card this wide with a stadium radius reads as
+   * a lozenge. The corner is large enough to feel deliberate against the hard
+   * rectangles of the scene, and the pills inside carry the roundness. */
+  border-radius: clamp(18px, 1.9vw, 28px);
   box-shadow: 0 22px 54px rgba(23, 17, 13, 0.34);
   pointer-events: auto;
   opacity: var(--in-cta, 1);
@@ -314,18 +318,26 @@
 .heroSearch {
   display: flex;
   align-items: stretch;
+  gap: 6px;
   width: 100%;
-  height: clamp(48px, 6vh, 58px);
+  height: clamp(52px, 6.6vh, 64px);
+  /* The padding is what makes this a pill holding a pill rather than two
+   * half-capsules butted together — the button needs to float clear of the
+   * outer edge or the two radii fight. */
+  padding: 5px;
   /* A shade brighter than the block it sits on, plus a hairline: two cream
    * surfaces need one or the other to read as a field rather than a seam. */
   background: #fffdf8;
   border: 1px solid rgba(36, 28, 22, 0.2);
+  border-radius: 999px;
 }
 
 .heroSearchInput {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0 clamp(16px, 1.7vw, 24px);
+  /* More on the left than the right: the pill's curve eats into the first few
+   * pixels, and text starting flush against it looks pinched. */
+  padding: 0 clamp(10px, 1vw, 14px) 0 clamp(18px, 1.7vw, 26px);
   border: none;
   background: transparent;
   color: #241c16;
@@ -345,18 +357,21 @@
 /* The form owns the focus ring: a ring on the bare input would sit inside the
  * cream bar and read as a rectangle floating in a rectangle. Ink is safe here
  * because the ring now falls on the block's own paper, not on the film. */
+/* `outline` follows `border-radius`, so the focus ring is a pill too. */
 .heroSearch:focus-within {
   outline: 2px solid #241c16;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .heroSearchSubmit {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   flex: 0 0 auto;
-  padding: 0 clamp(18px, 1.9vw, 30px);
+  padding: 0 clamp(20px, 2vw, 32px);
   border: none;
+  border-radius: 999px;
   background: #241c16;
   color: #f9f2e8;
   font-size: 11px;
@@ -700,14 +715,15 @@
   /* The column is sized off the viewport here rather than a fraction of it:
    * 58vw is 226px on a phone, and the search bar simply overflowed it. */
   .heroColumn {
-    left: 18px;
-    right: 18px;
+    left: 15px;
+    right: 15px;
     width: auto;
   }
 
-  /* Every horizontal pixel here is spent on the example sentence. */
+  /* Every horizontal pixel here is spent on the example sentence: the rounding
+   * cost about 20px of it on a 360px phone, and this buys it back. */
   .heroSearchBlock {
-    padding: 12px 12px 10px;
+    padding: 12px 10px 10px;
   }
 
   /* The bar stacks on a phone. Side by side, the button took 190px of a 310px
@@ -717,18 +733,19 @@
   .heroSearch {
     flex-direction: column;
     height: auto;
+    padding: 4px;
+    border-radius: 28px;
   }
 
   .heroSearchInput {
-    height: 50px;
-    padding: 0 12px;
+    height: 48px;
+    padding: 0 14px;
     /* Sized against the example, not chosen by feel: this is the narrowest the
      * type can be while the French sentence still clears a 360px phone. */
     font-size: 12px;
   }
 
   .heroSearchSubmit {
-    justify-content: center;
     height: 48px;
     letter-spacing: 0.18em;
   }
