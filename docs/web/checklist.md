@@ -38,3 +38,24 @@ WEB-NOINDEX-PREVIEW| P2 | Non-production/preview deploys are noindex | robots/en
 Use `next/image` (sized, lazy below the fold), `next/font` (already used — Geist), avoid layout
 shift (reserve space), code-split heavy client components, and budget LCP < 2.5s / CLS < 0.1 /
 INP < 200ms. Verify with Lighthouse before launch.
+
+## Environment variables in a deploy
+
+Three variables decide whether a deploy is a real site or a demo of one. Set them on the host
+(Vercel: Project → Settings → Environment Variables), for every environment you build.
+
+| Variable                        | Unset / blank                                            | Set it to                                           |
+| ------------------------------- | -------------------------------------------------------- | --------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`          | Vercel's production domain, else `http://localhost:3000` | the bound domain, with scheme, no trailing `/`      |
+| `NEXT_PUBLIC_SUPABASE_URL`      | placeholder — storefront fine, auth routes dead          | the project URL from Supabase → API settings        |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | placeholder — storefront fine, auth routes dead          | the **anon/publishable** key, never the service key |
+
+**A declared-but-empty variable is the one that bites.** It is not the same as an unset one to
+`??`, which passes `""` through to whatever consumes it — `z.string().url()` rejects it and the
+build dies in `Collecting page data`, or `new URL("")` throws in the root layout. `src/core/env.client.ts`
+and `src/core/site.ts` now treat blank as unset (`src/core/env.client.test.ts` holds the line), so
+the failure mode is a warning in the build log rather than a failed deploy — but the underlying
+misconfiguration is still yours to fix. Either fill the variable in or delete it from the project.
+
+Server-only secrets (`SUPABASE_SERVICE_ROLE_KEY`) go in the same place but must never carry a
+`NEXT_PUBLIC_` prefix — `pnpm secrets:check` fails the build if one does.
