@@ -458,25 +458,6 @@
   letter-spacing: 0.02em;
 }
 
-.heroNote {
-  position: absolute;
-  right: clamp(26px, 5.4vw, 86px);
-  bottom: 8.5vh;
-  width: min(345px, 30vw);
-  margin: 0;
-  color: #fffaf3;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  text-shadow:
-    0 1px 3px rgba(28, 20, 14, 0.65),
-    0 2px 22px rgba(23, 17, 13, 0.5);
-  opacity: var(--in-note, 1);
-  transform: translate3d(0, calc((1 - var(--in-note, 1)) * 16px), 0);
-}
-
 /* --- About panel ---------------------------------------------------------- */
 
 /*
@@ -779,10 +760,6 @@
 
   .heroLede {
     font-size: 2.1rem;
-  }
-
-  .heroNote {
-    display: none;
   }
 }
 

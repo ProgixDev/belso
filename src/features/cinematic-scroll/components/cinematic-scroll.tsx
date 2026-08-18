@@ -143,7 +143,6 @@ export function CinematicScroll({ search, copy }: { search: HeroSearch; copy: Ci
               </div>
             </div>
           </div>
-          <p className={styles.heroNote}>{copy.note}</p>
         </section>
 
         <section

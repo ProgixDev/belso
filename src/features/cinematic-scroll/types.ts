@@ -54,7 +54,6 @@ export type CinematicCopy = {
   heroLabel: string;
   stats: readonly [Figure, Figure, Figure];
   lede: readonly [string, string, string, string];
-  note: string;
   scrollHint: string;
   about: {
     name: string;

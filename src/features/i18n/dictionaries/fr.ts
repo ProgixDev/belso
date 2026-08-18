@@ -54,7 +54,6 @@ export const fr = {
       ] as Three<Figure>,
       // Four lines, staggered one at a time by the splash timeline.
       lede: ["Là où", "l’héritage", "rencontre", "le foyer"] as Four<string>,
-      note: "Une résidence contemporaine inspirée par la pierre chaude, le calme du désert et la beauté durable du dessin intemporel.",
       scrollHint: "Faites défiler",
       about: {
         name: "À propos de Belso",
