@@ -150,3 +150,49 @@ test("AC-10: the header navigation is routes, not scroll positions", async ({ pa
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await shot(page, "07-about-page");
 });
+
+/*
+ * The hero search is the site's primary action and its placeholder is the
+ * instruction manual: it is the only thing telling a visitor they can type a
+ * sentence rather than keywords. It shipped clipped at "Villa moderne à
+ * Marraké" — 191px of field for 395px of sentence — and clipped again twice
+ * while being fixed, because the field is sized by a chain of percentages and
+ * every padding change moves it.
+ *
+ * So this measures rather than eyeballs, at the widths where the layout
+ * changes shape: side by side above 640px, stacked below it.
+ */
+for (const [width, height] of [
+  [1440, 900],
+  [1024, 768],
+  [768, 1024],
+  [390, 844],
+] as const) {
+  test(`the hero search example is never clipped at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto("/fr");
+
+    const input = page.getByRole("searchbox");
+    await expect(input).toBeVisible();
+    // The label is visible, not `sr-only` — the field's purpose cannot be left
+    // to a placeholder that may itself be cut off.
+    await expect(page.getByText("Décrivez le bien que vous cherchez")).toBeVisible();
+
+    const headroom = await input.evaluate((el: HTMLInputElement) => {
+      const style = getComputedStyle(el);
+      const probe = document.createElement("span");
+      probe.style.cssText = `position:absolute;visibility:hidden;white-space:nowrap;font:${style.font};letter-spacing:${style.letterSpacing}`;
+      probe.textContent = el.placeholder;
+      document.body.append(probe);
+      const needed = probe.getBoundingClientRect().width;
+      probe.remove();
+      const space =
+        el.getBoundingClientRect().width -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight);
+      return Math.round(space - needed);
+    });
+
+    expect(headroom, `placeholder overflows the field by ${-headroom}px`).toBeGreaterThan(0);
+  });
+}

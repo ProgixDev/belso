@@ -198,7 +198,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  width: min(52vw, 560px);
+  width: min(86vw, 720px);
 }
 
 .heroStats {
@@ -237,6 +237,10 @@
   flex-direction: column;
   align-items: flex-start;
   gap: clamp(26px, 6vh, 58px);
+  /* Both ancestors are `align-items: flex-start`, so without this the block is
+   * shrink-to-fit and every percentage width inside it resolves against its own
+   * content — which is how a field declared at 470px rendered at 375px. */
+  width: 100%;
   margin-top: auto;
 }
 
@@ -257,48 +261,90 @@
   transform: translate3d(0, calc((1 - var(--lede-in, 1)) * 16px), 0);
 }
 
-.heroCtaMark {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 16px;
-  border-left: 1px solid rgba(36, 28, 22, 0.22);
-  font-size: 15px;
-}
+/* --- Hero search ----------------------------------------------------------
+ *
+ * The site's primary action, and it did not look like one: a 13px field in a
+ * 470px bar tucked under the lede, showing 191px of a placeholder that needs
+ * 395px — so the example sentence teaching people they can *describe* a house
+ * was cut off at "Villa moderne à Marraké". The whole proposition was hidden
+ * in the half of the sentence that did not fit.
+ *
+ * It is now a labelled block: what to do above it, a full example inside it,
+ * and a filled button that reads as the action. Wide enough that the example
+ * is never clipped — that sentence is the instruction manual.
+ */
 
-.heroSearch {
+/*
+ * The block carries its own paper, rather than floating its label over the film.
+ *
+ * Measured first as bare type on the scene: the label came out at 1.46:1 and
+ * the hint at 1.02:1. Nothing was going to fix that by choosing a colour — the
+ * backdrop behind this corner runs from a dark building to a bright sky within
+ * the same frame, so cream dies on the sky and ink dies on the building. The
+ * big lede above survives only because it is 53px and needs 3:1.
+ *
+ * Small type needs a surface. Giving the whole block one also does what the
+ * brief asked for: the site's main function stops being three loose elements
+ * over a photograph and becomes one object you can see at a glance.
+ */
+.heroSearchBlock {
   display: flex;
-  align-items: stretch;
-  width: min(100%, 470px);
-  height: clamp(42px, 5.4vh, 52px);
-  background: #fffaf3;
-  box-shadow: 0 18px 40px rgba(23, 17, 13, 0.22);
+  flex-direction: column;
+  gap: clamp(8px, 1.1vh, 12px);
+  width: min(100%, 700px);
+  padding: clamp(14px, 1.8vh, 20px) clamp(16px, 1.4vw, 22px) clamp(12px, 1.5vh, 16px);
+  background: var(--paper, #f6ece0);
+  box-shadow: 0 22px 54px rgba(23, 17, 13, 0.34);
   pointer-events: auto;
   opacity: var(--in-cta, 1);
   transform: translate3d(0, calc((1 - var(--in-cta, 1)) * 16px), 0);
 }
 
+/* Was `sr-only`. The field's purpose is not obvious from a placeholder alone,
+ * and the string already existed — it was simply being hidden from the people
+ * who needed it most. */
+.heroSearchLabel {
+  color: rgba(36, 28, 22, 0.66);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.heroSearch {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: clamp(48px, 6vh, 58px);
+  /* A shade brighter than the block it sits on, plus a hairline: two cream
+   * surfaces need one or the other to read as a field rather than a seam. */
+  background: #fffdf8;
+  border: 1px solid rgba(36, 28, 22, 0.2);
+}
+
 .heroSearchInput {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0 clamp(14px, 1.5vw, 20px);
+  padding: 0 clamp(16px, 1.7vw, 24px);
   border: none;
   background: transparent;
   color: #241c16;
   font: inherit;
-  font-size: 13px;
-  letter-spacing: 0.01em;
+  font-size: 15px;
+  letter-spacing: 0.005em;
   outline: none;
 }
 
 .heroSearchInput::placeholder {
-  color: rgba(36, 28, 22, 0.5);
-  /* The placeholder is a full example sentence and the field is narrow —
-     without this it is clipped mid-word on every viewport under ~1400px. */
+  color: rgba(36, 28, 22, 0.58);
+  /* A last-resort guard. The field is now sized so the example fits, but a
+     longer translation must degrade to an ellipsis rather than a hard cut. */
   text-overflow: ellipsis;
 }
 
 /* The form owns the focus ring: a ring on the bare input would sit inside the
-   cream bar and read as a rectangle floating in a rectangle. */
+ * cream bar and read as a rectangle floating in a rectangle. Ink is safe here
+ * because the ring now falls on the block's own paper, not on the film. */
 .heroSearch:focus-within {
   outline: 2px solid #241c16;
   outline-offset: 2px;
@@ -306,24 +352,43 @@
 
 .heroSearchSubmit {
   display: inline-flex;
-  align-items: stretch;
-  flex: 0 0 auto;
-  padding: 0;
-  border: none;
-  border-left: 1px solid rgba(36, 28, 22, 0.22);
-  background: transparent;
-  color: #241c16;
-  cursor: pointer;
-}
-
-.heroSearchSubmit > span:first-child {
-  display: inline-flex;
   align-items: center;
-  padding: 0 clamp(14px, 1.4vw, 22px);
+  gap: 10px;
+  flex: 0 0 auto;
+  padding: 0 clamp(18px, 1.9vw, 30px);
+  border: none;
+  background: #241c16;
+  color: #f9f2e8;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 220ms ease;
+}
+
+.heroSearchSubmit:hover {
+  background: #3c2d22;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroSearchSubmit {
+    transition: none;
+  }
+}
+
+.heroCtaMark {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+/* Says the quiet part out loud: this reads a sentence, it is not a keyword box. */
+.heroSearchHint {
+  margin: 0;
+  color: rgba(36, 28, 22, 0.68);
+  font-size: 11px;
+  letter-spacing: 0.02em;
 }
 
 .heroNote {
@@ -630,6 +695,42 @@
 @media (max-width: 640px) {
   .stage {
     min-height: 640px;
+  }
+
+  /* The column is sized off the viewport here rather than a fraction of it:
+   * 58vw is 226px on a phone, and the search bar simply overflowed it. */
+  .heroColumn {
+    left: 18px;
+    right: 18px;
+    width: auto;
+  }
+
+  /* Every horizontal pixel here is spent on the example sentence. */
+  .heroSearchBlock {
+    padding: 12px 12px 10px;
+  }
+
+  /* The bar stacks on a phone. Side by side, the button took 190px of a 310px
+   * form and left the input 118px — a third of what the example sentence needs,
+   * so the one thing that teaches people to type a sentence was unreadable
+   * exactly where there is least room to guess. */
+  .heroSearch {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .heroSearchInput {
+    height: 50px;
+    padding: 0 12px;
+    /* Sized against the example, not chosen by feel: this is the narrowest the
+     * type can be while the French sentence still clears a 360px phone. */
+    font-size: 12px;
+  }
+
+  .heroSearchSubmit {
+    justify-content: center;
+    height: 48px;
+    letter-spacing: 0.18em;
   }
 
   .heroTitle {

@@ -39,7 +39,8 @@ export const fr = {
   },
   home: {
     searchLabel: "Décrivez le bien que vous cherchez",
-    searchPlaceholder: "Villa moderne à Marrakech avec vue sur l’Atlas, entre 8 et 12 M MAD",
+    searchHint: "Recherche en langage naturel — écrivez une phrase, pas des mots-clés.",
+    searchPlaceholder: "Villa à Marrakech, vue Atlas, 8–12 M MAD",
     searchSubmit: "Rechercher",
     // The cinematic scene. It used to hold its own English copy, so /fr played
     // French search chrome inside an English film.

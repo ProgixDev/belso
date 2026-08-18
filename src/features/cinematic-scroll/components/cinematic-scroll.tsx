@@ -102,30 +102,45 @@ export function CinematicScroll({ search, copy }: { search: HeroSearch; copy: Ci
               </h2>
 
               {/*
+               * The site's primary action, so it is labelled rather than left
+               * to a placeholder. `htmlFor` on a visible label instead of an
+               * `sr-only` one: the string was already written, it was just
+               * hidden from everyone who could see.
+               *
                * A plain GET form, deliberately: it puts the visitor's words in
                * the URL (AC-2) and works before this client component has
                * hydrated — which on a page this animation-heavy is not a
                * hypothetical window.
                */}
-              <form className={styles.heroSearch} action={search.action} method="get" role="search">
-                <label className="sr-only" htmlFor="hero-search">
+              <div className={styles.heroSearchBlock}>
+                <label className={styles.heroSearchLabel} htmlFor="hero-search">
                   {search.label}
                 </label>
-                <input
-                  className={styles.heroSearchInput}
-                  id="hero-search"
-                  name="q"
-                  type="search"
-                  placeholder={search.placeholder}
-                  autoComplete="off"
-                />
-                <button className={styles.heroSearchSubmit} type="submit">
-                  <span>{search.submitLabel}</span>
-                  <span aria-hidden="true" className={styles.heroCtaMark}>
-                    »
-                  </span>
-                </button>
-              </form>
+
+                <form
+                  className={styles.heroSearch}
+                  action={search.action}
+                  method="get"
+                  role="search"
+                >
+                  <input
+                    className={styles.heroSearchInput}
+                    id="hero-search"
+                    name="q"
+                    type="search"
+                    placeholder={search.placeholder}
+                    autoComplete="off"
+                  />
+                  <button className={styles.heroSearchSubmit} type="submit">
+                    <span>{search.submitLabel}</span>
+                    <span aria-hidden="true" className={styles.heroCtaMark}>
+                      →
+                    </span>
+                  </button>
+                </form>
+
+                <p className={styles.heroSearchHint}>{search.hint}</p>
+              </div>
             </div>
           </div>
           <p className={styles.heroNote}>{copy.note}</p>
