@@ -45,13 +45,13 @@
 /* --- Stage ---------------------------------------------------------------- */
 
 .cinemaScroll {
-  --runway: 2400px;
+  --runway: 1400px;
   --paper: #f6ece0;
   --ink: #241c16;
   --blur-tint: 201, 168, 130;
 
   position: relative;
-  height: calc(100vh + var(--runway, 2400px));
+  height: calc(100vh + var(--runway, 1400px));
 }
 
 .stage {
