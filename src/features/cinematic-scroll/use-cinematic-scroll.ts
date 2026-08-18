@@ -145,7 +145,9 @@ export function useCinematicScroll() {
     /**
      * Intro timeline, in normalized 0→1 of `introDuration`. The plate's rise owns
      * the full envelope; the type runs on tighter, more closely spaced windows so
-     * the chrome and copy resolve well before it, leaving the CTA as the last beat.
+     * the chrome and copy resolve well before it, leaving the search block as the
+     * last beat — `--in-cta` reaching 1 is what says the splash has finished, and
+     * the e2e specs wait on exactly that.
      */
     const applyIntro = (t: number) => {
       set("--rise", `${((1 - seg(t, 0, 0.86)) * riseSlack()).toFixed(2)}px`);
@@ -161,7 +163,6 @@ export function useCinematicScroll() {
         set("--in-l" + i, seg(t, 0.56 + (i - 1) * 0.042, 0.7 + (i - 1) * 0.042).toFixed(4));
       }
       set("--in-cta", seg(t, 0.76, 0.9).toFixed(4));
-      set("--in-note", seg(t, 0.78, 0.92).toFixed(4));
       return seg(t, 0.26, 0.66);
     };
 

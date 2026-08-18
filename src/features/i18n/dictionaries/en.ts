@@ -35,7 +35,6 @@ export const en: Dictionary = {
         { value: "24/7", label: "Secure living" },
       ],
       lede: ["Where", "heritage", "meets", "home"],
-      note: "A modern residence inspired by warm stone, desert calm, and the lasting beauty of timeless design.",
       scrollHint: "Scroll to explore",
       about: {
         name: "About Belso",

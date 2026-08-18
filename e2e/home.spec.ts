@@ -78,7 +78,7 @@ test("@cuj CUJ-01: visitor lands, watches the scene, and reaches the catalogue",
   // The splash intro staggers the chrome in over ~2.6s; wait for its last beat.
   await page.waitForFunction(
     (selector) =>
-      document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-note") ===
+      document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-cta") ===
       "1.0000",
     SCENE,
     { timeout: 15_000 },
@@ -223,7 +223,7 @@ for (const [width, height] of [
     // reported a 4px overlap here where the settled frame has 25px of air.
     await page.waitForFunction(
       (selector) =>
-        document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-note") ===
+        document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-cta") ===
         "1.0000",
       SCENE,
       { timeout: 15_000 },

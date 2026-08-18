@@ -20,7 +20,7 @@ test("@cuj CUJ-03: visitor searches from the home scene and opens a listing", as
   // now is a half-played frame, which is worthless as evidence.
   await page.waitForFunction(
     (selector) =>
-      document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-note") ===
+      document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-cta") ===
       "1.0000",
     SCENE,
     { timeout: 15_000 },
