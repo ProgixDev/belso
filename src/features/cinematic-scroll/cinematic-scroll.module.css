@@ -192,7 +192,7 @@
   position: absolute;
   left: clamp(26px, 5.4vw, 86px);
   top: 16.5vh;
-  bottom: 8vh;
+  bottom: clamp(24px, 4.4vh, 56px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -236,7 +236,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(26px, 6vh, 58px);
+  gap: clamp(18px, 3vh, 34px);
   /* Both ancestors are `align-items: flex-start`, so without this the block is
    * shrink-to-fit and every percentage width inside it resolves against its own
    * content — which is how a field declared at 470px rendered at 375px. */
@@ -244,13 +244,23 @@
   margin-top: auto;
 }
 
+/*
+ * Sized off the *height* as well as the width, which is what keeps it clear of
+ * the wordmark above it.
+ *
+ * The two were never actually related: the wordmark's bottom is a function of
+ * the viewport width (15vh + 19vw of type), while this block hangs off the
+ * viewport bottom. They drift past each other, so the clearance was luck —
+ * measured at 1440x900 it was one pixel, and at 1900x950 the lede sat 75px
+ * inside "BELSO". A `vh` term in the clamp is what ties the two together.
+ */
 .heroLede {
   width: min(11ch, 52vw);
   margin: 0;
   color: #38271c;
-  font-size: clamp(2rem, 3.7vw, 3.7rem);
+  font-size: clamp(1.85rem, min(3.4vw, 5.6vh), 3rem);
   font-weight: 700;
-  line-height: 0.95;
+  line-height: 0.9;
   letter-spacing: -0.018em;
   text-transform: uppercase;
 }
@@ -738,9 +748,12 @@
     gap: 15px;
   }
 
-  .heroLede {
-    font-size: clamp(1.9rem, 3.4vw, 3rem);
-  }
+  /* No `.heroLede` override here.
+   *
+   * There used to be one, and it dropped the `vh` term from the size — on the
+   * short viewports that need it most. It is why a 1366x768 laptop kept the
+   * lede at its widest-viewport size and left 20px between it and the wordmark,
+   * while a 1440x800 screen, one breakpoint away, sized itself correctly. */
 }
 
 @media (max-width: 1100px) {
