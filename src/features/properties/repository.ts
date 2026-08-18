@@ -1,7 +1,14 @@
 import "server-only";
-import type { Locale } from "@/core/i18n";
+import { type Locale, locales } from "@/core/i18n";
 import { propertyFixtures } from "./fixtures";
-import { defaultSort, localizeProperty, matchScore, pickSimilar, sortProperties } from "./lib";
+import {
+  defaultSort,
+  localizeProperty,
+  matchScore,
+  pickSimilar,
+  resolveTranslation,
+  sortProperties,
+} from "./lib";
 import type { LocalizedProperty, PropertyQuery } from "./types";
 
 /**
@@ -59,6 +66,33 @@ export async function getSimilar(
   return pickSimilar(subject, propertyFixtures, limit)
     .map((property) => localizeProperty(property, locale))
     .filter((property): property is LocalizedProperty => property !== null);
+}
+
+/**
+ * One listing's address in every language, keyed by locale.
+ *
+ * `LocalizedProperty` cannot answer this — it is resolved for exactly one
+ * language and carries exactly one slug — which is how the detail page came to
+ * declare its `hreflang` alternates using the *current* locale's slug for all
+ * of them. The URL still resolved, so nothing looked broken; but it pointed at
+ * a page whose own canonical was a different address, which is the shape of
+ * hreflang cluster a crawler discards entirely.
+ *
+ * A locale with no translation of its own falls back (AC-9), and the fallback
+ * slug is genuinely where that page lives, so it is the right answer rather
+ * than an omission.
+ */
+export async function getLocaleSlugs(slug: string): Promise<Partial<Record<Locale, string>>> {
+  const found = propertyFixtures.find((property) =>
+    Object.values(property.translations).some((translation) => translation?.slug === slug),
+  );
+  if (!found) return {};
+
+  return Object.fromEntries(
+    locales
+      .map((locale) => [locale, resolveTranslation(found, locale)?.slug] as const)
+      .filter(([, resolved]) => Boolean(resolved)),
+  );
 }
 
 /** Total catalogue size, for the "browse everything" route out of an empty search (AC-4). */

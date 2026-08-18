@@ -305,3 +305,54 @@ test.describe("the cinematic scene", () => {
     );
   });
 });
+
+/*
+ * The header holds four links, a wordmark and the language switcher. In one row
+ * that needs about 420px of the 336px a 390px phone actually offers, so it used
+ * to fail twice over: "À propos" broke onto two lines, and the switcher was
+ * pushed past the right edge — to x=447 in a 390px viewport, clipped rather
+ * than scrollable. On any phone at or below 414px the language could not be
+ * changed at all, which is AC-1 failing on the commonest screen we have.
+ *
+ * Below 640px it now wraps to two lines by design. This measures both header
+ * modes — over the scene, where it is fixed chrome, and on an ordinary page,
+ * where it is a solid bar with different padding.
+ */
+for (const path of ["/fr", "/fr/biens"] as const) {
+  for (const width of [320, 360, 390, 414, 480] as const) {
+    test(`the header fits ${path} at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 844 });
+      await page.goto(path);
+
+      const measured = await page.evaluate(() => {
+        const header = document.querySelector("header");
+        if (!header) return null;
+        const navs = [...header.querySelectorAll("nav")];
+        const links = [...(navs[0]?.querySelectorAll("a") ?? [])].map((a) =>
+          a.getBoundingClientRect(),
+        );
+        return {
+          linkHeight: Math.max(...links.map((r) => r.height)),
+          navRight: Math.max(...links.map((r) => r.right)),
+          switcherRight: navs.at(-1)?.getBoundingClientRect().right ?? 0,
+          overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        };
+      });
+
+      expect(measured).not.toBeNull();
+      const { linkHeight, navRight, switcherRight, overflow } = measured!;
+
+      // A single line of 17px type. Two lines measure 34.
+      expect(linkHeight, "a navigation label wrapped onto a second line").toBeLessThan(20);
+      expect(
+        navRight,
+        `the navigation runs ${navRight - width}px past the right edge`,
+      ).toBeLessThanOrEqual(width);
+      expect(
+        switcherRight,
+        `the language switcher is ${switcherRight - width}px off-screen and unreachable`,
+      ).toBeLessThanOrEqual(width);
+      expect(overflow, "the page scrolls sideways").toBe(0);
+    });
+  }
+}
