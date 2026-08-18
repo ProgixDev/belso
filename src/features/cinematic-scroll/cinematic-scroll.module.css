@@ -291,13 +291,13 @@
   display: flex;
   flex-direction: column;
   gap: clamp(8px, 1.1vh, 12px);
-  width: min(100%, 700px);
-  padding: clamp(14px, 1.8vh, 20px) clamp(16px, 1.4vw, 22px) clamp(12px, 1.5vh, 16px);
+  width: min(100%, 620px);
+  padding: clamp(12px, 1.5vh, 16px) clamp(14px, 1.2vw, 18px) clamp(10px, 1.2vh, 13px);
   background: var(--paper, #f6ece0);
   /* Softly rounded, not a pill: a card this wide with a stadium radius reads as
    * a lozenge. The corner is large enough to feel deliberate against the hard
    * rectangles of the scene, and the pills inside carry the roundness. */
-  border-radius: clamp(18px, 1.9vw, 28px);
+  border-radius: clamp(16px, 1.6vw, 24px);
   box-shadow: 0 22px 54px rgba(23, 17, 13, 0.34);
   pointer-events: auto;
   opacity: var(--in-cta, 1);
@@ -320,7 +320,7 @@
   align-items: stretch;
   gap: 6px;
   width: 100%;
-  height: clamp(52px, 6.6vh, 64px);
+  height: clamp(46px, 5.8vh, 56px);
   /* The padding is what makes this a pill holding a pill rather than two
    * half-capsules butted together — the button needs to float clear of the
    * outer edge or the two radii fight. */
@@ -337,12 +337,12 @@
   min-width: 0;
   /* More on the left than the right: the pill's curve eats into the first few
    * pixels, and text starting flush against it looks pinched. */
-  padding: 0 clamp(10px, 1vw, 14px) 0 clamp(18px, 1.7vw, 26px);
+  padding: 0 clamp(8px, 0.9vw, 12px) 0 clamp(16px, 1.5vw, 22px);
   border: none;
   background: transparent;
   color: #241c16;
   font: inherit;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.005em;
   outline: none;
 }
@@ -369,7 +369,7 @@
   justify-content: center;
   gap: 10px;
   flex: 0 0 auto;
-  padding: 0 clamp(20px, 2vw, 32px);
+  padding: 0 clamp(16px, 1.7vw, 26px);
   border: none;
   border-radius: 999px;
   background: #241c16;
@@ -387,6 +387,48 @@
   background: #3c2d22;
 }
 
+/* The bar stacks once the column can no longer hold it side by side.
+ *
+ * Its own breakpoint rather than the hero's 640px type one, because what
+ * decides this is the field, not the headline: at 660px the button took most
+ * of the bar and left the input under a third of what the example sentence
+ * needs — the one line that teaches people to type a sentence, unreadable
+ * exactly where there is least room to guess at half of it. */
+@media (max-width: 720px) {
+  .heroColumn {
+    left: 15px;
+    right: 15px;
+    width: auto;
+  }
+
+  .heroSearchBlock {
+    /* Capped: a stacked bar running the full width of a tablet reads as a form,
+     * not as the one thing to do here. */
+    width: min(100%, 440px);
+    padding: 12px 10px 10px;
+  }
+
+  .heroSearch {
+    flex-direction: column;
+    height: auto;
+    padding: 4px;
+    border-radius: 26px;
+  }
+
+  .heroSearchInput {
+    height: 46px;
+    padding: 0 14px;
+    /* Sized against the example, not chosen by feel: this is the narrowest the
+     * type can be while the French sentence still clears a 360px phone. */
+    font-size: 12px;
+  }
+
+  .heroSearchSubmit {
+    height: 44px;
+    letter-spacing: 0.18em;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .heroSearchSubmit {
     transition: none;
@@ -402,7 +444,7 @@
 .heroSearchHint {
   margin: 0;
   color: rgba(36, 28, 22, 0.68);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.02em;
 }
 
@@ -714,42 +756,6 @@
 
   /* The column is sized off the viewport here rather than a fraction of it:
    * 58vw is 226px on a phone, and the search bar simply overflowed it. */
-  .heroColumn {
-    left: 15px;
-    right: 15px;
-    width: auto;
-  }
-
-  /* Every horizontal pixel here is spent on the example sentence: the rounding
-   * cost about 20px of it on a 360px phone, and this buys it back. */
-  .heroSearchBlock {
-    padding: 12px 10px 10px;
-  }
-
-  /* The bar stacks on a phone. Side by side, the button took 190px of a 310px
-   * form and left the input 118px — a third of what the example sentence needs,
-   * so the one thing that teaches people to type a sentence was unreadable
-   * exactly where there is least room to guess. */
-  .heroSearch {
-    flex-direction: column;
-    height: auto;
-    padding: 4px;
-    border-radius: 28px;
-  }
-
-  .heroSearchInput {
-    height: 48px;
-    padding: 0 14px;
-    /* Sized against the example, not chosen by feel: this is the narrowest the
-     * type can be while the French sentence still clears a 360px phone. */
-    font-size: 12px;
-  }
-
-  .heroSearchSubmit {
-    height: 48px;
-    letter-spacing: 0.18em;
-  }
-
   .heroTitle {
     font-size: 23vw;
   }
