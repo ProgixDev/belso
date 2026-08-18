@@ -40,9 +40,16 @@ export { defaultSort } from "./lib";
 
 export { Gallery } from "./components/gallery";
 export { KeyFacts } from "./components/key-facts";
+export { ListingJsonLd, type ListingJsonLdLabels } from "./components/listing-json-ld";
 export { Price } from "./components/price";
 export { PropertyCard, type PropertyCardLabels } from "./components/property-card";
 export { ResultsHeader } from "./components/results-header";
 export { SortControl } from "./components/sort-control";
 
-export { countProperties, getPropertyBySlug, getSimilar, listProperties } from "./repository";
+export {
+  countProperties,
+  getLocaleSlugs,
+  getPropertyBySlug,
+  getSimilar,
+  listProperties,
+} from "./repository";

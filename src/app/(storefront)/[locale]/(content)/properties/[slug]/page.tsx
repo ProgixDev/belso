@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Reveal } from "@/components/motion";
 import { Badge } from "@/components/ui/badge";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { EnquiryForm } from "@/features/enquiries";
@@ -8,9 +9,11 @@ import { getDictionary } from "@/features/i18n";
 import { enquiryLabels } from "../../../_components/enquiry-labels";
 import {
   Gallery,
+  getLocaleSlugs,
   getPropertyBySlug,
   getSimilar,
   KeyFacts,
+  ListingJsonLd,
   Price,
   PropertyCard,
 } from "@/features/properties";
@@ -41,6 +44,16 @@ export async function generateMetadata({
   const property = await getPropertyBySlug(slug, locale);
   if (!property) return {};
 
+  /*
+   * Each language's own slug, not this one's repeated. The French page used to
+   * announce its English alternate as `/en/properties/villa-vue-atlas-palmeraie`
+   * — an address that resolves but whose canonical is
+   * `/en/properties/atlas-view-villa-palmeraie`. An hreflang pointing at a page
+   * that names a different canonical is a cluster a crawler throws away, and it
+   * also put this page at odds with `sitemap.ts`, which had it right.
+   */
+  const slugs = await getLocaleSlugs(slug);
+
   return {
     title: property.title,
     // The listing's own words, trimmed — a description repeated from the site
@@ -49,7 +62,10 @@ export async function generateMetadata({
     alternates: {
       canonical: toPublicPath(`/properties/${property.slug}`, locale),
       languages: Object.fromEntries(
-        locales.map((l) => [localeTag[l], toPublicPath(`/properties/${property.slug}`, l)]),
+        locales.map((l) => [
+          localeTag[l],
+          toPublicPath(`/properties/${slugs[l] ?? property.slug}`, l),
+        ]),
       ),
     },
   };
@@ -89,6 +105,12 @@ export default async function PropertyDetailPage({
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-12">
+      <ListingJsonLd
+        property={property}
+        path={toPublicPath(`/properties/${property.slug}`, locale)}
+        labels={{ landArea: dict.properties.landArea, amenity: dict.amenity }}
+      />
+
       <nav aria-label={dict.properties.title} className="mb-8">
         <Link
           href={toPublicPath("/properties", locale)}
@@ -111,48 +133,52 @@ export default async function PropertyDetailPage({
             }}
           />
 
-          <section aria-labelledby="description-heading" className="flex flex-col gap-4">
-            <h2 id="description-heading" className="text-lg font-semibold tracking-tight">
-              {dict.properties.description}
-            </h2>
+          <Reveal>
+            <section aria-labelledby="description-heading" className="flex flex-col gap-4">
+              <h2 id="description-heading" className="text-lg font-semibold tracking-tight">
+                {dict.properties.description}
+              </h2>
 
-            {property.isFallback ? (
-              /*
-               * AC-9. `lang` on the wrapper matters as much as the note: without
-               * it a screen reader reads French prose with an English voice,
-               * which is unintelligible rather than merely untranslated.
-               */
-              <p
-                role="note"
-                className="border-border bg-muted/50 text-muted-foreground rounded-md border px-4 py-3 text-sm"
+              {property.isFallback ? (
+                /*
+                 * AC-9. `lang` on the wrapper matters as much as the note: without
+                 * it a screen reader reads French prose with an English voice,
+                 * which is unintelligible rather than merely untranslated.
+                 */
+                <p
+                  role="note"
+                  className="border-border bg-muted/50 text-muted-foreground rounded-md border px-4 py-3 text-sm"
+                >
+                  {dict.properties.untranslated}
+                </p>
+              ) : null}
+
+              <div
+                lang={property.isFallback ? localeTag[property.textLocale] : undefined}
+                className="flex flex-col gap-4 text-sm leading-relaxed"
               >
-                {dict.properties.untranslated}
-              </p>
-            ) : null}
-
-            <div
-              lang={property.isFallback ? localeTag[property.textLocale] : undefined}
-              className="flex flex-col gap-4 text-sm leading-relaxed"
-            >
-              {property.description.split("\n\n").map((paragraph) => (
-                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-              ))}
-            </div>
-          </section>
+                {property.description.split("\n\n").map((paragraph) => (
+                  <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                ))}
+              </div>
+            </section>
+          </Reveal>
 
           {property.amenities.length > 0 ? (
-            <section aria-labelledby="amenities-heading" className="flex flex-col gap-4">
-              <h2 id="amenities-heading" className="text-lg font-semibold tracking-tight">
-                {dict.properties.amenities}
-              </h2>
-              <ul className="flex flex-wrap gap-2">
-                {property.amenities.map((amenity) => (
-                  <li key={amenity}>
-                    <Badge variant="outline">{dict.amenity[amenity]}</Badge>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <Reveal>
+              <section aria-labelledby="amenities-heading" className="flex flex-col gap-4">
+                <h2 id="amenities-heading" className="text-lg font-semibold tracking-tight">
+                  {dict.properties.amenities}
+                </h2>
+                <ul className="flex flex-wrap gap-2">
+                  {property.amenities.map((amenity) => (
+                    <li key={amenity}>
+                      <Badge variant="outline">{dict.amenity[amenity]}</Badge>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </Reveal>
           ) : null}
         </div>
 
@@ -202,37 +228,41 @@ export default async function PropertyDetailPage({
        * they just read should not have to scroll past four other listings to
        * act on it.
        */}
-      <section aria-labelledby="enquiry-heading" className="mt-20 max-w-2xl">
-        <h2 id="enquiry-heading" className="sr-only">
-          {dict.enquiry.title}
-        </h2>
-        <EnquiryForm
-          labels={enquiryLabels(dict, {
-            reference: property.reference,
-            subject: property.title,
-          })}
-          reference={property.reference}
-          subject={property.title}
-        />
-      </section>
+      <Reveal>
+        <section aria-labelledby="enquiry-heading" className="mt-20 max-w-2xl">
+          <h2 id="enquiry-heading" className="sr-only">
+            {dict.enquiry.title}
+          </h2>
+          <EnquiryForm
+            labels={enquiryLabels(dict, {
+              reference: property.reference,
+              subject: property.title,
+            })}
+            reference={property.reference}
+            subject={property.title}
+          />
+        </section>
+      </Reveal>
 
       {similar.length > 0 ? (
-        <section aria-labelledby="similar-heading" className="mt-20">
-          <h2 id="similar-heading" className="text-lg font-semibold tracking-tight">
-            {dict.properties.similar}
-          </h2>
-          <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {similar.map((item) => (
-              <li key={item.id}>
-                <PropertyCard
-                  property={item}
-                  locale={locale}
-                  labels={{ ...cardLabels, type: dict.propertyType[item.type] }}
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Reveal>
+          <section aria-labelledby="similar-heading" className="mt-20">
+            <h2 id="similar-heading" className="text-lg font-semibold tracking-tight">
+              {dict.properties.similar}
+            </h2>
+            <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {similar.map((item) => (
+                <li key={item.id}>
+                  <PropertyCard
+                    property={item}
+                    locale={locale}
+                    labels={{ ...cardLabels, type: dict.propertyType[item.type] }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
       ) : null}
     </div>
   );

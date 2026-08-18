@@ -117,9 +117,22 @@ export function SiteHeader({
         {dict.nav.skipToContent}
       </a>
 
+      {/*
+       * Below `sm` this wraps to two lines: wordmark and language on the first,
+       * the navigation spread across the second.
+       *
+       * Not a style preference — measured. In one row the four links plus the
+       * switcher need about 420px of the 336px a 390px phone has, so "À propos"
+       * broke onto two lines (34px tall against its neighbours' 17px) and the
+       * FR/EN switcher was pushed to x=447 in a 390px viewport. Clipped, not
+       * scrollable: on any phone at or below 414px the language could not be
+       * changed at all, which is AC-1 failing silently on the most common
+       * screen size we have. Shrinking the type instead saves roughly 56px of
+       * the 84px needed and cheapens the chrome to do it.
+       */}
       <div
         className={cn(
-          "flex w-full items-end justify-between gap-6 border-b",
+          "flex w-full flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b",
           onScene ? "px-[clamp(12px,3.3vw,54px)] pt-3 pb-3" : "mx-auto max-w-7xl px-6 pt-4 pb-4",
         )}
         style={{ borderColor: "var(--chrome-rule)" }}
@@ -131,7 +144,15 @@ export function SiteHeader({
           Belso
         </Link>
 
-        <nav aria-label={dict.nav.menu} className="flex items-center gap-[clamp(16px,1.7vw,30px)]">
+        {/*
+         * `order-last` rather than moving it in the DOM: the reading and tab
+         * order stays wordmark → navigation → language on every screen, while
+         * only the painted order changes.
+         */}
+        <nav
+          aria-label={dict.nav.menu}
+          className="order-last flex w-full items-center justify-between gap-[clamp(16px,1.7vw,30px)] sm:order-none sm:w-auto sm:justify-start"
+        >
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -142,7 +163,7 @@ export function SiteHeader({
                * and it needs more size than the sans did to hold its hairlines
                * at this weight.
                */
-              className="focus-visible:ring-ring rounded-sm font-serif text-[17px] leading-none font-medium tracking-[0.015em] text-[var(--chrome-ink)] transition-opacity [text-shadow:0_1px_1px_var(--chrome-halo),0_0_3px_var(--chrome-halo),0_0_13px_var(--chrome-halo)] hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:transition-none"
+              className="focus-visible:ring-ring rounded-sm font-serif text-[17px] leading-none font-medium tracking-[0.015em] whitespace-nowrap text-[var(--chrome-ink)] transition-opacity [text-shadow:0_1px_1px_var(--chrome-halo),0_0_3px_var(--chrome-halo),0_0_13px_var(--chrome-halo)] hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:transition-none"
             >
               {item.label}
             </Link>
