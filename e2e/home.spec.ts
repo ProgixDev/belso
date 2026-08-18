@@ -112,9 +112,10 @@ test("@cuj CUJ-01: visitor lands, watches the scene, and reaches the catalogue",
   await expect(page.getByRole("heading", { name: "Properties", exact: true })).toBeVisible();
   // The shelf is one row drawn from the real catalogue, not fixture cards that
   // only exist on this page.
-  await expect(
-    residences.getByRole("listitem").filter({ has: page.getByRole("link") }),
-  ).toHaveCount(3);
+  // Cards specifically: the section also carries the neighbourhood strip, so
+  // counting list items that contain a link now counts both lists.
+  await expect(residences.locator("article")).toHaveCount(3);
+  await expect(residences.getByRole("navigation")).toBeVisible();
   await shot(page, "03-residences", { fullPage: false });
 
   await scrollToSection(page, "grounds");

@@ -36,6 +36,15 @@ export {
   propertyTypes,
 } from "./types";
 
+export {
+  type District,
+  type DistrictId,
+  districtIds,
+  districtOrder,
+  districts,
+  isDistrictId,
+} from "./districts";
+
 export { defaultSort } from "./lib";
 
 export { Gallery } from "./components/gallery";
@@ -47,6 +56,7 @@ export { ResultsHeader } from "./components/results-header";
 export { SortControl } from "./components/sort-control";
 
 export {
+  countByDistrict,
   countProperties,
   getLocaleSlugs,
   getPropertyBySlug,

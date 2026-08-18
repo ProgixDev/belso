@@ -7,6 +7,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { getDictionary, interpolate } from "@/features/i18n";
 import {
+  districtOrder,
+  districts,
   listProperties,
   propertySearchParamsSchema,
   PropertyCard,
@@ -86,6 +88,30 @@ export default async function PropertiesPage({
           />
         }
       />
+
+      {/*
+       * The way into the neighbourhood writing. It sits here rather than in the
+       * header because the header holds four items before the language switcher
+       * falls off a phone — and because "which neighbourhood?" is a question
+       * someone asks while looking at a grid, not before they arrive.
+       */}
+      <Reveal as="nav" delay={0.05} className="mt-8" aria-label={dict.districts.title}>
+        <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <li className="text-muted-foreground text-[10px] font-semibold tracking-[0.22em] uppercase">
+            {dict.districts.label}
+          </li>
+          {districtOrder.map((id) => (
+            <li key={id}>
+              <Link
+                href={toPublicPath(`/districts/${id}`, locale)}
+                className="focus-visible:ring-ring rounded-sm font-serif text-[1.05rem] hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none"
+              >
+                {districts[id].copy[locale].name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
 
       {properties.length === 0 ? (
         // AC-4: never a bare empty grid — say so, and offer the way out.

@@ -1,5 +1,6 @@
 import "server-only";
 import { type Locale, locales } from "@/core/i18n";
+import { type DistrictId, districtIds } from "./districts";
 import { propertyFixtures } from "./fixtures";
 import {
   defaultSort,
@@ -27,9 +28,13 @@ import type { LocalizedProperty, PropertyQuery } from "./types";
 export async function listProperties({
   query = "",
   sort = defaultSort,
+  district,
   locale,
 }: PropertyQuery): Promise<LocalizedProperty[]> {
-  const matched = propertyFixtures.filter((property) => matchScore(property, query) > 0);
+  const matched = propertyFixtures.filter(
+    (property) =>
+      (!district || property.districtId === district) && matchScore(property, query) > 0,
+  );
 
   return sortProperties(matched, sort)
     .map((property) => localizeProperty(property, locale))
@@ -93,6 +98,19 @@ export async function getLocaleSlugs(slug: string): Promise<Partial<Record<Local
       .map((locale) => [locale, resolveTranslation(found, locale)?.slug] as const)
       .filter(([, resolved]) => Boolean(resolved)),
   );
+}
+
+/**
+ * How many listings each district holds, for the district index.
+ *
+ * Every district is present in the result even at zero — a district page that
+ * exists but is missing from its own index is a dead end a visitor can reach
+ * from a listing and then never find again.
+ */
+export async function countByDistrict(): Promise<Record<DistrictId, number>> {
+  const counts = Object.fromEntries(districtIds.map((id) => [id, 0])) as Record<DistrictId, number>;
+  for (const property of propertyFixtures) counts[property.districtId] += 1;
+  return counts;
 }
 
 /** Total catalogue size, for the "browse everything" route out of an empty search (AC-4). */

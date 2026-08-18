@@ -12,6 +12,8 @@ export const en: Dictionary = {
     about: "About",
     amenities: "Amenities",
     location: "Location",
+    districts: "Neighbourhoods",
+    sell: "Sell",
     contact: "Contact",
     menu: "Main menu",
     skipToContent: "Skip to content",
@@ -101,6 +103,50 @@ export const en: Dictionary = {
     teamTitle: "Getting in touch",
     teamBody:
       "Belso is represented by one team, in Marrakech. Viewings are by appointment, Monday to Saturday.",
+  },
+  districts: {
+    title: "The neighbourhoods",
+    lede: "Marrakech does not read as one city. Here is what each address actually offers — and what is worth settling before you commit to it.",
+    place: "Marrakech",
+    count: "{count} properties",
+    countOne: "1 property",
+    countNone: "Nothing published yet",
+    listingsHere: "Properties in this neighbourhood",
+    backToDistricts: "All neighbourhoods",
+    otherDistricts: "Elsewhere in Marrakech",
+    empty:
+      "Nothing published here at the moment. Write to us — what is coming up in a neighbourhood does not always reach the site.",
+    seeListings: "See the properties",
+    label: "Neighbourhood",
+  },
+  sell: {
+    title: "Sell with Belso",
+    lede: "We do not take every instruction. The ones we take, we carry to the end.",
+    place: "Sole agency",
+    statement: "One property, one buyer",
+    body: "A property at this level does not sell by being seen by the most people: it sells by being shown to the right person, at the right moment, properly documented. That is the only work we do.\n\nWe turn down instructions we could not defend — wrong price, uncertain title, undecided owner. Saying so at the first meeting costs everyone less than finding out six months later.",
+    stepsTitle: "How it works",
+    steps: [
+      {
+        title: "The visit",
+        body: "We come and see the property, without a photographer and without a promised price. We leave with enough to tell you honestly whether it is saleable, on what terms, and in what time.",
+      },
+      {
+        title: "The file",
+        body: "Title, areas, permissions, charges, easements. A serious buyer asks these at the second meeting; a file that is ready saves weeks and heads off the last-minute renegotiation.",
+      },
+      {
+        title: "Going to market",
+        body: "Professional photography, written copy, translation, and a chosen distribution. The property is put in front of the buyers we already know are looking for it before it is published more widely.",
+      },
+      {
+        title: "The transaction",
+        body: "Accompanied viewings, feedback passed on as it was given, negotiation run with you rather than for you, then follow-through to signature at the notary.",
+      },
+    ],
+    formTitle: "Tell us about your property",
+    formLede:
+      "The neighbourhood, the size, the condition, and what you want from it. We answer within 24 hours, in French or English.",
   },
   properties: {
     title: "Our properties",

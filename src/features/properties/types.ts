@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Currency } from "@/core/currency";
 import type { Locale } from "@/core/i18n";
+import type { DistrictId } from "./districts";
 
 /**
  * The property domain, shaped the way the future database will be — one row per
@@ -85,6 +86,15 @@ export type Property = {
   id: string;
   /** The agency's own reference, quoted in enquiries (AC-6). */
   reference: string;
+  /**
+   * Which district it stands in, as an id rather than the printed name.
+   *
+   * The name lives in `translations[locale].district` because it is prose that
+   * changes language ("Route de l’Ourika" / "Ourika road"). Grouping listings
+   * by a translated string would put the same road in two districts depending
+   * on who was reading, which is how the id came to exist.
+   */
+  districtId: DistrictId;
   kind: ListingKind;
   type: PropertyType;
   status: ListingStatus;
@@ -132,6 +142,8 @@ export type PropertyQuery = {
   /** The visitor's own words, echoed back to them on the results page (AC-2). */
   query?: string;
   sort?: PropertySort;
+  /** Narrow to one district — what a district page asks for. */
+  district?: DistrictId;
   locale: Locale;
 };
 
