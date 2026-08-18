@@ -196,3 +196,51 @@ for (const [width, height] of [
     expect(headroom, `placeholder overflows the field by ${-headroom}px`).toBeGreaterThan(0);
   });
 }
+
+/*
+ * The wordmark and the lede beneath it are positioned from opposite edges: the
+ * wordmark's bottom is a function of the viewport *width* (15vh down, then 19vw
+ * of type), while the lede hangs off the viewport *bottom*. Nothing tied them
+ * together, so the clearance between them was luck — one pixel at 1440x900, and
+ * a 75px overlap on a 1900x950 laptop, with the lede printed through "BELSO".
+ *
+ * Checked at the aspect ratios where the two edges converge: wide-and-short is
+ * the failure case, not small.
+ */
+for (const [width, height] of [
+  [1920, 1080],
+  [1900, 950],
+  [1440, 800],
+  [1366, 768],
+  [1280, 720],
+] as const) {
+  test(`the hero lede clears the wordmark at ${width}x${height}`, async ({ page }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto("/en");
+
+    // The splash translates the wordmark 30px down while it fades in, so a
+    // measurement taken on load reads a layout no one ever sees at rest — it
+    // reported a 4px overlap here where the settled frame has 25px of air.
+    await page.waitForFunction(
+      (selector) =>
+        document.querySelector<HTMLElement>(selector)?.style.getPropertyValue("--in-note") ===
+        "1.0000",
+      SCENE,
+      { timeout: 15_000 },
+    );
+
+    const wordmark = page.getByRole("heading", { level: 1, name: "Belso" });
+    const lede = page.getByRole("heading", { level: 2, name: /Where heritage meets home/i });
+    await expect(wordmark).toBeVisible();
+
+    const [mark, line] = await Promise.all([wordmark.boundingBox(), lede.boundingBox()]);
+    if (!mark || !line) throw new Error("hero headings are not laid out");
+
+    const overlapsHorizontally =
+      Math.min(mark.x + mark.width, line.x + line.width) - Math.max(mark.x, line.x) > 0;
+    expect(overlapsHorizontally, "the two headings no longer share a column").toBe(true);
+
+    const clearance = Math.round(line.y - (mark.y + mark.height));
+    expect(clearance, `the lede overlaps the wordmark by ${-clearance}px`).toBeGreaterThan(0);
+  });
+}
