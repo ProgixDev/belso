@@ -12,7 +12,15 @@ const serverEnvSchema = z.object({
   // Server-only secrets. NEVER prefix these NEXT_PUBLIC_ — they must not reach the
   // browser. The Supabase service_role key bypasses RLS; use it only in trusted
   // server code (e.g. the account-deletion route). Optional until you wire it up.
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20).optional(),
+  // `.transform` before `.optional()`: a variable declared with an empty value
+  // is not set, but zod would otherwise measure "" against min(20) and fail the
+  // build. Same trap that broke the first Vercel deploy (see env.client.ts).
+  SUPABASE_SERVICE_ROLE_KEY: z
+    .string()
+    .transform((v) => v.trim())
+    .refine((v) => v === "" || v.length >= 20, "SUPABASE_SERVICE_ROLE_KEY looks truncated")
+    .transform((v) => v || undefined)
+    .optional(),
   // Add real server vars here, mirrored in .env.example, e.g.:
   // DATABASE_URL: z.string().url(),
 });
