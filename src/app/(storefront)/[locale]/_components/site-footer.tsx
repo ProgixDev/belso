@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import type { Locale } from "@/core/i18n";
 import { site } from "@/core/site";
 import type { Dictionary } from "@/features/i18n";
@@ -82,35 +83,39 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
          * stretching two of them across four columns leaves half the footer
          * empty, which reads as unfinished rather than spacious. */}
         <div className="grid gap-x-10 gap-y-12 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+          <Reveal className="lg:col-span-5">
             <p className="font-[family-name:var(--font-archivo)] text-[clamp(2rem,4.6vw,3.6rem)] leading-none font-bold tracking-[0.055em] uppercase">
               Belso
             </p>
             <p className="mt-5 max-w-xs text-sm leading-relaxed">{dict.footer.tagline}</p>
-          </div>
+          </Reveal>
 
           <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
-            {sections.map((section) => (
-              <nav key={section.title} aria-label={section.title}>
-                <h2 className="text-[10px] font-semibold tracking-[0.22em] uppercase">
-                  {section.title}
-                </h2>
-                <ul className="mt-5 flex flex-col gap-3">
-                  {section.items.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        /* Offset from the plate rather than tinted into it — a
-                         * focus ring drawn on a photograph needs the gap to be
-                         * seen at all. */
-                        className="hover:text-foreground/65 focus-visible:ring-ring rounded-sm text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none motion-reduce:transition-none"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+            {/* The `<nav>` keeps its own element and label — the reveal wraps it
+             * rather than replacing it, or the landmark loses its name. */}
+            {sections.map((section, index) => (
+              <Reveal key={section.title} delay={0.1 + index * 0.08}>
+                <nav aria-label={section.title}>
+                  <h2 className="text-[10px] font-semibold tracking-[0.22em] uppercase">
+                    {section.title}
+                  </h2>
+                  <ul className="mt-5 flex flex-col gap-3">
+                    {section.items.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          /* Offset from the plate rather than tinted into it — a
+                           * focus ring drawn on a photograph needs the gap to be
+                           * seen at all. */
+                          className="hover:text-foreground/65 focus-visible:ring-ring rounded-sm text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none motion-reduce:transition-none"
+                        >
+                          {item.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </Reveal>
             ))}
           </div>
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion";
 import type { Locale } from "@/core/i18n";
 import type { Dictionary } from "@/features/i18n";
 import { type LocalizedProperty, PropertyCard } from "@/features/properties";
@@ -72,17 +73,21 @@ function Section({
       }`}
     >
       <div className="container-page">
-        <SectionMasthead index={index} name={name} place={place} tone={tone} />
+        {/* The masthead leads, the statement follows a beat later, the prose
+         * after that — the order a reader takes them in anyway. */}
+        <Reveal distance={12}>
+          <SectionMasthead index={index} name={name} place={place} tone={tone} />
+        </Reveal>
 
         {/* The same 12-column grid the about sheet's copy sits on, so the
          * statement starts on the left edge and the prose on the eighth column
          * all the way down the page. */}
         <div className="mt-[clamp(28px,5vh,64px)] grid gap-x-6 gap-y-8 md:grid-cols-12">
-          <div className="md:col-span-6">
+          <Reveal delay={0.08} className="md:col-span-6">
             <SectionStatement>{statement}</SectionStatement>
-          </div>
+          </Reveal>
 
-          <div className="flex flex-col gap-6 md:col-span-5 md:col-start-8">
+          <Reveal delay={0.16} className="flex flex-col gap-6 md:col-span-5 md:col-start-8">
             <p
               className={`max-w-[46ch] text-[clamp(1.05rem,1.25vw,1.35rem)] leading-[1.45] ${
                 onInk ? "text-background/85" : "text-foreground/90"
@@ -91,7 +96,7 @@ function Section({
               {lede}
             </p>
             <SectionLink href={href}>{cta}</SectionLink>
-          </div>
+          </Reveal>
         </div>
 
         {children ? <div className="mt-[clamp(36px,6vh,72px)]">{children}</div> : null}
@@ -127,8 +132,10 @@ export function ResidencesSection({
     >
       {properties.length > 0 ? (
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {properties.map((property) => (
-            <li key={property.id}>
+          {properties.map((property, index) => (
+            // Staggered along the row: three cards arriving together read as a
+            // block appearing, one after another reads as a shelf being filled.
+            <Reveal as="li" key={property.id} delay={index * 0.09}>
               <PropertyCard
                 property={property}
                 locale={locale}
@@ -142,7 +149,7 @@ export function ResidencesSection({
                   type: dict.propertyType[property.type],
                 }}
               />
-            </li>
+            </Reveal>
           ))}
         </ul>
       ) : null}
@@ -168,13 +175,16 @@ export function GroundsSection({ dict, href }: { dict: Dictionary; href: string 
       {/* A list, not a row of icon cards: these are facts about the place, and
        * four of them do not need four boxes to be read. */}
       <ul className="border-background/20 grid gap-px border-t sm:grid-cols-2 lg:grid-cols-4">
-        {copy.items.map((item) => (
-          <li
+        {copy.items.map((item, index) => (
+          <Reveal
+            as="li"
             key={item}
+            delay={index * 0.07}
+            distance={10}
             className="border-background/20 border-b py-5 pr-6 text-[0.95rem] leading-snug sm:border-b-0 sm:py-6"
           >
             {item}
-          </li>
+          </Reveal>
         ))}
       </ul>
     </Section>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
+import { Reveal } from "@/components/motion";
 import { EnquiryForm } from "@/features/enquiries";
 import { getDictionary } from "@/features/i18n";
 import { enquiryLabels } from "../../_components/enquiry-labels";
@@ -44,12 +45,16 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-16">
-      <h1 className="font-[family-name:var(--font-archivo)] text-3xl font-extrabold tracking-tight sm:text-4xl">
-        {dict.contact.title}
-      </h1>
-      <p className="text-muted-foreground mt-3 text-base">{dict.contact.lede}</p>
+      <Reveal>
+        <h1 className="font-[family-name:var(--font-archivo)] text-3xl font-extrabold tracking-tight sm:text-4xl">
+          {dict.contact.title}
+        </h1>
+        <p className="text-muted-foreground mt-3 text-base">{dict.contact.lede}</p>
+      </Reveal>
 
-      <EnquiryForm labels={enquiryLabels(dict)} className="mt-10" />
+      <Reveal delay={0.1}>
+        <EnquiryForm labels={enquiryLabels(dict)} className="mt-10" />
+      </Reveal>
     </div>
   );
 }

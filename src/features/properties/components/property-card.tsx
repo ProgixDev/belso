@@ -53,6 +53,9 @@ export function PropertyCard({
     <article
       className={cn(
         "group border-border/70 bg-card relative flex flex-col overflow-hidden rounded-xl border",
+        "transition-[transform,box-shadow,border-color] duration-300 ease-out",
+        "hover:border-border hover:-translate-y-1 hover:shadow-lg",
+        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         // The focus ring belongs to the whole card, because the whole card is
         // the target. `has-[a:focus-visible]` rather than `focus-within` so it
         // does not light up on a mouse click.

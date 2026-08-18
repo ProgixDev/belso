@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Reveal } from "@/components/motion";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { getDictionary } from "@/features/i18n";
 import { SectionMasthead, SectionStatement } from "../../_components/section-masthead";
@@ -59,12 +60,16 @@ const BAND = [
 function Chapter({ title, body }: { title: string; body: string }) {
   return (
     <div className="border-border grid gap-x-6 gap-y-6 border-t py-[clamp(36px,6vh,72px)] md:grid-cols-12">
-      <div className="md:col-span-6">
+      <Reveal className="md:col-span-6">
         <SectionStatement>{title}</SectionStatement>
-      </div>
-      <p className="text-foreground/80 max-w-[46ch] text-[1.02rem] leading-[1.65] md:col-span-5 md:col-start-8">
+      </Reveal>
+      <Reveal
+        as="p"
+        delay={0.1}
+        className="text-foreground/80 max-w-[46ch] text-[1.02rem] leading-[1.65] md:col-span-5 md:col-start-8"
+      >
         {body}
-      </p>
+      </Reveal>
     </div>
   );
 }
@@ -77,28 +82,35 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="container-page py-[clamp(40px,7vh,96px)]">
-      <SectionMasthead index="01" name={dict.about.title} place="Marrakech · Palmeraie" />
+      <Reveal distance={12}>
+        <SectionMasthead index="01" name={dict.about.title} place="Marrakech · Palmeraie" />
+      </Reveal>
 
-      <h1 className="mt-[clamp(28px,5vh,64px)] max-w-[22ch] text-[clamp(1.9rem,3.4vw,3.6rem)] leading-[1.05] font-bold tracking-[-0.025em]">
-        {dict.about.lede}
-      </h1>
+      <Reveal delay={0.08}>
+        <h1 className="mt-[clamp(28px,5vh,64px)] max-w-[22ch] text-[clamp(1.9rem,3.4vw,3.6rem)] leading-[1.05] font-bold tracking-[-0.025em]">
+          {dict.about.lede}
+        </h1>
+      </Reveal>
 
       <ul className="mt-[clamp(32px,5vh,64px)] grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {BAND.map((frame, index) => (
-          <li
+          <Reveal
+            as="li"
             key={frame.id}
+            delay={index * 0.08}
             className="bg-muted relative overflow-hidden rounded-sm"
-            style={{ aspectRatio: frame.aspect }}
           >
-            <Image
-              src={frame.src}
-              alt={dict.home.scene.about.shots[frame.id]}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 22vw"
-              priority={index < 2}
-              className="object-cover"
-            />
-          </li>
+            <div className="relative h-full w-full" style={{ aspectRatio: frame.aspect }}>
+              <Image
+                src={frame.src}
+                alt={dict.home.scene.about.shots[frame.id]}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 22vw"
+                priority={index < 2}
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
         ))}
       </ul>
 
