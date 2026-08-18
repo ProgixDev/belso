@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
+import { Reveal } from "@/components/motion";
 import { EmptyState } from "@/components/ui/empty-state";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { getDictionary, interpolate } from "@/features/i18n";
@@ -101,7 +102,9 @@ export default async function PropertiesPage({
       ) : (
         <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {properties.map((property, index) => (
-            <li key={property.id}>
+            // The stagger is capped: past the first two rows the delay stops
+            // growing, or the twentieth card would wait two seconds to appear.
+            <Reveal as="li" key={property.id} delay={Math.min(index, 5) * 0.07}>
               <PropertyCard
                 property={property}
                 locale={locale}
@@ -116,7 +119,7 @@ export default async function PropertiesPage({
                   type: dict.propertyType[property.type],
                 }}
               />
-            </li>
+            </Reveal>
           ))}
         </ul>
       )}

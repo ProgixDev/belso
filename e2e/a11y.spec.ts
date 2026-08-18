@@ -137,3 +137,51 @@ test.describe("a visitor who has asked for reduced motion", () => {
     await shot(page, "18-reduced-motion-gallery");
   });
 });
+
+/*
+ * Scroll reveals and the page transition both start hidden, and both start
+ * states are server-rendered. Without a `<noscript>` override the whole site is
+ * blank to anyone whose JavaScript did not run — which is not only a browser
+ * setting: it is also a failed chunk, a blocked CDN, or a slow connection that
+ * gave up.
+ *
+ * This shipped broken once already. The reveals carried the guard; the page
+ * transition, added later, did not, and every content page rendered empty.
+ */
+test.describe("a visitor whose JavaScript never ran", () => {
+  test.use({ javaScriptEnabled: false });
+
+  for (const [path, heading] of [
+    [
+      "/en/about",
+      "A private address in the Palmeraie, drawn for the way Marrakech actually lives.",
+    ],
+    ["/en/contact", "Contact us"],
+  ] as const) {
+    test(`AC-11: ${path} still renders its content`, async ({ page }) => {
+      await page.goto(path);
+
+      const title = page.getByRole("heading", { level: 1, name: heading });
+      await expect(title).toBeVisible();
+      // `toBeVisible` passes on a fully transparent element, so the thing that
+      // actually broke has to be asserted directly.
+      await expect(title).toHaveCSS("opacity", "1");
+    });
+  }
+
+  test("AC-11: the hero search still submits without JavaScript", async ({ page }) => {
+    await page.goto("/en");
+
+    // A plain GET form, which is why it survives: the visitor's words go into
+    // the URL and the listings page reads them server-side.
+    await page.getByRole("searchbox").fill("riad medina");
+    await page.getByRole("button", { name: "Search" }).click();
+    await expect(page).toHaveURL(/\/en\/properties\?q=riad\+medina/);
+
+    // Deliberately not asserting the results here. `properties/(index)` ships a
+    // `loading.tsx`, and a streamed Suspense fallback is swapped for the real
+    // content by an inline script — with no JavaScript that swap never happens,
+    // so this route renders its skeleton and stops. That is a property of
+    // streaming, not of this form, and it is recorded in the feature doc.
+  });
+});

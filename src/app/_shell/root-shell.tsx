@@ -101,6 +101,14 @@ export function RootShell({
           // JSON-LD is static, app-controlled data — safe to inline.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/*
+         * Scroll reveals start hidden, and that start state is server-rendered.
+         * Without this, a visitor with JavaScript off would find most of the
+         * site invisible rather than merely unanimated.
+         */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
