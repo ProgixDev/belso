@@ -53,6 +53,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           dict={dict}
           properties={shelf}
           href={toPublicPath("/properties", locale)}
+          districtsHref={toPublicPath("/districts", locale)}
         />
         <GroundsSection dict={dict} href={toPublicPath("/about", locale)} />
         <EnquireSection dict={dict} href={toPublicPath("/contact", locale)} />

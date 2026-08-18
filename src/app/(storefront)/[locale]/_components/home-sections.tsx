@@ -2,7 +2,12 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion";
 import type { Locale } from "@/core/i18n";
 import type { Dictionary } from "@/features/i18n";
-import { type LocalizedProperty, PropertyCard } from "@/features/properties";
+import {
+  districtOrder,
+  districts,
+  type LocalizedProperty,
+  PropertyCard,
+} from "@/features/properties";
 import { SectionMasthead, SectionStatement } from "./section-masthead";
 
 /**
@@ -110,12 +115,15 @@ export function ResidencesSection({
   dict,
   properties,
   href,
+  districtsHref,
 }: {
   locale: Locale;
   dict: Dictionary;
   /** A short shelf, chosen by the page. The full catalogue is one link away. */
   properties: LocalizedProperty[];
   href: string;
+  /** The neighbourhood index — the other way into the catalogue. */
+  districtsHref: string;
 }) {
   const copy = dict.home.residences;
 
@@ -153,6 +161,39 @@ export function ResidencesSection({
           ))}
         </ul>
       ) : null}
+
+      {/*
+       * Three cards is a sample, not a catalogue. The neighbourhoods are the
+       * other way in — for the visitor who does not yet know what they want but
+       * does know they are choosing between the medina and the Palmeraie.
+       */}
+      <Reveal
+        as="nav"
+        delay={0.2}
+        aria-label={dict.districts.title}
+        className="border-border/60 mt-[clamp(28px,4vh,48px)] border-t pt-[clamp(18px,2.5vh,28px)]"
+      >
+        <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <li className="text-foreground/50 text-[10px] font-semibold tracking-[0.22em] uppercase">
+            <Link
+              href={districtsHref}
+              className="focus-visible:ring-ring rounded-sm hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none"
+            >
+              {dict.districts.title}
+            </Link>
+          </li>
+          {districtOrder.map((id) => (
+            <li key={id}>
+              <Link
+                href={`${districtsHref}/${id}`}
+                className="focus-visible:ring-ring rounded-sm font-serif text-[1.05rem] hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none"
+              >
+                {districts[id].copy[locale].name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
     </Section>
   );
 }

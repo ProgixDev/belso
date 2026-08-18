@@ -53,6 +53,7 @@ export function localizeProperty(property: Property, locale: Locale): LocalizedP
   return {
     id: property.id,
     reference: property.reference,
+    districtId: property.districtId,
     kind: property.kind,
     type: property.type,
     status: property.status,

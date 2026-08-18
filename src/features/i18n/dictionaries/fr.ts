@@ -14,6 +14,7 @@
  * scene slice: features may not import features.)
  */
 type Figure = { value: string; label: string };
+type Step = { title: string; body: string };
 type Three<T> = [T, T, T];
 type Four<T> = [T, T, T, T];
 
@@ -28,6 +29,8 @@ export const fr = {
     about: "À propos",
     amenities: "Prestations",
     location: "Situation",
+    districts: "Quartiers",
+    sell: "Vendre",
     contact: "Contact",
     menu: "Menu principal",
     skipToContent: "Aller au contenu",
@@ -123,6 +126,50 @@ export const fr = {
     teamTitle: "Nous joindre",
     teamBody:
       "Belso est représenté par une seule équipe, à Marrakech. Les visites se font sur rendez-vous, du lundi au samedi.",
+  },
+  districts: {
+    title: "Les quartiers",
+    lede: "Marrakech ne se lit pas comme une seule ville. Voici ce que chaque adresse propose vraiment — et ce qu’il vaut mieux vérifier avant de s’y engager.",
+    place: "Marrakech",
+    count: "{count} biens",
+    countOne: "1 bien",
+    countNone: "Aucun bien publié",
+    listingsHere: "Les biens de ce quartier",
+    backToDistricts: "Tous les quartiers",
+    otherDistricts: "Ailleurs à Marrakech",
+    empty:
+      "Aucun bien publié dans ce quartier pour le moment. Écrivez-nous : ce qui s’y prépare ne passe pas toujours par le site.",
+    seeListings: "Voir les biens",
+    label: "Quartier",
+  },
+  sell: {
+    title: "Vendre avec Belso",
+    lede: "Nous ne prenons pas tous les mandats. Ceux que nous prenons, nous les portons jusqu’au bout.",
+    place: "Mandat exclusif",
+    statement: "Un bien, un acheteur",
+    body: "Un bien haut de gamme ne se vend pas en étant vu par le plus grand nombre : il se vend en étant montré à la bonne personne, au bon moment, correctement documenté. C’est le seul travail que nous faisons.\n\nNous refusons les mandats que nous ne saurions pas défendre — mauvais prix, titre incertain, propriétaire indécis. Le dire au premier rendez-vous coûte moins cher à tout le monde que de le découvrir six mois plus tard.",
+    stepsTitle: "Comment cela se passe",
+    steps: [
+      {
+        title: "La visite",
+        body: "Nous venons voir le bien, sans photographe et sans promesse de prix. Nous repartons avec ce qu’il faut pour vous dire honnêtement s’il est vendable, à quelles conditions, et dans quel délai.",
+      },
+      {
+        title: "Le dossier",
+        body: "Titre, superficies, autorisations, charges, servitudes. Un acheteur sérieux pose ces questions au deuxième rendez-vous ; un dossier prêt fait gagner des semaines et évite les renégociations de dernière minute.",
+      },
+      {
+        title: "La mise en marché",
+        body: "Photographie professionnelle, texte rédigé, traduction, et une diffusion choisie. Le bien est présenté aux acheteurs dont nous savons déjà qu’ils cherchent cela avant d’être publié plus largement.",
+      },
+      {
+        title: "La transaction",
+        body: "Visites accompagnées, retours transmis tels quels, négociation menée avec vous et non à votre place, puis suivi jusqu’à la signature chez le notaire.",
+      },
+    ] as Four<Step>,
+    formTitle: "Parlez-nous de votre bien",
+    formLede:
+      "Le quartier, la surface, l’état, et ce que vous en attendez. Nous répondons sous 24 heures, en français ou en anglais.",
   },
   properties: {
     title: "Nos biens",

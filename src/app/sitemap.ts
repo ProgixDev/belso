@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { type Locale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { site } from "@/core/site";
-import { listProperties } from "@/features/properties";
+import { districtIds, listProperties } from "@/features/properties";
 
 /**
  * Every public page, in every locale, with its translations declared alongside.
@@ -35,6 +35,8 @@ const absolute = (path: string) => `${site.url}${path}`;
 const STATIC_ROUTES = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/properties", changeFrequency: "daily", priority: 0.9 },
+  { path: "/districts", changeFrequency: "monthly", priority: 0.8 },
+  { path: "/sell", changeFrequency: "yearly", priority: 0.6 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.5 },
 ] as const satisfies readonly {
@@ -78,6 +80,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   );
 
+  /*
+   * District slugs are not translated — `Palmeraie` is `Palmeraie` — so these
+   * need none of the per-locale slug correlation the listings below do.
+   */
+  const districtEntries: MetadataRoute.Sitemap = locales.flatMap((locale) =>
+    districtIds.map((id) => ({
+      url: absolute(toPublicPath(`/districts/${id}`, locale)),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+      alternates: sharedAlternates(`/districts/${id}`),
+    })),
+  );
+
   const listingEntries: MetadataRoute.Sitemap = catalogue.flatMap(([locale, listings]) =>
     listings.map((property) => {
       const slugs = slugsById.get(property.id) ?? {};
@@ -104,5 +119,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   );
 
-  return [...staticEntries, ...listingEntries];
+  return [...staticEntries, ...districtEntries, ...listingEntries];
 }

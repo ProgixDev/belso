@@ -195,7 +195,16 @@ export default async function PropertyDetailPage({
               {property.title}
             </h1>
             <p className="text-muted-foreground text-sm">
-              {property.district}, {property.city}
+              {/* The strongest internal link the site has: every listing points
+               * at the writing about where it stands, and that page points back
+               * at the listings around it. */}
+              <Link
+                href={toPublicPath(`/districts/${property.districtId}`, locale)}
+                className="focus-visible:ring-ring hover:text-foreground rounded-sm underline decoration-current/30 underline-offset-4 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:transition-none"
+              >
+                {property.district}
+              </Link>
+              , {property.city}
             </p>
           </div>
 

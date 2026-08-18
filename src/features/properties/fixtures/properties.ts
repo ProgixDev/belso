@@ -2,8 +2,11 @@ import type { Property } from "../types";
 import { gallery } from "./media";
 
 /**
- * Twelve Marrakech listings standing in for the real catalogue (spec, out of
+ * Twenty Marrakech listings standing in for the real catalogue (spec, out of
  * scope: real listing content).
+ *
+ * Two per district, deliberately: a district page that opens on a single card
+ * reads as a site with nothing in it, whichever district you happen to land on.
  *
  * These are shaped to be *hostile to a flattering screenshot*, because
  * docs/design/quality-bar.md rejects UI proven only against uniform data:
@@ -25,6 +28,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-01",
     reference: "BL-1101",
+    districtId: "palmeraie",
     kind: "sale",
     type: "villa",
     status: "available",
@@ -59,6 +63,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-02",
     reference: "BL-1102",
+    districtId: "medina",
     kind: "sale",
     type: "riad",
     status: "available",
@@ -92,6 +97,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-03",
     reference: "BL-1103",
+    districtId: "hivernage",
     kind: "sale",
     type: "apartment",
     status: "available",
@@ -125,6 +131,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-04",
     reference: "BL-1104",
+    districtId: "route-ourika",
     kind: "sale",
     type: "estate",
     status: "underOffer",
@@ -169,6 +176,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-05",
     reference: "BL-1105",
+    districtId: "targa",
     kind: "rent",
     type: "villa",
     status: "available",
@@ -203,6 +211,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-06",
     reference: "BL-1106",
+    districtId: "agdal",
     kind: "sale",
     type: "penthouse",
     status: "available",
@@ -236,6 +245,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-07",
     reference: "BL-1107",
+    districtId: "amelkis",
     kind: "sale",
     type: "land",
     status: "available",
@@ -270,6 +280,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-08",
     reference: "BL-1108",
+    districtId: "medina",
     kind: "sale",
     type: "riad",
     status: "available",
@@ -297,6 +308,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-09",
     reference: "BL-1109",
+    districtId: "route-fes",
     kind: "sale",
     type: "villa",
     status: "sold",
@@ -331,6 +343,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-10",
     reference: "BL-1110",
+    districtId: "gueliz",
     kind: "sale",
     type: "townhouse",
     status: "available",
@@ -365,6 +378,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-11",
     reference: "BL-1111",
+    districtId: "gueliz",
     kind: "rent",
     type: "apartment",
     status: "rented",
@@ -396,6 +410,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-12",
     reference: "BL-1112",
+    districtId: "route-oukaimeden",
     kind: "sale",
     type: "chalet",
     status: "available",
@@ -424,6 +439,293 @@ export const propertyFixtures: Property[] = [
         city: "Marrakech",
         description:
           "Forty-five minutes from Marrakech, a four-bedroom chalet built in local stone at sixteen hundred metres.\n\nThe living room is heated by a central fireplace backed by underfloor heating, which makes the house usable all year rather than only in summer. The view runs down the valley and up to the ridges above.",
+      },
+    },
+  },
+  {
+    id: "p-13",
+    reference: "BL-1113",
+    districtId: "palmeraie",
+    kind: "sale",
+    type: "villa",
+    status: "available",
+    price: 18_500_000,
+    currency: "MAD",
+    bedrooms: 6,
+    bathrooms: 6,
+    builtArea: 780,
+    landArea: 4200,
+    amenities: [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "atlasView",
+      "security",
+      "garage",
+    ],
+    media: gallery("BL-1113", 8, 2),
+    listedAt: "2026-08-09",
+    translations: {
+      fr: {
+        slug: "villa-contemporaine-palmeraie",
+        title: "Villa contemporaine, Palmeraie",
+        district: "Palmeraie",
+        city: "Marrakech",
+        description:
+          "Une maison basse, longue de soixante mètres, posée en L autour d’un bassin de nage.\n\nL’architecte a refusé la surenchère : murs à la chaux, sols en tadelakt gris, menuiseries en chêne, et rien d’autre. Toute la générosité est dans les volumes — quatre mètres sous plafond dans les pièces de réception, et des baies qui disparaissent entièrement dans l’épaisseur des murs.\n\nLes six chambres sont réparties en deux ailes, ce qui permet de fermer la seconde hors saison sans traverser une maison vide. Le jardin, planté d’oliviers repris sur pied, est déjà dense ; le forage est déclaré et l’autorisation transférable.",
+      },
+      en: {
+        slug: "contemporary-villa-palmeraie",
+        title: "Contemporary villa, Palmeraie",
+        district: "Palmeraie",
+        city: "Marrakech",
+        description:
+          "A low house, sixty metres long, set in an L around a swimming pond.\n\nThe architect refused to overstate anything: lime-washed walls, grey tadelakt floors, oak joinery, and nothing else. All the generosity is in the volumes — four metres to the ceiling in the reception rooms, and glazing that disappears entirely into the thickness of the walls.\n\nThe six bedrooms sit in two wings, so the second can be closed out of season without walking through an empty house. The garden, planted with mature transplanted olives, is already dense; the borehole is registered and the licence transferable.",
+      },
+    },
+  },
+  {
+    id: "p-14",
+    reference: "BL-1114",
+    districtId: "hivernage",
+    kind: "sale",
+    type: "penthouse",
+    status: "available",
+    price: 5_800_000,
+    currency: "MAD",
+    bedrooms: 3,
+    bathrooms: 3,
+    builtArea: 210,
+    amenities: ["terrace", "elevator", "airConditioning", "security", "garage", "pool"],
+    media: gallery("BL-1114", 5, 4),
+    listedAt: "2026-08-15",
+    translations: {
+      fr: {
+        slug: "penthouse-dernier-etage-hivernage",
+        title: "Penthouse en dernier étage, Hivernage",
+        district: "Hivernage",
+        city: "Marrakech",
+        description:
+          "Le dernier niveau d’une résidence de six étages, avec une terrasse d’angle qui prend le coucher de soleil et, derrière, la Koutoubia.",
+      },
+      en: {
+        slug: "top-floor-penthouse-hivernage",
+        title: "Top-floor penthouse, Hivernage",
+        district: "Hivernage",
+        city: "Marrakech",
+        description:
+          "The top level of a six-storey building, with a corner terrace that takes the sunset and, behind it, the Koutoubia.",
+      },
+    },
+  },
+  {
+    id: "p-15",
+    reference: "BL-1115",
+    districtId: "route-ourika",
+    kind: "sale",
+    type: "villa",
+    status: "available",
+    price: 1_450_000,
+    currency: "EUR",
+    bedrooms: 5,
+    bathrooms: 5,
+    builtArea: 520,
+    landArea: 6000,
+    amenities: ["pool", "garden", "terrace", "atlasView", "staffQuarters", "underfloorHeating"],
+    media: gallery("BL-1115", 11, 5),
+    listedAt: "2026-07-21",
+    translations: {
+      fr: {
+        slug: "villa-oliveraie-route-ourika",
+        title: "Villa dans l’oliveraie, route de l’Ourika",
+        district: "Route de l’Ourika",
+        city: "Marrakech",
+        description:
+          "Six mille mètres carrés d’oliveraie, et une maison qui a eu l’intelligence de ne pas se mettre au milieu.\n\nElle est adossée au mur nord de la parcelle, ce qui laisse toute la vue libre depuis les pièces de vie : l’oliveraie d’abord, puis la plaine, puis l’Atlas. Les cinq chambres sont au rez-de-chaussée, chacune avec sa porte sur le jardin.\n\nLe chauffage est au sol sur l’ensemble — inhabituel ici, et déterminant de décembre à février, où la maison serait sinon froide malgré le soleil.",
+      },
+      en: {
+        slug: "olive-grove-villa-ourika-road",
+        title: "Villa in the olive grove, Ourika road",
+        district: "Ourika road",
+        city: "Marrakech",
+        description:
+          "Six thousand square metres of olive grove, and a house with the sense not to stand in the middle of it.\n\nIt backs onto the northern wall of the plot, which leaves the view clear from every living room: the grove first, then the plain, then the Atlas. All five bedrooms are on the ground floor, each with its own door to the garden.\n\nUnderfloor heating throughout — unusual here, and decisive from December to February, when the house would otherwise be cold in spite of the sun.",
+      },
+    },
+  },
+  {
+    id: "p-16",
+    reference: "BL-1116",
+    districtId: "targa",
+    kind: "sale",
+    type: "villa",
+    status: "available",
+    price: 7_900_000,
+    currency: "MAD",
+    bedrooms: 5,
+    bathrooms: 4,
+    builtArea: 440,
+    landArea: 1600,
+    amenities: ["pool", "garden", "terrace", "garage", "airConditioning", "security"],
+    media: gallery("BL-1116", 7, 7),
+    listedAt: "2026-07-02",
+    translations: {
+      fr: {
+        slug: "villa-familiale-jardin-targa",
+        title: "Villa familiale avec jardin, Targa",
+        district: "Targa",
+        city: "Marrakech",
+        description:
+          "Une villa de 2004 sur seize cents mètres carrés, tenue par la même famille depuis sa construction — cela se voit à l’état des menuiseries et à la taille des arbres.\n\nQuatre chambres à l’étage et une au rez-de-chaussée, ce qui rend la maison utilisable par trois générations sans transformation. La cuisine a été refaite en 2021 ; le reste est d’origine et n’en a pas besoin.",
+      },
+      en: {
+        slug: "family-villa-garden-targa",
+        title: "Family villa with garden, Targa",
+        district: "Targa",
+        city: "Marrakech",
+        description:
+          "A 2004 villa on sixteen hundred square metres, held by the same family since it was built — which shows in the condition of the joinery and the size of the trees.\n\nFour bedrooms upstairs and one on the ground floor, so the house works for three generations without alteration. The kitchen was redone in 2021; the rest is original and does not need to be.",
+      },
+    },
+  },
+  {
+    id: "p-17",
+    reference: "BL-1117",
+    districtId: "agdal",
+    kind: "rent",
+    type: "apartment",
+    status: "available",
+    price: 22_000,
+    currency: "MAD",
+    bedrooms: 3,
+    bathrooms: 2,
+    builtArea: 165,
+    amenities: ["furnished", "pool", "elevator", "security", "garage", "airConditioning"],
+    media: gallery("BL-1117", 4, 8),
+    listedAt: "2026-08-16",
+    translations: {
+      fr: {
+        slug: "appartement-meuble-location-agdal",
+        title: "Appartement meublé en location, Agdal",
+        district: "Agdal",
+        city: "Marrakech",
+        description:
+          "Trois chambres meublées dans une résidence fermée avec piscine et jardin commun, en location longue durée. Deuxième étage, ascenseur, deux places de parking en sous-sol.",
+      },
+      en: {
+        slug: "furnished-apartment-long-let-agdal",
+        title: "Furnished apartment, long let, Agdal",
+        district: "Agdal",
+        city: "Marrakech",
+        description:
+          "Three furnished bedrooms in a gated residence with a pool and a shared garden, on a long let. Second floor, lift, two parking spaces in the basement.",
+      },
+    },
+  },
+  {
+    id: "p-18",
+    reference: "BL-1118",
+    districtId: "amelkis",
+    kind: "sale",
+    type: "villa",
+    status: "available",
+    price: 14_200_000,
+    currency: "MAD",
+    bedrooms: 4,
+    bathrooms: 4,
+    builtArea: 520,
+    landArea: 1800,
+    amenities: ["pool", "garden", "terrace", "golfAccess", "atlasView", "security", "garage"],
+    media: gallery("BL-1118", 9, 9),
+    listedAt: "2026-06-28",
+    translations: {
+      fr: {
+        slug: "villa-sur-fairway-amelkis",
+        title: "Villa sur le fairway, Amelkis",
+        district: "Amelkis",
+        city: "Marrakech",
+        description:
+          "De plain-pied, ouverte sur le parcours, avec pour seule clôture une haie basse — ce qui n’est possible que dans un domaine déjà clos.\n\nLes pièces de réception forment un seul volume traversant, orienté nord-sud pour éviter le soleil de plein fouet. Les quatre chambres sont regroupées dans l’aile est, chacune avec sa salle d’eau.\n\nLa piscine et le jardin ont été dessinés ensemble : le bassin prolonge la terrasse plutôt que d’occuper le milieu de la pelouse, et l’Atlas apparaît dans son axe.",
+      },
+      en: {
+        slug: "fairway-villa-amelkis",
+        title: "Villa on the fairway, Amelkis",
+        district: "Amelkis",
+        city: "Marrakech",
+        description:
+          "Single storey, open to the course, fenced by nothing more than a low hedge — which is only possible inside an estate that is already enclosed.\n\nThe reception rooms form one volume running right through the house, oriented north to south to keep the sun off. The four bedrooms are gathered in the east wing, each with its own bathroom.\n\nPool and garden were drawn together: the water extends the terrace rather than sitting in the middle of the lawn, and the Atlas appears along its axis.",
+      },
+    },
+  },
+  {
+    id: "p-19",
+    reference: "BL-1119",
+    districtId: "route-fes",
+    kind: "rent",
+    type: "villa",
+    status: "available",
+    price: 38_000,
+    currency: "MAD",
+    bedrooms: 5,
+    bathrooms: 5,
+    builtArea: 480,
+    landArea: 2000,
+    amenities: ["pool", "garden", "terrace", "furnished", "staffQuarters", "security"],
+    media: gallery("BL-1119", 6, 11),
+    listedAt: "2026-07-14",
+    translations: {
+      fr: {
+        slug: "villa-meublee-location-route-fes",
+        title: "Villa meublée en location, route de Fès",
+        district: "Route de Fès",
+        city: "Marrakech",
+        description:
+          "Cinq chambres meublées sur deux mille mètres carrés de jardin planté, en location longue durée, avec un logement de gardien occupé.\n\nLa maison est livrée équipée jusqu’à la vaisselle : c’est une location d’expatriation, pensée pour être habitable le jour de l’arrivée. Le jardin et la piscine sont entretenus par le propriétaire, charge comprise.",
+      },
+      en: {
+        slug: "furnished-villa-long-let-fes-road",
+        title: "Furnished villa, long let, Fès road",
+        district: "Fès road",
+        city: "Marrakech",
+        description:
+          "Five furnished bedrooms on two thousand square metres of planted garden, on a long let, with an occupied caretaker’s house.\n\nIt comes equipped down to the crockery: this is a relocation let, meant to be habitable on the day you land. Garden and pool are maintained by the owner, included in the rent.",
+      },
+    },
+  },
+  {
+    id: "p-20",
+    reference: "BL-1120",
+    districtId: "route-oukaimeden",
+    kind: "sale",
+    type: "land",
+    status: "underOffer",
+    price: 2_400_000,
+    currency: "MAD",
+    bedrooms: 0,
+    bathrooms: 0,
+    builtArea: 0,
+    landArea: 10_000,
+    amenities: ["atlasView"],
+    media: gallery("BL-1120", 3, 12),
+    listedAt: "2026-06-11",
+    translations: {
+      fr: {
+        slug: "terrain-un-hectare-route-oukaimeden",
+        title: "Terrain d’un hectare, route de l’Oukaïmeden",
+        district: "Route de l’Oukaïmeden",
+        city: "Marrakech",
+        description:
+          "Un hectare plat, titré, avec la montagne plein sud et rien devant.\n\nLe terrain est viabilisé en bordure de route : électricité et eau au portail, ce qui représente l’essentiel du coût caché d’une parcelle à cette distance. Le certificat de propriété et la note de renseignements urbanistiques sont disponibles avant visite.",
+      },
+      en: {
+        slug: "one-hectare-plot-oukaimeden-road",
+        title: "One-hectare plot, Oukaïmeden road",
+        district: "Oukaïmeden road",
+        city: "Marrakech",
+        description:
+          "A flat, titled hectare, with the mountain due south and nothing in front of it.\n\nServices reach the roadside boundary: power and water at the gate, which is most of the hidden cost of a plot at this distance. Title certificate and planning note are available before a visit.",
       },
     },
   },

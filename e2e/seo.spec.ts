@@ -42,6 +42,12 @@ test.describe("the sitemap", () => {
       "/en/about",
       "/fr/contact",
       "/en/contact",
+      "/fr/quartiers",
+      "/en/neighbourhoods",
+      "/fr/quartiers/palmeraie",
+      "/en/neighbourhoods/palmeraie",
+      "/fr/vendre",
+      "/en/sell",
       VILLA.fr,
       VILLA.en,
     ]) {
@@ -50,9 +56,9 @@ test.describe("the sitemap", () => {
       );
     }
 
-    // Two locales × (four fixed pages + twelve listings).
+    // Two locales × (six fixed pages + ten neighbourhoods + twenty listings).
     const entries = xml.match(/<url>/g)?.length ?? 0;
-    expect(entries).toBeGreaterThanOrEqual(32);
+    expect(entries).toBe(72);
   });
 
   test("declares each page's translations, matching what the pages claim", async ({ page }) => {

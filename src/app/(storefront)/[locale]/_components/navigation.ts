@@ -33,13 +33,32 @@ export function primaryNav(locale: Locale, dict: Dictionary): NavItem[] {
   ];
 }
 
+/**
+ * Reachable, but not from the header.
+ *
+ * The header holds four items and no more: five puts the language switcher off
+ * the right edge of a 390px screen, which is measured in `site-header.tsx` and
+ * asserted in `e2e/home.spec.ts`. These two pages are real destinations that
+ * lost the argument for that space — the neighbourhoods are entered from the
+ * listings and the home page, selling from the footer and the home page.
+ */
+export function secondaryNav(locale: Locale, dict: Dictionary): NavItem[] {
+  return [
+    { href: toPublicPath("/districts", locale), label: dict.nav.districts },
+    { href: toPublicPath("/sell", locale), label: dict.nav.sell },
+  ];
+}
+
 /** Footer columns. A section with no live entries is not rendered at all. */
 export function footerSections(
   locale: Locale,
   dict: Dictionary,
 ): { title: string; items: NavItem[] }[] {
   return [
-    { title: dict.footer.sections.explore, items: primaryNav(locale, dict) },
+    {
+      title: dict.footer.sections.explore,
+      items: [...primaryNav(locale, dict), ...secondaryNav(locale, dict)],
+    },
     {
       title: dict.footer.sections.legal,
       // Derived from `legalDocs` rather than listed by hand, so adding a
