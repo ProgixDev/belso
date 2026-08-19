@@ -6,7 +6,7 @@ import type { Locale } from "@/core/i18n";
 import { CHROME_BAND } from "@/features/cinematic-scroll";
 import { type Dictionary, LocaleSwitcher } from "@/features/i18n";
 import { cn } from "@/lib/utils";
-import { primaryNav } from "./navigation";
+import { contactAction, headerNav } from "./navigation";
 
 /**
  * The one header, on every page including the home scene.
@@ -44,6 +44,28 @@ const SCENE_CHROME = {
    */
   "--chrome-halo":
     "color-mix(in oklab, rgba(14, 10, 7, 0.82), rgba(255, 251, 245, 0.86) calc(var(--chrome-on-light, 0) * 100%))",
+  /*
+   * The contact button is the one opaque thing allowed to cross the frame.
+   *
+   * Everything else in the header is type on the film, which is what keeps the
+   * scene whole — but a call to action that reads as a link is not a call to
+   * action. It fills cream over the dark sky and ink over the cream sheet, and
+   * its label takes the other end of the same pair.
+   *
+   * **It flips rather than fades, and that is the whole point.** Blending both
+   * ends of a pair against each other is a trap: the fill travels cream → ink
+   * while the label travels ink → cream, so they *cross*, and at the midpoint
+   * they are the same colour. Measured across the tint's full range, that is
+   * 1.00:1 at t=0.5 and below 4.5:1 for half the transition — a solid pill with
+   * no label in it. Stepping the tint at the midpoint keeps both ends locked
+   * together at 15.08:1 at every value, and the swap lands inside a transition
+   * the eye is already following. It is also what the tint already asks for:
+   * `use-cinematic-scroll.ts` says the chrome "should commit quickly and spend
+   * as little time as possible in between".
+   */
+  "--chrome-cta-step": "clamp(0, calc((var(--chrome-on-light, 0) - 0.5) * 1000), 1)",
+  "--chrome-cta-fill": "color-mix(in oklab, #f9f2e8, #241c16 calc(var(--chrome-cta-step) * 100%))",
+  "--chrome-cta-label": "color-mix(in oklab, #241c16, #f9f2e8 calc(var(--chrome-cta-step) * 100%))",
 } as React.CSSProperties;
 
 /** Off the scene there is nothing to track, so it is an ordinary solid header. */
@@ -52,6 +74,9 @@ const PAGE_CHROME = {
   "--chrome-rule": "var(--color-border)",
   // Off the scene the header sits on a flat surface; a halo would be grime.
   "--chrome-halo": "transparent",
+  // The ordinary primary-button pair, which the tokens already guarantee.
+  "--chrome-cta-fill": "var(--color-foreground)",
+  "--chrome-cta-label": "var(--color-background)",
 } as React.CSSProperties;
 
 export function SiteHeader({
@@ -92,7 +117,8 @@ export function SiteHeader({
   }, [overlay]);
 
   const onScene = overlay && overScene;
-  const nav = primaryNav(locale, dict);
+  const nav = headerNav(locale, dict);
+  const contact = contactAction(locale, dict);
 
   return (
     <header
@@ -170,7 +196,25 @@ export function SiteHeader({
           ))}
         </nav>
 
-        <LocaleSwitcher locale={locale} label={dict.locale.label} tone="chrome" />
+        <div className="flex items-center gap-[clamp(10px,1.3vw,18px)]">
+          <LocaleSwitcher locale={locale} label={dict.locale.label} tone="chrome" />
+
+          {/*
+           * Set in the same small caps as every other call to action on the
+           * site, and pilled like the hero search rather than squared like the
+           * cards — the two things a visitor is asked to *do* look alike.
+           *
+           * `outline` rather than a ring with an offset: over the scene there
+           * is no solid behind the header for an offset to be drawn against,
+           * so a ring-offset paints the page background into the film.
+           */}
+          <Link
+            href={contact.href}
+            className="rounded-full bg-[var(--chrome-cta-fill)] px-[clamp(13px,1.2vw,19px)] py-[7px] text-[11px] font-semibold tracking-[0.16em] whitespace-nowrap text-[var(--chrome-cta-label)] uppercase transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--chrome-ink)] motion-reduce:transition-none"
+          >
+            {contact.label}
+          </Link>
+        </div>
       </div>
     </header>
   );

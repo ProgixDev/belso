@@ -185,3 +185,67 @@ test.describe("a visitor whose JavaScript never ran", () => {
     // streaming, not of this form, and it is recorded in the feature doc.
   });
 });
+
+/*
+ * The contact button is the only filled control that sits on the film, and both
+ * its fill and its label are mixed from the scene's tint. Blending both ends of
+ * a pair against each other is a trap: the fill travels cream → ink while the
+ * label travels ink → cream, so they cross, and at the midpoint they are the
+ * same colour — a solid pill with no label in it. It shipped that way for about
+ * an hour: 1.00:1 at t=0.5, under 4.5:1 for half the transition, and invisible
+ * on any scroll that stalled in the middle.
+ *
+ * Forced across the tint's whole range rather than sampled by scrolling. A
+ * scroll sweep found only three frames in transition and all of them passed,
+ * which is luck: the smoothing eases through every intermediate value on every
+ * crossing, so the range is the thing to assert.
+ */
+test("AC-11: the contact button's label survives every value of the scene tint", async ({
+  page,
+}) => {
+  await page.goto("/fr");
+  const header = page.locator("header");
+  await expect(header.getByRole("link", { name: "Contact" })).toBeVisible();
+
+  const measured = await page.evaluate(() => {
+    /*
+     * Painted into a 1x1 canvas and read back. `ctx.fillStyle` does not
+     * normalise `oklab()` to hex in current Chrome, and a numeric parse of
+     * "oklab(0.23 0.008 0.014)" reads it as RGB and reports every pair at ~1:1.
+     */
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 1;
+    const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+    const channels = (css: string) => {
+      ctx.clearRect(0, 0, 1, 1);
+      ctx.fillStyle = css;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      return [r! / 255, g! / 255, b! / 255];
+    };
+    const luminance = (rgb: number[]) => {
+      const [r, g, b] = rgb.map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r! + 0.7152 * g! + 0.0722 * b!;
+    };
+
+    const cta = [...document.querySelectorAll("header a")].at(-1)!;
+    const results: { tint: number; ratio: number }[] = [];
+
+    for (let tint = 0; tint <= 1.0001; tint += 0.05) {
+      document.documentElement.style.setProperty("--chrome-on-light", tint.toFixed(4));
+      const style = getComputedStyle(cta);
+      const a = luminance(channels(style.color));
+      const b = luminance(channels(style.backgroundColor));
+      const [hi, lo] = a > b ? [a, b] : [b, a];
+      results.push({ tint: Number(tint.toFixed(2)), ratio: (hi + 0.05) / (lo + 0.05) });
+    }
+    document.documentElement.style.removeProperty("--chrome-on-light");
+    return results;
+  });
+
+  for (const { tint, ratio } of measured) {
+    expect(ratio, `label on fill is ${ratio.toFixed(2)}:1 at tint ${tint}`).toBeGreaterThanOrEqual(
+      4.5,
+    );
+  }
+});
