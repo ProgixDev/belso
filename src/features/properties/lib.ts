@@ -63,6 +63,8 @@ export function localizeProperty(property: Property, locale: Locale): LocalizedP
     bathrooms: property.bathrooms,
     builtArea: property.builtArea,
     landArea: property.landArea,
+    builtYear: property.builtYear,
+    parking: property.parking,
     amenities: property.amenities,
     media: property.media,
     listedAt: property.listedAt,

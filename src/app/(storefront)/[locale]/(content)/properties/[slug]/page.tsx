@@ -5,6 +5,7 @@ import { Reveal } from "@/components/motion";
 import { Badge } from "@/components/ui/badge";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
 import { EnquiryForm } from "@/features/enquiries";
+import { propertyCardLabels } from "../../../_components/property-labels";
 import { getDictionary } from "@/features/i18n";
 import { enquiryLabels } from "../../../_components/enquiry-labels";
 import {
@@ -94,14 +95,7 @@ export default async function PropertyDetailPage({
           ? dict.properties.statusRented
           : null;
 
-  const cardLabels = {
-    bedrooms: dict.properties.bedrooms,
-    builtArea: dict.properties.builtArea,
-    perMonth: dict.properties.perMonth,
-    statusUnderOffer: dict.properties.statusUnderOffer,
-    statusSold: dict.properties.statusSold,
-    statusRented: dict.properties.statusRented,
-  };
+  const cardLabels = propertyCardLabels(dict);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-12">
@@ -218,7 +212,7 @@ export default async function PropertyDetailPage({
               property={property}
               locale={locale}
               labels={{
-                reference: dict.properties.reference,
+                reference: dict.properties.referenceLabel,
                 type: dict.properties.type,
                 typeLabel: dict.propertyType[property.type],
                 bedrooms: dict.properties.bedrooms,

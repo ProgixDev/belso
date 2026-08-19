@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "@/components/motion";
 import { EmptyState } from "@/components/ui/empty-state";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
+import { propertyCardLabels } from "../../../_components/property-labels";
 import { getDictionary, interpolate } from "@/features/i18n";
 import {
   districtOrder,
@@ -60,6 +61,7 @@ export default async function PropertiesPage({
 
   const properties = await listProperties({ query, sort, locale });
   const listingsHref = toPublicPath("/properties", locale);
+  const cardLabels = propertyCardLabels(dict);
 
   const count =
     properties.length === 1
@@ -67,7 +69,13 @@ export default async function PropertiesPage({
       : interpolate(dict.properties.resultCount, { count: formatCount(properties.length, locale) });
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-6 py-12">
+    /*
+     * Edge to edge and four across, aligned to the frame the header sits in
+     * rather than centred in a reading column. A catalogue page is not prose:
+     * the question it answers is how much there is, and a 1280px column on a
+     * 1920px screen answers it with three cards and a lot of paper.
+     */
+    <div className="container-bleed py-[clamp(20px,3vh,36px)]">
       <ResultsHeader
         title={dict.properties.title}
         count={count}
@@ -126,7 +134,7 @@ export default async function PropertiesPage({
           }
         />
       ) : (
-        <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {properties.map((property, index) => (
             // The stagger is capped: past the first two rows the delay stops
             // growing, or the twentieth card would wait two seconds to appear.
@@ -135,15 +143,7 @@ export default async function PropertiesPage({
                 property={property}
                 locale={locale}
                 priority={index < 3}
-                labels={{
-                  bedrooms: dict.properties.bedrooms,
-                  builtArea: dict.properties.builtArea,
-                  perMonth: dict.properties.perMonth,
-                  statusUnderOffer: dict.properties.statusUnderOffer,
-                  statusSold: dict.properties.statusSold,
-                  statusRented: dict.properties.statusRented,
-                  type: dict.propertyType[property.type],
-                }}
+                labels={{ ...cardLabels, type: dict.propertyType[property.type] }}
               />
             </Reveal>
           ))}

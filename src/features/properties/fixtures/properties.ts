@@ -28,6 +28,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-01",
     reference: "BL-1101",
+    builtYear: 2006,
+    parking: 4,
     districtId: "palmeraie",
     kind: "sale",
     type: "villa",
@@ -63,6 +65,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-02",
     reference: "BL-1102",
+    builtYear: 1926,
+    parking: 0,
     districtId: "medina",
     kind: "sale",
     type: "riad",
@@ -97,6 +101,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-03",
     reference: "BL-1103",
+    builtYear: 2015,
+    parking: 1,
     districtId: "hivernage",
     kind: "sale",
     type: "apartment",
@@ -131,6 +137,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-04",
     reference: "BL-1104",
+    builtYear: 2009,
+    parking: 6,
     districtId: "route-ourika",
     kind: "sale",
     type: "estate",
@@ -176,6 +184,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-05",
     reference: "BL-1105",
+    builtYear: 2011,
+    parking: 3,
     districtId: "targa",
     kind: "rent",
     type: "villa",
@@ -211,6 +221,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-06",
     reference: "BL-1106",
+    builtYear: 2019,
+    parking: 2,
     districtId: "agdal",
     kind: "sale",
     type: "penthouse",
@@ -245,6 +257,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-07",
     reference: "BL-1107",
+    parking: 0,
     districtId: "amelkis",
     kind: "sale",
     type: "land",
@@ -280,6 +293,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-08",
     reference: "BL-1108",
+    builtYear: 1908,
+    parking: 0,
     districtId: "medina",
     kind: "sale",
     type: "riad",
@@ -308,6 +323,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-09",
     reference: "BL-1109",
+    builtYear: 2003,
+    parking: 3,
     districtId: "route-fes",
     kind: "sale",
     type: "villa",
@@ -343,6 +360,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-10",
     reference: "BL-1110",
+    builtYear: 1954,
+    parking: 1,
     districtId: "gueliz",
     kind: "sale",
     type: "townhouse",
@@ -378,6 +397,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-11",
     reference: "BL-1111",
+    builtYear: 2008,
+    parking: 1,
     districtId: "gueliz",
     kind: "rent",
     type: "apartment",
@@ -410,6 +431,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-12",
     reference: "BL-1112",
+    builtYear: 2016,
+    parking: 4,
     districtId: "route-oukaimeden",
     kind: "sale",
     type: "chalet",
@@ -445,6 +468,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-13",
     reference: "BL-1113",
+    builtYear: 2021,
+    parking: 4,
     districtId: "palmeraie",
     kind: "sale",
     type: "villa",
@@ -489,6 +514,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-14",
     reference: "BL-1114",
+    builtYear: 2018,
+    parking: 2,
     districtId: "hivernage",
     kind: "sale",
     type: "penthouse",
@@ -523,6 +550,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-15",
     reference: "BL-1115",
+    builtYear: 2014,
+    parking: 4,
     districtId: "route-ourika",
     kind: "sale",
     type: "villa",
@@ -558,6 +587,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-16",
     reference: "BL-1116",
+    builtYear: 2004,
+    parking: 2,
     districtId: "targa",
     kind: "sale",
     type: "villa",
@@ -593,6 +624,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-17",
     reference: "BL-1117",
+    builtYear: 2017,
+    parking: 2,
     districtId: "agdal",
     kind: "rent",
     type: "apartment",
@@ -627,6 +660,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-18",
     reference: "BL-1118",
+    builtYear: 2012,
+    parking: 3,
     districtId: "amelkis",
     kind: "sale",
     type: "villa",
@@ -662,6 +697,8 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-19",
     reference: "BL-1119",
+    builtYear: 2007,
+    parking: 4,
     districtId: "route-fes",
     kind: "rent",
     type: "villa",
@@ -697,6 +734,7 @@ export const propertyFixtures: Property[] = [
   {
     id: "p-20",
     reference: "BL-1120",
+    parking: 0,
     districtId: "route-oukaimeden",
     kind: "sale",
     type: "land",
