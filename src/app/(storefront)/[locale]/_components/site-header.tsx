@@ -163,12 +163,43 @@ export function SiteHeader({
         )}
         style={{ borderColor: "var(--chrome-rule)" }}
       >
-        <Link
-          href={`/${locale}`}
-          className="font-[family-name:var(--font-archivo)] text-base leading-none font-bold tracking-[0.06em] text-[var(--chrome-ink)] uppercase [text-shadow:0_1px_1px_var(--chrome-halo),0_0_3px_var(--chrome-halo),0_0_14px_var(--chrome-halo)]"
-        >
-          Belso
-        </Link>
+        {/*
+         * Wordmark and language together on the left.
+         *
+         * The switcher used to sit beside the contact button, where it read as
+         * part of the call to action and was the thing standing between the
+         * button and the right edge. Two reasons it moved rather than just
+         * gaining a gap:
+         *
+         * It is a context control, not an action: "this is Belso, in French"
+         * belongs beside the name. And it leaves exactly one thing on the
+         * right, which is the point of putting a button there at all.
+         *
+         * **Not a fit decision.** The obvious argument — that `ar`, `it` and
+         * `nl` are planned and the switcher lists every locale rather than
+         * toggling two, so five of them would crowd the button — does not
+         * survive measurement: simulated at five locales, both placements wrap
+         * to three rows on a 390px screen and neither clips anything (left
+         * 120px tall, right 113px). Recorded so nobody moves it back for a
+         * reason the numbers do not support, in either direction.
+         */}
+        <div className="flex items-baseline gap-[clamp(10px,1.1vw,16px)]">
+          <Link
+            href={`/${locale}`}
+            className="font-[family-name:var(--font-archivo)] text-base leading-none font-bold tracking-[0.06em] text-[var(--chrome-ink)] uppercase [text-shadow:0_1px_1px_var(--chrome-halo),0_0_3px_var(--chrome-halo),0_0_14px_var(--chrome-halo)]"
+          >
+            Belso
+          </Link>
+
+          {/* A hairline, not a slash: the same rule the header is drawn with. */}
+          <span
+            aria-hidden="true"
+            className="h-[13px] w-px self-center"
+            style={{ backgroundColor: "var(--chrome-rule)" }}
+          />
+
+          <LocaleSwitcher locale={locale} label={dict.locale.label} tone="chrome" />
+        </div>
 
         {/*
          * `order-last` rather than moving it in the DOM: the reading and tab
@@ -196,9 +227,7 @@ export function SiteHeader({
           ))}
         </nav>
 
-        <div className="flex items-center gap-[clamp(10px,1.3vw,18px)]">
-          <LocaleSwitcher locale={locale} label={dict.locale.label} tone="chrome" />
-
+        <div className="flex items-center">
           {/*
            * Set in the same small caps as every other call to action on the
            * site, and pilled like the hero search rather than squared like the

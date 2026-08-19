@@ -328,18 +328,27 @@ for (const path of ["/fr", "/fr/biens"] as const) {
       const measured = await page.evaluate(() => {
         const header = document.querySelector("header");
         if (!header) return null;
-        const navs = [...header.querySelectorAll("nav")];
-        const links = [...(navs[0]?.querySelectorAll("a") ?? [])].map((a) =>
-          a.getBoundingClientRect(),
-        );
+
+        /*
+         * Selected by label, never by position. These were `navs[0]` and
+         * `navs.at(-1)` until the language switcher moved from beside the
+         * contact button to beside the wordmark — which silently swapped what
+         * both of them pointed at, so the sweep went on passing while measuring
+         * the menu against the switcher's own bounds.
+         */
+        const menu = header.querySelector('nav[aria-label="Menu principal"]');
+        const switcher = header.querySelector('nav[aria-label="Langue"]');
         // The contact button is the last link in the header and sits furthest
         // right, so it is the first thing to fall off a narrow screen.
         const cta = [...header.querySelectorAll("a")].at(-1);
+        if (!menu || !switcher || !cta) return null;
+
+        const links = [...menu.querySelectorAll("a")].map((a) => a.getBoundingClientRect());
         return {
           linkHeight: Math.max(...links.map((r) => r.height)),
           navRight: Math.max(...links.map((r) => r.right)),
-          switcherRight: navs.at(-1)?.getBoundingClientRect().right ?? 0,
-          ctaRight: cta?.getBoundingClientRect().right ?? 0,
+          switcherRight: switcher.getBoundingClientRect().right,
+          ctaRight: cta.getBoundingClientRect().right,
           overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         };
       });
