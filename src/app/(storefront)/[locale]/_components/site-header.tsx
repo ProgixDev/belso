@@ -68,6 +68,22 @@ const SCENE_CHROME = {
   "--chrome-cta-label": "color-mix(in oklab, #241c16, #f9f2e8 calc(var(--chrome-cta-step) * 100%))",
 } as React.CSSProperties;
 
+/**
+ * The scene’s own frame, so the chrome is the same object on every page.
+ *
+ * Over the film the header is inset by `FRAME_MARGIN` (the framed world does
+ * not touch the page edge) and padded by `FRAME_PAD` inside that. Off the scene
+ * it is a full-width solid bar with no margin, so it takes the *sum* as padding
+ * and the wordmark lands on exactly the same vertical as it did over the hero.
+ *
+ * Before this, the page header was `mx-auto max-w-7xl px-6`: centred in a
+ * 1280px column and a little taller. On a 1440px screen that moved the wordmark
+ * 26px inwards on leaving the scene; on a 1920px screen, 258px — the whole
+ * chrome visibly jumped inboard and grew 8px taller at the same moment.
+ */
+const FRAME_MARGIN = "clamp(14px, 2.1vw, 32px)";
+const FRAME_PAD = "clamp(12px, 3.3vw, 54px)";
+
 /** Off the scene there is nothing to track, so it is an ordinary solid header. */
 const PAGE_CHROME = {
   "--chrome-ink": "var(--color-foreground)",
@@ -130,10 +146,16 @@ export function SiteHeader({
         onScene
           ? // Indented to the scene's own frame, so the rule ends where the
             // framed world ends instead of running into the cream surround.
-            "mx-[clamp(14px,2.1vw,32px)] mt-[clamp(14px,2.1vw,32px)]"
+            "mx-[var(--chrome-margin)] mt-[var(--chrome-margin)]"
           : "bg-background/90 backdrop-blur-md",
       )}
-      style={onScene ? SCENE_CHROME : PAGE_CHROME}
+      style={
+        {
+          ...(onScene ? SCENE_CHROME : PAGE_CHROME),
+          "--chrome-margin": FRAME_MARGIN,
+          "--chrome-inset": onScene ? FRAME_PAD : `calc(${FRAME_MARGIN} + ${FRAME_PAD})`,
+        } as React.CSSProperties
+      }
     >
       {/* First tab stop on every page: keyboard users should not wade through the nav (AC-11). */}
       <a
@@ -159,7 +181,9 @@ export function SiteHeader({
       <div
         className={cn(
           "flex w-full flex-wrap items-end justify-between gap-x-6 gap-y-3 border-b",
-          onScene ? "px-[clamp(12px,3.3vw,54px)] pt-3 pb-3" : "mx-auto max-w-7xl px-6 pt-4 pb-4",
+          // Same padding either way; only the inset differs, and that is a
+          // variable so the two modes cannot drift apart again.
+          "px-[var(--chrome-inset)] pt-3 pb-3",
         )}
         style={{ borderColor: "var(--chrome-rule)" }}
       >

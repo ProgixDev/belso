@@ -374,3 +374,45 @@ for (const path of ["/fr", "/fr/biens"] as const) {
     });
   }
 }
+
+/*
+ * The header is one object, and it must not change size or position when the
+ * scene ends.
+ *
+ * It used to. Over the film it is inset to the framed world and padded inside
+ * that; on an ordinary page it was `mx-auto max-w-7xl px-6` and a little
+ * taller. Leaving the scene therefore moved the wordmark 26px inboard on a
+ * 1440px screen — and 258px on a 1920px one, where the whole chrome visibly
+ * jumped toward the middle and grew 8px at the same moment.
+ *
+ * Compared rather than pinned to numbers: the geometry is free to change, the
+ * two modes are not free to disagree about it.
+ */
+for (const width of [390, 1024, 1440, 1920] as const) {
+  test(`the header is the same size on and off the scene at ${width}px`, async ({ page }) => {
+    const geometry = async (path: string) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(path);
+      return page.evaluate(() => {
+        const header = document.querySelector("header")!;
+        const row = header.querySelector("div.flex")!;
+        const wordmark = header.querySelector("a[href^='/fr'], a[href^='/en']")!;
+        const cta = [...header.querySelectorAll("a")].at(-1)!;
+        return {
+          height: Math.round(row.getBoundingClientRect().height),
+          wordmarkLeft: Math.round(wordmark.getBoundingClientRect().left),
+          ctaRight: Math.round(cta.getBoundingClientRect().right),
+        };
+      });
+    };
+
+    const onScene = await geometry("/fr");
+    const onPage = await geometry("/fr/biens");
+
+    expect(onPage.height, "the header changes height when the scene ends").toBe(onScene.height);
+    expect(onPage.wordmarkLeft, "the wordmark moves when the scene ends").toBe(
+      onScene.wordmarkLeft,
+    );
+    expect(onPage.ctaRight, "the contact button moves when the scene ends").toBe(onScene.ctaRight);
+  });
+}
