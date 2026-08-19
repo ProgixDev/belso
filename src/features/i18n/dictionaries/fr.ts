@@ -82,7 +82,7 @@ export const fr = {
     // The three sections below the scene. Each is a doorway to a real page.
     residences: {
       index: "02",
-      name: "La sélection",
+      name: "Nos adresses",
       place: "Marrakech et alentours",
       statement: "Par où commencer",
       lede: "Chaque bien est visité, photographié et documenté par nos soins avant d’être publié.",
