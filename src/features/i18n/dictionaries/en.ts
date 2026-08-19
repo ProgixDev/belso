@@ -65,8 +65,26 @@ export const en: Dictionary = {
       lede: "Every property is visited, photographed and documented by us before it is published.",
       cta: "Browse all properties",
     },
-    grounds: {
+    featured: {
       index: "03",
+      name: "The house of the moment",
+      cta: "See this property",
+    },
+    districts: {
+      index: "04",
+      name: "The neighbourhoods",
+      place: "Ten addresses",
+      statement: "Where to look",
+      cta: "See all neighbourhoods",
+    },
+    sell: {
+      index: "06",
+      name: "Selling",
+      place: "Sole agency",
+      cta: "Sell with Belso",
+    },
+    grounds: {
+      index: "05",
       name: "The grounds",
       place: "Inside the walls",
       statement: "Everything close, nothing near",
@@ -80,7 +98,7 @@ export const en: Dictionary = {
       cta: "See the grounds",
     },
     enquire: {
-      index: "04",
+      index: "07",
       name: "Write to us",
       place: "Answered within 24 hours",
       statement: "Tell us what you’re looking for",
