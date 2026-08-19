@@ -455,3 +455,52 @@ for (const width of [390, 1440, 1920] as const) {
     );
   });
 }
+
+/*
+ * The page is six doorways now, and every one of them has to lead somewhere.
+ * A section that renders its masthead over an empty block, or points at a page
+ * that does not exist, is the failure this catches — and none of it shows up in
+ * CUJ-01, which walks the shelf and leaves.
+ */
+test("every section on the home page opens a real page", async ({ page }) => {
+  await page.goto("/fr");
+
+  const sections = ["residences", "featured", "quartiers", "grounds", "vendre", "enquire"];
+  for (const id of sections) {
+    await expect(page.locator(`#${id}`), `#${id} is missing`).toHaveCount(1);
+    await expect(page.locator(`#${id}`).getByRole("heading").first()).toBeVisible();
+  }
+
+  // The featured block is built entirely from a listing, so its link is the
+  // one that breaks first if the rule picking it ever selects nothing.
+  const featured = page.locator("#featured");
+  const href = await featured.getByRole("link").first().getAttribute("href");
+  expect(href, "the featured section does not link to a listing").toMatch(/\/fr\/biens\/.+/);
+  expect((await page.request.get(href!)).status()).toBe(200);
+
+  await featured.getByRole("link").first().click();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("the featured listing is the dearest thing actually for sale", async ({ page }) => {
+  await page.goto("/fr");
+  const title = (await page.locator("#featured h3").first().textContent())!.trim();
+
+  await page.goto("/fr/biens?sort=priceDesc");
+  const cards = await page.locator("main ul > li article").allTextContents();
+  const position = cards.findIndex((card) => card.includes(title));
+  expect(position, "the featured listing is not in the catalogue").toBeGreaterThanOrEqual(0);
+
+  /*
+   * Not simply the first card: the dearest listing in the catalogue is an
+   * estate under offer, and leading a home page with something a visitor
+   * cannot have is a bad first impression. So everything priced above the
+   * featured one has to be unavailable or a rental — which is the rule, stated
+   * as what it rules out.
+   */
+  for (const dearer of cards.slice(0, position)) {
+    expect(dearer, "a dearer listing was for sale and available, and was not featured").toMatch(
+      /Sous compromis|Vendu|Loué|par mois/,
+    );
+  }
+});

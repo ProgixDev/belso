@@ -88,8 +88,32 @@ export const fr = {
       lede: "Chaque bien est visité, photographié et documenté par nos soins avant d’être publié.",
       cta: "Voir tous les biens",
     },
-    grounds: {
+    // One listing, given the room the shelf cannot. Its statement, price and
+    // opening line all come from the property itself — there is no invented
+    // copy here, which is why the block has so few keys.
+    featured: {
       index: "03",
+      name: "Le bien du moment",
+      cta: "Découvrir ce bien",
+    },
+    // Statement and lede are borrowed from the neighbourhood index, so the
+    // promise made on the home page is the one the page itself keeps.
+    districts: {
+      index: "04",
+      name: "Les quartiers",
+      place: "Dix adresses",
+      statement: "Où chercher",
+      cta: "Voir tous les quartiers",
+    },
+    // Likewise from the seller's page.
+    sell: {
+      index: "06",
+      name: "Vendre",
+      place: "Mandat exclusif",
+      cta: "Vendre avec Belso",
+    },
+    grounds: {
+      index: "05",
       name: "Le domaine",
       place: "Dans les murs",
       statement: "Tout à portée, rien à proximité",
@@ -103,7 +127,7 @@ export const fr = {
       cta: "Découvrir le domaine",
     },
     enquire: {
-      index: "04",
+      index: "07",
       name: "Nous écrire",
       place: "Réponse sous 24 h",
       statement: "Dites-nous ce que vous cherchez",

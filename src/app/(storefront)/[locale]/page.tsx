@@ -3,7 +3,14 @@ import { isLocale, toPublicPath } from "@/core/i18n";
 import { CinematicScroll } from "@/features/cinematic-scroll";
 import { getDictionary } from "@/features/i18n";
 import { listProperties } from "@/features/properties";
-import { EnquireSection, GroundsSection, ResidencesSection } from "./_components/home-sections";
+import {
+  DistrictsSection,
+  EnquireSection,
+  FeaturedSection,
+  GroundsSection,
+  ResidencesSection,
+  SellSection,
+} from "./_components/home-sections";
 import { SiteFooter } from "./_components/site-footer";
 import { SiteHeader } from "./_components/site-header";
 
@@ -11,7 +18,7 @@ import { SiteHeader } from "./_components/site-header";
 const SHELF_SIZE = 3;
 
 /**
- * The landing page: the film, then three doorways.
+ * The landing page: the film, then six doorways.
  *
  * The scene used to be the whole page — six beats over a 6600px runway, with
  * "residences" and "amenities" as scroll positions rather than places. It is
@@ -31,6 +38,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Newest first, which is `defaultSort` — the shelf should show what just
   // arrived, not the same three properties for a year.
   const shelf = (await listProperties({ locale })).slice(0, SHELF_SIZE);
+
+  /*
+   * The one listing the page leads with: the most expensive thing actually for
+   * sale. Chosen by rule rather than by a flag on a fixture, so it cannot go
+   * stale, and `priceDesc` compares converted values — the catalogue mixes
+   * dirhams and euros, and picking on the raw number would crown whichever
+   * listing happened to be priced in the smaller unit.
+   *
+   * Under offer and sold are excluded: leading a home page with something a
+   * visitor cannot have is a bad first impression, not a flourish.
+   */
+  const featured = (await listProperties({ locale, sort: "priceDesc" })).find(
+    (property) => property.kind === "sale" && property.status === "available",
+  );
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -55,7 +76,21 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           href={toPublicPath("/properties", locale)}
           districtsHref={toPublicPath("/districts", locale)}
         />
+
+        {/* Skipped rather than emptied when the catalogue has nothing for sale:
+         * a masthead over a hole is worse than one section fewer. */}
+        {featured ? (
+          <FeaturedSection
+            locale={locale}
+            dict={dict}
+            property={featured}
+            href={toPublicPath(`/properties/${featured.slug}`, locale)}
+          />
+        ) : null}
+
+        <DistrictsSection locale={locale} dict={dict} href={toPublicPath("/districts", locale)} />
         <GroundsSection dict={dict} href={toPublicPath("/about", locale)} />
+        <SellSection dict={dict} href={toPublicPath("/sell", locale)} />
         <EnquireSection dict={dict} href={toPublicPath("/contact", locale)} />
       </main>
 
