@@ -109,7 +109,7 @@ test("@cuj CUJ-01: visitor lands, watches the scene, and reaches the catalogue",
   // the rework — so each is asserted by its heading and its link.
   const residences = page.locator("#residences");
   await scrollToSection(page, "residences");
-  await expect(page.getByRole("heading", { name: "The selection", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Our addresses", exact: true })).toBeVisible();
   // The shelf is one row drawn from the real catalogue, not fixture cards that
   // only exist on this page.
   // Cards specifically: the section also carries the neighbourhood strip, so

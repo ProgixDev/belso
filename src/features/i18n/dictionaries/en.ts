@@ -59,7 +59,7 @@ export const en: Dictionary = {
     },
     residences: {
       index: "02",
-      name: "The selection",
+      name: "Our addresses",
       place: "Marrakech and around",
       statement: "Where to begin",
       lede: "Every property is visited, photographed and documented by us before it is published.",
