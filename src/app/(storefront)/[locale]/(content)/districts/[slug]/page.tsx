@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
+import { propertyCardLabels } from "../../../_components/property-labels";
 import { getDictionary } from "@/features/i18n";
 import {
   districtIds,
@@ -66,14 +67,7 @@ export default async function DistrictPage({
   const listings = await listProperties({ district: slug, locale });
   const elsewhere = districtOrder.filter((id) => id !== slug).slice(0, 4);
 
-  const cardLabels = {
-    bedrooms: dict.properties.bedrooms,
-    builtArea: dict.properties.builtArea,
-    perMonth: dict.properties.perMonth,
-    statusUnderOffer: dict.properties.statusUnderOffer,
-    statusSold: dict.properties.statusSold,
-    statusRented: dict.properties.statusRented,
-  };
+  const cardLabels = propertyCardLabels(dict);
 
   return (
     <div className="container-page py-[clamp(40px,7vh,96px)]">

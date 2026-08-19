@@ -78,4 +78,24 @@ describe("fixture variance (docs/design/quality-bar.md)", () => {
   it("includes a listing with no bedrooms, which breaks a villa-shaped key-facts row", () => {
     expect(propertyFixtures.some((p) => p.bedrooms === 0)).toBe(true);
   });
+
+  it("gives every building a year, and land none", () => {
+    // The card prints "VILLA · 2006" from this. A missing year on a house
+    // silently drops half the eyebrow; a year on a plot of land is a fiction.
+    for (const property of propertyFixtures) {
+      if (property.type === "land") {
+        expect(
+          property.builtYear,
+          `${property.reference} is land with a build year`,
+        ).toBeUndefined();
+      } else {
+        expect(property.builtYear, `${property.reference} has no build year`).toBeGreaterThan(1800);
+      }
+    }
+  });
+
+  it("carries a listing with no parking, because the medina has none", () => {
+    expect(propertyFixtures.some((p) => p.parking === 0)).toBe(true);
+    expect(propertyFixtures.some((p) => p.parking > 0)).toBe(true);
+  });
 });

@@ -8,6 +8,7 @@ import {
   type LocalizedProperty,
   PropertyCard,
 } from "@/features/properties";
+import { propertyCardLabels } from "./property-labels";
 import { SectionMasthead, SectionStatement } from "./section-masthead";
 
 /**
@@ -147,15 +148,7 @@ export function ResidencesSection({
               <PropertyCard
                 property={property}
                 locale={locale}
-                labels={{
-                  bedrooms: dict.properties.bedrooms,
-                  builtArea: dict.properties.builtArea,
-                  perMonth: dict.properties.perMonth,
-                  statusUnderOffer: dict.properties.statusUnderOffer,
-                  statusSold: dict.properties.statusSold,
-                  statusRented: dict.properties.statusRented,
-                  type: dict.propertyType[property.type],
-                }}
+                labels={{ ...propertyCardLabels(dict), type: dict.propertyType[property.type] }}
               />
             </Reveal>
           ))}

@@ -106,6 +106,14 @@ export type Property = {
   /** Square metres. `landArea` is absent for apartments, which have no plot. */
   builtArea: number;
   landArea?: number;
+  /**
+   * Year of construction. Absent for land, which has none — and optional
+   * rather than zero so a card can leave the slot out instead of printing a
+   * year nobody built anything in.
+   */
+  builtYear?: number;
+  /** Covered or allocated spaces. Zero is a real answer in the medina. */
+  parking: number;
   amenities: Amenity[];
   media: PropertyMedia[];
   /** ISO date — drives the "most recently listed" sort (AC-3). */

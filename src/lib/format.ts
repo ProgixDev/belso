@@ -43,6 +43,17 @@ export function formatCount(value: number, locale: Locale): string {
   return new Intl.NumberFormat(localeTag[locale]).format(value);
 }
 
+/**
+ * A listing date is a calendar day, not an instant.
+ *
+ * `new Date("2026-07-28")` parses as midnight **UTC**, so formatting it in any
+ * negative-offset timezone renders the 27th — a listing dated a day before it
+ * was listed, on every card, for every visitor west of Greenwich. Pinning the
+ * output to UTC prints the day that was written down.
+ */
 export function formatDate(iso: string, locale: Locale): string {
-  return new Intl.DateTimeFormat(localeTag[locale], { dateStyle: "long" }).format(new Date(iso));
+  return new Intl.DateTimeFormat(localeTag[locale], {
+    dateStyle: "long",
+    timeZone: "UTC",
+  }).format(new Date(iso));
 }
