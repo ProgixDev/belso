@@ -54,10 +54,17 @@ const SKY_VEIL = "color-mix(in oklab, var(--color-background) 55%, transparent)"
  * failed somewhere in the viewport sweep. Hierarchy here is carried by size,
  * weight and tracking alone.
  *
- * The wordmark is set large and alone as a signature. Everything else is kept
- * quiet — small caps at the same 10px/0.22em as the section mastheads, a single
- * hairline, generous air — because a footer earns its weight by how little it
- * asks for, not how much it lists.
+ * The wordmark is set as a signature and everything else is kept quiet — small
+ * caps at the same 10px/0.22em as the section mastheads, a single hairline —
+ * because a footer earns its weight by how little it asks for, not how much it
+ * lists. It was taking 465px of a desktop screen and 761px of a 844px phone,
+ * which is a page of its own at the foot of every page; the air came down and
+ * the two link columns now sit side by side at every width.
+ *
+ * It aligns to `--frame-inset`, like the header. The two bracket the page, so
+ * they cannot disagree about where its edges are — before, the footer sat in a
+ * 1280px column while the header spanned the window, and on the listings grid
+ * the two started 282px apart.
  */
 export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const sections = footerSections(locale, dict);
@@ -78,19 +85,19 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
         <div data-sky-veil className="absolute inset-0" style={{ background: SKY_VEIL }} />
       </div>
 
-      <div className="container-page py-[clamp(48px,8vh,104px)]">
+      <div className="container-bleed py-[clamp(28px,4vh,52px)]">
         {/* Signature left, links right — the sections are a short list, and
          * stretching two of them across four columns leaves half the footer
          * empty, which reads as unfinished rather than spacious. */}
-        <div className="grid gap-x-10 gap-y-12 lg:grid-cols-12">
+        <div className="grid gap-x-10 gap-y-8 lg:grid-cols-12">
           <Reveal className="lg:col-span-5">
-            <p className="font-[family-name:var(--font-archivo)] text-[clamp(2rem,4.6vw,3.6rem)] leading-none font-bold tracking-[0.055em] uppercase">
+            <p className="font-[family-name:var(--font-archivo)] text-[clamp(1.5rem,3vw,2.4rem)] leading-none font-bold tracking-[0.055em] uppercase">
               Belso
             </p>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed">{dict.footer.tagline}</p>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed">{dict.footer.tagline}</p>
           </Reveal>
 
-          <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 lg:col-span-6 lg:col-start-7">
             {/* The `<nav>` keeps its own element and label — the reveal wraps it
              * rather than replacing it, or the landmark loses its name. */}
             {sections.map((section, index) => (
@@ -99,7 +106,7 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
                   <h2 className="text-[10px] font-semibold tracking-[0.22em] uppercase">
                     {section.title}
                   </h2>
-                  <ul className="mt-5 flex flex-col gap-3">
+                  <ul className="mt-3 flex flex-col gap-2">
                     {section.items.map((item) => (
                       <li key={item.href}>
                         <Link
@@ -122,7 +129,7 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
       </div>
 
       <div className="border-foreground/20 border-t">
-        <div className="container-page flex flex-wrap items-center justify-between gap-x-8 gap-y-3 py-6">
+        <div className="container-bleed flex flex-wrap items-center justify-between gap-x-8 gap-y-2 py-3.5">
           <p className="text-xs">
             © {new Date().getFullYear()} {site.name}. {dict.footer.rights}
           </p>

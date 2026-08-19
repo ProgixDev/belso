@@ -249,3 +249,127 @@ test("AC-11: the contact button's label survives every value of the scene tint",
     );
   }
 });
+
+/*
+ * The footer sets ink type on a photograph, so its contrast is a property of
+ * the *crop*, not of a colour pair — and `object-cover` answers a wide short
+ * box and a tall narrow one with completely different slices of the same
+ * plate. The veil over it was chosen by sweeping viewports for exactly that
+ * reason (45% left four failures, 50% one, 55% cleared).
+ *
+ * Which means any change to the footer's height re-crops it. Making it smaller
+ * moved every run onto different sky; this is what says whether that was safe.
+ */
+test("AC-11: every line in the footer clears AA on the sky behind it", async ({ page }) => {
+  const failures: string[] = [];
+
+  for (const [width, height] of [
+    [390, 844],
+    [768, 900],
+    [1280, 900],
+    [1920, 1000],
+  ] as const) {
+    await page.setViewportSize({ width, height });
+    await page.goto("/fr/biens");
+
+    // The reveals must have run: an unrevealed run is measured where it is not.
+    await page.evaluate(async () => {
+      const settle = () =>
+        new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      for (let y = 0; y < document.documentElement.scrollHeight; y += window.innerHeight * 0.75) {
+        window.scrollTo({ top: y, behavior: "instant" });
+        await settle();
+      }
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" });
+      await settle();
+    });
+    await page.waitForTimeout(500);
+
+    // Glyphs out, ground only — then the worst pixel under each run.
+    const runs = await page.evaluate(() => {
+      const footer = document.querySelector("footer")!;
+      const box = footer.getBoundingClientRect();
+      const nodes = [...footer.querySelectorAll("p,a,h2")].filter((el) => el.textContent?.trim());
+      const measured = nodes.map((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = getComputedStyle(el);
+        return {
+          text: el.textContent!.trim().slice(0, 24),
+          color: style.color,
+          size: parseFloat(style.fontSize),
+          weight: Number(style.fontWeight),
+          x: Math.round(rect.left - box.left),
+          y: Math.round(rect.top - box.top),
+          w: Math.round(rect.width),
+          h: Math.round(rect.height),
+        };
+      });
+      nodes.forEach((el) => {
+        (el as HTMLElement).style.color = "transparent";
+      });
+      return measured;
+    });
+
+    const png = (await page.locator("footer").screenshot()).toString("base64");
+
+    const results = await page.evaluate(
+      async ({ png, runs }) => {
+        const img = new Image();
+        img.src = `data:image/png;base64,${png}`;
+        await img.decode();
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+        ctx.drawImage(img, 0, 0);
+
+        const luminance = (r: number, g: number, b: number) => {
+          const [lr, lg, lb] = [r, g, b].map((v) => {
+            const c = v / 255;
+            return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+          });
+          return 0.2126 * lr! + 0.7152 * lg! + 0.0722 * lb!;
+        };
+        const inkLuminance = (css: string) => {
+          const probe = document.createElement("canvas");
+          probe.width = probe.height = 1;
+          const c = probe.getContext("2d", { willReadFrequently: true })!;
+          c.fillStyle = css;
+          c.fillRect(0, 0, 1, 1);
+          const [r, g, b] = c.getImageData(0, 0, 1, 1).data;
+          return luminance(r!, g!, b!);
+        };
+
+        return runs.flatMap((run) => {
+          const x = Math.max(0, run.x);
+          const y = Math.max(0, run.y);
+          const w = Math.min(run.w, canvas.width - x);
+          const h = Math.min(run.h, canvas.height - y);
+          if (w < 2 || h < 2) return [];
+
+          const data = ctx.getImageData(x, y, w, h).data;
+          const ink = inkLuminance(run.color);
+          let worst = Infinity;
+          for (let i = 0; i < data.length; i += 4) {
+            const ground = luminance(data[i]!, data[i + 1]!, data[i + 2]!);
+            const [hi, lo] = ink > ground ? [ink, ground] : [ground, ink];
+            worst = Math.min(worst, (hi + 0.05) / (lo + 0.05));
+          }
+          // WCAG "large text": 24px, or 18.66px when bold.
+          const large = run.size >= 24 || (run.size >= 18.66 && run.weight >= 700);
+          return [{ text: run.text, ratio: worst, needs: large ? 3 : 4.5 }];
+        });
+      },
+      { png, runs },
+    );
+
+    expect(results.length, `nothing measured at ${width}px`).toBeGreaterThan(5);
+    for (const { text, ratio, needs } of results) {
+      if (ratio < needs) {
+        failures.push(`${width}px "${text}" ${ratio.toFixed(2)}:1 (needs ${needs}:1)`);
+      }
+    }
+  }
+
+  expect(failures, failures.join("; ")).toEqual([]);
+});
