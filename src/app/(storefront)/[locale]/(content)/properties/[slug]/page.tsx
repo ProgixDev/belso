@@ -256,9 +256,11 @@ export default async function PropertyDetailPage({
             <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {similar.map((item) => (
                 <li key={item.id}>
+                  {/* A suggestion, not a result: same reasoning as the home shelf. */}
                   <PropertyCard
                     property={item}
                     locale={locale}
+                    variant="quiet"
                     labels={{ ...cardLabels, type: dict.propertyType[item.type] }}
                   />
                 </li>
