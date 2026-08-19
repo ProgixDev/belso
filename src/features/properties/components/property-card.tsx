@@ -99,12 +99,21 @@ export function PropertyCard({
   property,
   labels,
   locale,
+  variant = "full",
   /** The first row of cards is above the fold; the rest should not fight it for bandwidth. */
   priority = false,
 }: {
   property: LocalizedProperty;
   labels: PropertyCardLabels;
   locale: Locale;
+  /**
+   * `full` is the catalogue card: everything a buyer compares on, reference and
+   * publication date included. `quiet` drops that last row for the shelves that
+   * are an invitation rather than a search result — the home page and the row
+   * under a listing. A reference number is what you quote once you are already
+   * interested; on a teaser it is administration in a place meant to seduce.
+   */
+  variant?: "full" | "quiet";
   priority?: boolean;
 }) {
   const href = toPublicPath(`/properties/${property.slug}`, locale);
@@ -150,7 +159,7 @@ export function PropertyCard({
   return (
     <article
       className={cn(
-        "group border-border/70 bg-card relative flex flex-col overflow-hidden rounded-lg border",
+        "group border-border/60 bg-card relative flex flex-col overflow-hidden rounded-2xl border",
         "hover:border-foreground/30 transition-colors duration-300 ease-out",
         "motion-reduce:transition-none",
         // The focus ring belongs to the whole card, because the whole card is
@@ -222,7 +231,7 @@ export function PropertyCard({
       </div>
 
       {facts.length > 0 ? (
-        <ul className="border-border/70 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-4 py-2.5 text-xs">
+        <ul className="border-border/60 text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-4 py-2.5 text-xs">
           {facts.map((fact) => (
             <li key={fact.key} className="flex items-center gap-1.5">
               {fact.glyph}
@@ -232,27 +241,29 @@ export function PropertyCard({
         </ul>
       ) : null}
 
-      <div className="border-border/70 text-muted-foreground flex items-end justify-between gap-3 border-t px-4 py-2.5 text-[11px]">
-        <div className="min-w-0">
-          <p className="truncate">
-            {labels.reference} {property.reference}
-          </p>
-          <p className="truncate">{labels.agency}</p>
+      {variant === "full" ? (
+        <div className="border-border/60 text-muted-foreground flex items-end justify-between gap-3 border-t px-4 py-2.5 text-[11px]">
+          <div className="min-w-0">
+            <p className="truncate">
+              {labels.reference} {property.reference}
+            </p>
+            <p className="truncate">{labels.agency}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-foreground/80 font-semibold">
+              {property.kind === "rent" ? labels.forRent : labels.forSale}
+            </p>
+            {/*
+             * The date it went up, not "3 days ago". The district pages are
+             * statically generated, so a relative label would be baked at build
+             * time and drift a day further from the truth every day after.
+             */}
+            <p>
+              {labels.listedOn} {formatDate(property.listedAt, locale)}
+            </p>
+          </div>
         </div>
-        <div className="shrink-0 text-right">
-          <p className="text-foreground/80 font-semibold">
-            {property.kind === "rent" ? labels.forRent : labels.forSale}
-          </p>
-          {/*
-           * The date it went up, not "3 days ago". The district pages are
-           * statically generated, so a relative label would be baked at build
-           * time and drift a day further from the truth every day after.
-           */}
-          <p>
-            {labels.listedOn} {formatDate(property.listedAt, locale)}
-          </p>
-        </div>
-      </div>
+      ) : null}
     </article>
   );
 }

@@ -140,14 +140,18 @@ export function ResidencesSection({
       cta={copy.cta}
     >
       {properties.length > 0 ? (
-        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-[clamp(16px,1.6vw,26px)] sm:grid-cols-2 lg:grid-cols-3">
           {properties.map((property, index) => (
             // Staggered along the row: three cards arriving together read as a
             // block appearing, one after another reads as a shelf being filled.
             <Reveal as="li" key={property.id} delay={index * 0.09}>
+              {/* `quiet`: no reference, no agency, no publication date. This is
+               * an invitation, not a search result — that row belongs on the
+               * catalogue page, where someone is comparing. */}
               <PropertyCard
                 property={property}
                 locale={locale}
+                variant="quiet"
                 labels={{ ...propertyCardLabels(dict), type: dict.propertyType[property.type] }}
               />
             </Reveal>
@@ -164,17 +168,19 @@ export function ResidencesSection({
         as="nav"
         delay={0.2}
         aria-label={dict.districts.title}
-        className="border-border/60 mt-[clamp(28px,4vh,48px)] border-t pt-[clamp(18px,2.5vh,28px)]"
+        className="border-border/60 mt-[clamp(32px,5vh,56px)] border-t pt-[clamp(20px,3vh,32px)]"
       >
-        <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-          <li className="text-foreground/50 text-[10px] font-semibold tracking-[0.22em] uppercase">
-            <Link
-              href={districtsHref}
-              className="focus-visible:ring-ring rounded-sm hover:opacity-70 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none"
-            >
-              {dict.districts.title}
-            </Link>
-          </li>
+        {/* The label sits above the row rather than inside it. As the first
+         * list item it was a word of a different size and colour in a line of
+         * ten place names, and the wrap broke ragged around it. */}
+        <Link
+          href={districtsHref}
+          className="focus-visible:ring-ring text-foreground/50 hover:text-foreground/80 inline-block rounded-sm text-[10px] font-semibold tracking-[0.22em] uppercase transition-colors focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-none motion-reduce:transition-none"
+        >
+          {dict.districts.title}
+        </Link>
+
+        <ul className="mt-[clamp(12px,1.6vh,18px)] flex flex-wrap items-baseline gap-x-[clamp(18px,2vw,34px)] gap-y-2">
           {districtOrder.map((id) => (
             <li key={id}>
               <Link
