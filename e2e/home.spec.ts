@@ -416,3 +416,42 @@ for (const width of [390, 1024, 1440, 1920] as const) {
     expect(onPage.ctaRight, "the contact button moves when the scene ends").toBe(onScene.ctaRight);
   });
 }
+
+/*
+ * The header and the footer bracket the page, so they cannot disagree about
+ * where its edges are. They did: the header aligned to the scene's frame while
+ * the footer sat in a 1280px column, which on the full-bleed listings grid put
+ * them 282px apart at 1920px.
+ */
+for (const width of [390, 1440, 1920] as const) {
+  test(`the header and footer start at the same edge at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/fr/biens");
+
+    const edges = await page.evaluate(() => {
+      const inner = (root: Element | null) => {
+        const el = root?.querySelector(".container-bleed, .container-page");
+        if (!el) return null;
+        return Math.round(
+          el.getBoundingClientRect().left + parseFloat(getComputedStyle(el).paddingLeft),
+        );
+      };
+      const header = document.querySelector("header");
+      const headerRow = header?.querySelector("div.flex");
+      return {
+        header: headerRow
+          ? Math.round(
+              headerRow.getBoundingClientRect().left +
+                parseFloat(getComputedStyle(headerRow).paddingLeft),
+            )
+          : null,
+        footer: inner(document.querySelector("footer")),
+      };
+    });
+
+    expect(edges.header).not.toBeNull();
+    expect(edges.footer, "the footer starts at a different edge than the header").toBe(
+      edges.header,
+    );
+  });
+}
