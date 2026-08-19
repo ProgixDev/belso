@@ -332,16 +332,20 @@ for (const path of ["/fr", "/fr/biens"] as const) {
         const links = [...(navs[0]?.querySelectorAll("a") ?? [])].map((a) =>
           a.getBoundingClientRect(),
         );
+        // The contact button is the last link in the header and sits furthest
+        // right, so it is the first thing to fall off a narrow screen.
+        const cta = [...header.querySelectorAll("a")].at(-1);
         return {
           linkHeight: Math.max(...links.map((r) => r.height)),
           navRight: Math.max(...links.map((r) => r.right)),
           switcherRight: navs.at(-1)?.getBoundingClientRect().right ?? 0,
+          ctaRight: cta?.getBoundingClientRect().right ?? 0,
           overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         };
       });
 
       expect(measured).not.toBeNull();
-      const { linkHeight, navRight, switcherRight, overflow } = measured!;
+      const { linkHeight, navRight, switcherRight, ctaRight, overflow } = measured!;
 
       // A single line of 17px type. Two lines measure 34.
       expect(linkHeight, "a navigation label wrapped onto a second line").toBeLessThan(20);
@@ -352,6 +356,10 @@ for (const path of ["/fr", "/fr/biens"] as const) {
       expect(
         switcherRight,
         `the language switcher is ${switcherRight - width}px off-screen and unreachable`,
+      ).toBeLessThanOrEqual(width);
+      expect(
+        ctaRight,
+        `the contact button is ${ctaRight - width}px off-screen and unreachable`,
       ).toBeLessThanOrEqual(width);
       expect(overflow, "the page scrolls sideways").toBe(0);
     });

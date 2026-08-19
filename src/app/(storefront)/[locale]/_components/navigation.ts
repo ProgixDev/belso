@@ -25,12 +25,29 @@ export type NavItem = {
  * where you were standing. The beats they pointed at are now real pages.
  */
 export function primaryNav(locale: Locale, dict: Dictionary): NavItem[] {
+  return [...headerNav(locale, dict), contactAction(locale, dict)];
+}
+
+/**
+ * What the header sets as links. Contact is not among them — it is the one
+ * thing a visitor is being asked to do, so it is a button at the far right
+ * rather than the fourth word in a row of four.
+ *
+ * The footer still lists all four through `primaryNav`, because there it is a
+ * directory rather than a call to action, and AC-10 wants contact reachable
+ * from the footer on every page.
+ */
+export function headerNav(locale: Locale, dict: Dictionary): NavItem[] {
   return [
     { href: `/${locale}`, label: dict.nav.home },
     { href: toPublicPath("/properties", locale), label: dict.nav.properties },
     { href: toPublicPath("/about", locale), label: dict.nav.about },
-    { href: toPublicPath("/contact", locale), label: dict.nav.contact },
   ];
+}
+
+/** The header's one call to action. */
+export function contactAction(locale: Locale, dict: Dictionary): NavItem {
+  return { href: toPublicPath("/contact", locale), label: dict.nav.contact };
 }
 
 /**
