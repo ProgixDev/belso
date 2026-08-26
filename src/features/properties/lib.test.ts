@@ -1,16 +1,27 @@
 import { describe, expect, it } from "vitest";
 import { convert, displayCurrency } from "@/core/currency";
+import { districts } from "./districts";
 import { propertyFixtures } from "./fixtures";
 import {
+  approximateLocation,
   localizeProperty,
   matchScore,
   pickSimilar,
+  resolveLocation,
   resolveTranslation,
   similarityScore,
   sortProperties,
   tokenize,
 } from "./lib";
 import { propertySearchParamsSchema, type Property } from "./types";
+
+/** Haversine, near enough at city scale — this only has to bound a scatter. */
+const metresBetween = (a: { lat: number; lng: number }, b: { lat: number; lng: number }) => {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng) * Math.cos(toRad((a.lat + b.lat) / 2));
+  return Math.sqrt(dLat * dLat + dLng * dLng) * 6_371_000;
+};
 
 const byReference = (reference: string): Property => {
   const found = propertyFixtures.find((p) => p.reference === reference);
@@ -238,7 +249,15 @@ describe("propertySearchParamsSchema (SEC-INPUT-001)", () => {
     expect(propertySearchParamsSchema.parse({ q: "riad medina", sort: "priceAsc" })).toEqual({
       q: "riad medina",
       sort: "priceAsc",
+      // Unasked-for, so it falls back: the catalogue is a list until told otherwise.
+      view: "grid",
     });
+  });
+
+  it("falls back to the list on a stale or hostile view", () => {
+    expect(propertySearchParamsSchema.parse({ view: "satellite-3d" }).view).toBe("grid");
+    expect(propertySearchParamsSchema.parse({}).view).toBe("grid");
+    expect(propertySearchParamsSchema.parse({ view: "map" }).view).toBe("map");
   });
 
   it("falls back rather than throwing on a stale or hostile sort", () => {
@@ -255,5 +274,66 @@ describe("propertySearchParamsSchema (SEC-INPUT-001)", () => {
 
   it("trims, so a whitespace-only search is treated as no search", () => {
     expect(propertySearchParamsSchema.parse({ q: "   " }).q).toBe("");
+  });
+});
+
+describe("approximateLocation", () => {
+  const center = { lat: 31.63, lng: -7.99 };
+
+  it("puts the same listing in the same place every time", () => {
+    // The point is computed on the server and again in the browser. Anything
+    // random here hydrates to a different map than the one that was sent.
+    const first = approximateLocation("BL-1101", center);
+    const second = approximateLocation("BL-1101", center);
+    expect(first).toEqual(second);
+  });
+
+  it("keeps the point inside the district it was derived from", () => {
+    for (const property of propertyFixtures) {
+      const district = districts[property.districtId];
+      const point = approximateLocation(property.reference, district.center);
+      expect(metresBetween(district.center, point), property.reference).toBeLessThanOrEqual(801);
+    }
+  });
+
+  it("does not stack two listings from the same district on one pin", () => {
+    const byDistrict = new Map<string, string[]>();
+    for (const property of propertyFixtures) {
+      byDistrict.set(property.districtId, [
+        ...(byDistrict.get(property.districtId) ?? []),
+        JSON.stringify(
+          approximateLocation(property.reference, districts[property.districtId].center),
+        ),
+      ]);
+    }
+    for (const [district, points] of byDistrict) {
+      expect(new Set(points).size, `${district} stacks its listings`).toBe(points.length);
+    }
+  });
+});
+
+describe("resolveLocation", () => {
+  it("calls a derived point approximate", () => {
+    const property = byReference("BL-1101");
+    expect(property.coordinates, "fixtures must carry no invented coordinates").toBeUndefined();
+    expect(resolveLocation(property).precision).toBe("approximate");
+  });
+
+  it("calls a supplied point exact, and uses it unchanged", () => {
+    // What the back-office will send. The caveat has to switch itself off.
+    const withCoordinates = { ...byReference("BL-1101"), coordinates: { lat: 31.6, lng: -8.0 } };
+    expect(resolveLocation(withCoordinates)).toEqual({
+      lat: 31.6,
+      lng: -8.0,
+      precision: "exact",
+    });
+  });
+
+  it("gives every listing somewhere to be", () => {
+    for (const property of propertyFixtures) {
+      const location = resolveLocation(property);
+      expect(Number.isFinite(location.lat), property.reference).toBe(true);
+      expect(Number.isFinite(location.lng), property.reference).toBe(true);
+    }
   });
 });

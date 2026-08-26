@@ -14,26 +14,31 @@
 
 export type {
   Amenity,
+  Coordinates,
   ListingKind,
   ListingStatus,
   LocalizedProperty,
   Property,
+  PropertyLocation,
   PropertyMedia,
   PropertyQuery,
   PropertySearchParams,
   PropertySort,
   PropertyTranslation,
   PropertyType,
+  PropertyView,
 } from "./types";
 
 export {
   amenities,
   propertySearchParamsSchema,
   isPropertySort,
+  isPropertyView,
   listingKinds,
   listingStatuses,
   propertySorts,
   propertyTypes,
+  propertyViews,
 } from "./types";
 
 export {
@@ -45,7 +50,7 @@ export {
   isDistrictId,
 } from "./districts";
 
-export { defaultSort } from "./lib";
+export { approximateLocation, defaultSort, resolveLocation } from "./lib";
 
 export { Gallery } from "./components/gallery";
 export { KeyFacts } from "./components/key-facts";
