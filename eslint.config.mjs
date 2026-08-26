@@ -21,6 +21,9 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "artifacts/**",
+    // MapLibre's worker, copied out of node_modules so we can serve it ourselves
+    // (scripts/sync-map-worker.mjs). It is vendor build output, not our code.
+    "public/vendor/**",
     // Feature packs are parked/inactive until installed via /add-feature — they
     // live outside src and must add zero weight to the app (tsconfig also excludes them).
     "packs/**",

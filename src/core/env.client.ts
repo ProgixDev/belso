@@ -9,6 +9,11 @@ import { z } from "zod";
  * refuses a service_role / secret key — shipping that would bypass RLS.
  */
 const clientEnvSchema = z.object({
+  NEXT_PUBLIC_MAP_STYLE_URL: z.string().url("NEXT_PUBLIC_MAP_STYLE_URL must be a valid URL"),
+  NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL: z
+    .string()
+    .url("NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL must be a valid URL")
+    .optional(),
   NEXT_PUBLIC_SUPABASE_URL: z.string().url("NEXT_PUBLIC_SUPABASE_URL must be a valid URL"),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z
     .string()
@@ -40,8 +45,24 @@ function configured(value: string | undefined): string | undefined {
 const PLACEHOLDER_URL = "https://localhost.supabase.co";
 const PLACEHOLDER_ANON_KEY = "public-anon-key-placeholder";
 
+/**
+ * MapLibre's own demo style: keyless, openly licensed, and low detail — land,
+ * water and borders, no street names at city zoom.
+ *
+ * It is the default so the map needs **no account to develop against** and no
+ * key to run the tests, which is the same standard `packs/README.md` holds the
+ * feature packs to. It is not a launch style: `pnpm web:check` flags it, the way
+ * it flags a placeholder site URL.
+ */
+const DEMO_MAP_STYLE = "https://demotiles.maplibre.org/style.json";
+
 // NEXT_PUBLIC_* must be referenced statically for Next.js to inline them.
 export const clientEnv = clientEnvSchema.parse({
+  NEXT_PUBLIC_MAP_STYLE_URL: configured(process.env.NEXT_PUBLIC_MAP_STYLE_URL) ?? DEMO_MAP_STYLE,
+  // No default. Nobody gives satellite imagery away, so an unset variable means
+  // we have none — and the control for it is not rendered rather than offered
+  // and broken.
+  NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL: configured(process.env.NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL),
   NEXT_PUBLIC_SUPABASE_URL: configured(process.env.NEXT_PUBLIC_SUPABASE_URL) ?? PLACEHOLDER_URL,
   NEXT_PUBLIC_SUPABASE_ANON_KEY:
     configured(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) ?? PLACEHOLDER_ANON_KEY,
@@ -55,6 +76,20 @@ export const clientEnv = clientEnvSchema.parse({
 export const supabaseConfigured =
   clientEnv.NEXT_PUBLIC_SUPABASE_URL !== PLACEHOLDER_URL &&
   clientEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY !== PLACEHOLDER_ANON_KEY;
+
+/**
+ * The two style URLs the map draws with, and whether the ground can be swapped.
+ *
+ * `usingDemoTiles` is what `web:check` reads: shipping a launch on MapLibre's
+ * demo server would be running production traffic through somebody's goodwill.
+ */
+export const mapStyles = {
+  map: clientEnv.NEXT_PUBLIC_MAP_STYLE_URL,
+  satellite: clientEnv.NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL,
+} as const;
+
+export const satelliteAvailable = Boolean(clientEnv.NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL);
+export const usingDemoTiles = clientEnv.NEXT_PUBLIC_MAP_STYLE_URL === DEMO_MAP_STYLE;
 
 /*
  * Say it once, on the server, at build and boot. Silence here is how a deploy

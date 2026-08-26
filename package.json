@@ -26,7 +26,10 @@
     "web:check": "node scripts/check-web-readiness.mjs",
     "report:pdf": "node scripts/report-to-pdf.mjs",
     "verify": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm check:docs && pnpm check:typography && pnpm secrets:check && pnpm test && pnpm build",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "sync:map-worker": "node scripts/sync-map-worker.mjs",
+    "prebuild": "node scripts/sync-map-worker.mjs",
+    "predev": "node scripts/sync-map-worker.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [
@@ -42,6 +45,7 @@
     "@supabase/supabase-js": "^2.58.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "maplibre-gl": "^6.6.0",
     "motion": "^12.40.0",
     "next": "16.3.1",
     "react": "19.2.4",

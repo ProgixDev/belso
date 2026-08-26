@@ -224,6 +224,26 @@ export const en: Dictionary = {
     chalet: "Chalet",
     estate: "Estate",
   },
+  map: {
+    region: "Map of the properties",
+    showMap: "See on the map",
+    showList: "See the list",
+    modeDefault: "Default",
+    modePrices: "Prices",
+    modeSatellite: "Satellite",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    recenter: "Recentre on Marrakech",
+    clusterLabel: "{count} properties here",
+    approximate:
+      "Approximate locations: each property is placed in its neighbourhood, not at its address.",
+    close: "Close this property",
+    loading: "Loading the map…",
+    failedTitle: "The map could not load",
+    failedBody:
+      "It depends on an outside service that is not answering just now. The properties are still readable as a list.",
+    noScript: "The map needs JavaScript. Here are the properties as a list.",
+  },
   amenity: {
     pool: "Pool",
     garden: "Garden",

@@ -55,6 +55,16 @@ export { approximateLocation, defaultSort, resolveLocation } from "./lib";
 export { Gallery } from "./components/gallery";
 export { KeyFacts } from "./components/key-facts";
 export { ListingJsonLd, type ListingJsonLdLabels } from "./components/listing-json-ld";
+/*
+ * The map arrives through its loader, never directly. This barrel re-exports
+ * `repository.ts`, which is `server-only`, so the map's own module could never
+ * be pulled through it into a client bundle — and `app` may not reach past a
+ * feature's public API to get at it either. The loader holds the `"use client"`
+ * boundary one file inside the slice, which satisfies both, and is also where
+ * `ssr: false` has to be declared.
+ */
+export { PropertyMap } from "./components/property-map-loader";
+export type { MapLabels } from "./components/property-map";
 export { Price } from "./components/price";
 export { PropertyCard, type PropertyCardLabels } from "./components/property-card";
 export { ResultsHeader } from "./components/results-header";

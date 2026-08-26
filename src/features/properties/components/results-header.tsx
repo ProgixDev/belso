@@ -17,6 +17,7 @@ export function ResultsHeader({
   searchedForLabel,
   clearLabel,
   clearHref,
+  viewToggle,
   sortControl,
 }: {
   title: string;
@@ -26,6 +27,8 @@ export function ResultsHeader({
   searchedForLabel: string;
   clearLabel: string;
   clearHref: string;
+  /** Grid or map. Passed in rather than built here — only `app` knows the URL. */
+  viewToggle?: React.ReactNode;
   sortControl: React.ReactNode;
 }) {
   return (
@@ -47,7 +50,9 @@ export function ResultsHeader({
           {count}
         </p>
 
-        <div className="flex items-center gap-4">
+        {/* Wraps: with the view toggle beside the sort control this row needed
+         * 400px of a 320px screen and pushed the whole page sideways. */}
+        <div className="flex flex-wrap items-center justify-end gap-3">
           {query ? (
             <Link
               href={clearHref}
@@ -56,6 +61,7 @@ export function ResultsHeader({
               {clearLabel}
             </Link>
           ) : null}
+          {viewToggle}
           {sortControl}
         </div>
       </div>
