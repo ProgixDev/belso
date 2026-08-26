@@ -1,6 +1,14 @@
 import { convert, displayCurrency } from "@/core/currency";
 import { defaultLocale, type Locale } from "@/core/i18n";
-import type { LocalizedProperty, Property, PropertySort, PropertyTranslation } from "./types";
+import { districts } from "./districts";
+import type {
+  Coordinates,
+  LocalizedProperty,
+  Property,
+  PropertyLocation,
+  PropertySort,
+  PropertyTranslation,
+} from "./types";
 
 /**
  * The pure half of the properties slice: resolving translations, matching a
@@ -8,6 +16,81 @@ import type { LocalizedProperty, Property, PropertySort, PropertyTranslation } f
  * `repository.ts` composes these, and they are directly unit-testable, which is
  * how AC-3 and AC-9 are proven without a browser.
  */
+
+/* -------------------------------------------------------------------------- */
+/* Where a listing sits on the map                                             */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * How far from its district's centre a derived point may fall, in metres.
+ *
+ * Wide enough that two listings in the same district are visibly separate
+ * rather than one pin on top of another, tight enough that the pin stays in the
+ * part of Marrakech the listing is actually in. It is not a claim about the
+ * property — `precision: "approximate"` and the caveat on screen are.
+ */
+const SCATTER_METRES = 800;
+
+/** Metres per degree of latitude. Close enough anywhere; longitude needs the cosine. */
+const METRES_PER_DEGREE = 111_320;
+
+/**
+ * FNV-1a, 32-bit.
+ *
+ * Small, dependency-free, and above all **stable**: the same reference must
+ * produce the same point on the server and again in the browser, on this build
+ * and the next one. `Math.random` would put the pin somewhere else on every
+ * render and hydrate to a different map than the one that was sent.
+ */
+function hash(value: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < value.length; i += 1) {
+    h ^= value.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/** Five decimals is about a metre. The number is exact; what it describes is not. */
+const round = (value: number) => Math.round(value * 1e5) / 1e5;
+
+/**
+ * A stable point inside a district, for a listing that has no coordinate.
+ *
+ * We have no addresses. The choice was between leaving twenty properties off
+ * the map, writing twenty invented coordinates into the fixtures, or deriving
+ * them from something true — the district each listing is genuinely in. This is
+ * the third, kept in one named function so the fabrication has exactly one
+ * home instead of being scattered through the data as twenty numbers that look
+ * surveyed.
+ *
+ * The square root is not decoration: without it the angle-and-radius pair
+ * bunches points around the centre, because a disc has more area at its rim.
+ */
+export function approximateLocation(seed: string, center: Coordinates): Coordinates {
+  const seeded = hash(seed);
+  const angle = ((seeded % 3600) / 3600) * Math.PI * 2;
+  const radius = Math.sqrt((((seeded >>> 12) % 1000) + 1) / 1000) * SCATTER_METRES;
+
+  const latitude = center.lat + (radius * Math.cos(angle)) / METRES_PER_DEGREE;
+  const longitude =
+    center.lng +
+    (radius * Math.sin(angle)) / (METRES_PER_DEGREE * Math.cos((center.lat * Math.PI) / 180));
+
+  return { lat: round(latitude), lng: round(longitude) };
+}
+
+/**
+ * The listing's own coordinate when it has one, its district otherwise — and
+ * which of the two it was.
+ */
+export function resolveLocation(property: Property): PropertyLocation {
+  if (property.coordinates) return { ...property.coordinates, precision: "exact" };
+  return {
+    ...approximateLocation(property.reference, districts[property.districtId].center),
+    precision: "approximate",
+  };
+}
 
 /* -------------------------------------------------------------------------- */
 /* Translation fallback (AC-9)                                                 */
@@ -68,6 +151,7 @@ export function localizeProperty(property: Property, locale: Locale): LocalizedP
     amenities: property.amenities,
     media: property.media,
     listedAt: property.listedAt,
+    location: resolveLocation(property),
     locale,
     textLocale: translation.textLocale,
     isFallback: translation.isFallback,

@@ -70,12 +70,28 @@ type DistrictCopy = {
  */
 export type District = {
   id: DistrictId;
+  /**
+   * A point inside the district, for the map.
+   *
+   * **Hand-placed, not surveyed.** These are good to roughly a kilometre —
+   * enough to put a pin in the right part of Marrakech and nothing more. That
+   * is the honest precision available without addresses, and it is why every
+   * pin derived from one is labelled approximate (`lib.ts`,
+   * `approximateLocation`). Replace them with real centroids, or better with
+   * real addresses on the listings, when the back-office has them.
+   *
+   * This is also where the deferred district boundary geometry will attach —
+   * the client's "délimitation intelligente de chaque quartier", waiting on the
+   * data she wants shown on hover.
+   */
+  center: { lat: number; lng: number };
   copy: Record<Locale, DistrictCopy>;
 };
 
 export const districts: Record<DistrictId, District> = {
   palmeraie: {
     id: "palmeraie",
+    center: { lat: 31.678, lng: -7.958 },
     copy: {
       fr: {
         name: "Palmeraie",
@@ -92,6 +108,7 @@ export const districts: Record<DistrictId, District> = {
 
   medina: {
     id: "medina",
+    center: { lat: 31.63, lng: -7.988 },
     copy: {
       fr: {
         name: "Médina",
@@ -108,6 +125,7 @@ export const districts: Record<DistrictId, District> = {
 
   hivernage: {
     id: "hivernage",
+    center: { lat: 31.626, lng: -8.008 },
     copy: {
       fr: {
         name: "Hivernage",
@@ -124,6 +142,7 @@ export const districts: Record<DistrictId, District> = {
 
   gueliz: {
     id: "gueliz",
+    center: { lat: 31.638, lng: -8.01 },
     copy: {
       fr: {
         name: "Guéliz",
@@ -140,6 +159,7 @@ export const districts: Record<DistrictId, District> = {
 
   agdal: {
     id: "agdal",
+    center: { lat: 31.605, lng: -7.985 },
     copy: {
       fr: {
         name: "Agdal",
@@ -156,6 +176,7 @@ export const districts: Record<DistrictId, District> = {
 
   amelkis: {
     id: "amelkis",
+    center: { lat: 31.598, lng: -7.938 },
     copy: {
       fr: {
         name: "Amelkis",
@@ -172,6 +193,7 @@ export const districts: Record<DistrictId, District> = {
 
   targa: {
     id: "targa",
+    center: { lat: 31.648, lng: -8.043 },
     copy: {
       fr: {
         name: "Targa",
@@ -188,6 +210,7 @@ export const districts: Record<DistrictId, District> = {
 
   "route-ourika": {
     id: "route-ourika",
+    center: { lat: 31.573, lng: -7.947 },
     copy: {
       fr: {
         name: "Route de l’Ourika",
@@ -204,6 +227,7 @@ export const districts: Record<DistrictId, District> = {
 
   "route-fes": {
     id: "route-fes",
+    center: { lat: 31.668, lng: -7.945 },
     copy: {
       fr: {
         name: "Route de Fès",
@@ -220,6 +244,7 @@ export const districts: Record<DistrictId, District> = {
 
   "route-oukaimeden": {
     id: "route-oukaimeden",
+    center: { lat: 31.56, lng: -7.976 },
     copy: {
       fr: {
         name: "Route de l’Oukaïmeden",

@@ -12,8 +12,12 @@ import type { Amenity, ListingStatus, LocalizedProperty, PropertyType } from "..
  * fill is left out rather than guessed. A listing that claims five bedrooms in
  * JSON and shows a plot of land is worse than one that claims nothing.
  *
- * Geo coordinates are absent on purpose — the map is not built and inventing a
- * point for a private residence is not a rounding error. They land with it.
+ * Geo coordinates are published **only when they are real** (spec 009). Every
+ * listing now resolves to a point so the map has something to draw, but most of
+ * those are derived from the district rather than known — and a derived point
+ * emitted as `GeoCoordinates` is precisely the fabrication this comment used to
+ * be a placeholder for. A caveat on screen is honest; a machine-readable
+ * latitude is not. They appear per listing as the back-office supplies them.
  */
 
 /**
@@ -91,6 +95,15 @@ export function ListingJsonLd({
             name: labels.landArea,
             value: property.landArea,
             unitCode: SQUARE_METRE,
+          },
+        }
+      : {}),
+    ...(property.location.precision === "exact"
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: property.location.lat,
+            longitude: property.location.lng,
           },
         }
       : {}),
