@@ -27,7 +27,8 @@ ship → /update-docs                           status: shipped; learnings disti
 
 ## Index
 
-| #                               | Spec                           | Status  |
-| ------------------------------- | ------------------------------ | ------- |
-| [001](001-task-list/spec.md)    | Task list demo feature         | shipped |
-| [004](004-belso-public/spec.md) | Belso Luxury public storefront | shipped |
+| #                               | Spec                                | Status  |
+| ------------------------------- | ----------------------------------- | ------- |
+| [001](001-task-list/spec.md)    | Task list demo feature              | shipped |
+| [004](004-belso-public/spec.md) | Belso Luxury public storefront      | shipped |
+| [009](009-belso-map/spec.md)    | Map view for the listings catalogue | active  |
