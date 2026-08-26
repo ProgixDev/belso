@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Reveal } from "@/components/motion";
 import { EmptyState } from "@/components/ui/empty-state";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
-import { propertyCardLabels } from "../../../_components/property-labels";
+import { mapLabels, propertyCardLabels } from "../../../_components/property-labels";
 import { getDictionary, interpolate } from "@/features/i18n";
 import {
   districtOrder,
@@ -13,13 +13,15 @@ import {
   listProperties,
   propertySearchParamsSchema,
   PropertyCard,
+  PropertyMap,
   ResultsHeader,
   SortControl,
 } from "@/features/properties";
+import { mapStyles } from "@/core/env.client";
 import { formatCount } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-type SearchParams = Promise<{ q?: string; sort?: string }>;
+type SearchParams = Promise<{ q?: string; sort?: string; view?: string }>;
 
 export async function generateMetadata({
   params,
@@ -57,11 +59,21 @@ export default async function PropertiesPage({
   // SEC-INPUT-001: the query string is a trust boundary. `catch` on both fields
   // means a stale link with a dead `?sort=` degrades to the default instead of
   // throwing a 500 at the visitor.
-  const { q: query, sort } = propertySearchParamsSchema.parse(await searchParams);
+  const { q: query, sort, view } = propertySearchParamsSchema.parse(await searchParams);
 
   const properties = await listProperties({ query, sort, locale });
   const listingsHref = toPublicPath("/properties", locale);
   const cardLabels = propertyCardLabels(dict);
+
+  /** Keeps `q` and `sort` when flipping the view — losing the search would be worse than losing the view. */
+  const hrefForView = (target: "grid" | "map") => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (sort !== "newest") params.set("sort", sort);
+    if (target === "map") params.set("view", "map");
+    const search = params.toString();
+    return search ? `${listingsHref}?${search}` : listingsHref;
+  };
 
   const count =
     properties.length === 1
@@ -83,6 +95,15 @@ export default async function PropertiesPage({
         searchedForLabel={dict.properties.searchedFor}
         clearLabel={dict.properties.clearSearch}
         clearHref={listingsHref}
+        viewToggle={
+          /* A real link, so it works before JavaScript arrives and after it fails. */
+          <Link
+            href={view === "map" ? hrefForView("grid") : hrefForView("map")}
+            className="focus-visible:ring-ring border-border hover:border-foreground/40 rounded-full border px-4 py-2 text-[11px] font-semibold tracking-[0.14em] whitespace-nowrap uppercase transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:transition-none"
+          >
+            {view === "map" ? dict.map.showList : dict.map.showMap}
+          </Link>
+        }
         sortControl={
           <SortControl
             value={sort}
@@ -121,7 +142,38 @@ export default async function PropertiesPage({
         </ul>
       </Reveal>
 
-      {properties.length === 0 ? (
+      {view === "map" && properties.length > 0 ? (
+        <div className="mt-8">
+          <PropertyMap
+            properties={properties}
+            locale={locale}
+            labels={mapLabels(dict)}
+            cardLabels={cardLabels}
+            typeLabels={dict.propertyType}
+            listHref={hrefForView("grid")}
+            styles={mapStyles}
+          />
+          {/*
+           * The map is WebGL and cannot exist without JavaScript, so the view
+           * still has to answer the question it was opened for. `next/dynamic`
+           * renders nothing on the server, which is exactly the hole this fills.
+           */}
+          <noscript>
+            <p className="text-muted-foreground mt-6 text-sm">{dict.map.noScript}</p>
+            <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {properties.map((property) => (
+                <li key={property.id}>
+                  <PropertyCard
+                    property={property}
+                    locale={locale}
+                    labels={{ ...cardLabels, type: dict.propertyType[property.type] }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </noscript>
+        </div>
+      ) : properties.length === 0 ? (
         // AC-4: never a bare empty grid — say so, and offer the way out.
         <EmptyState
           className="py-24"

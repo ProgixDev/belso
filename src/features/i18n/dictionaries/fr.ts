@@ -253,6 +253,28 @@ export const fr = {
     chalet: "Chalet",
     estate: "Domaine",
   },
+  map: {
+    region: "Carte des biens",
+    showMap: "Voir sur la carte",
+    showList: "Voir la liste",
+    modeDefault: "Défaut",
+    modePrices: "Prix",
+    modeSatellite: "Satellite",
+    zoomIn: "Zoomer",
+    zoomOut: "Dézoomer",
+    recenter: "Recentrer sur Marrakech",
+    clusterLabel: "{count} biens à cet endroit",
+    // The caveat, said once and plainly. It disappears on its own the day every
+    // listing on screen carries a real address.
+    approximate:
+      "Emplacements approximatifs : chaque bien est placé dans son quartier, pas à son adresse.",
+    close: "Fermer la fiche",
+    loading: "Chargement de la carte…",
+    failedTitle: "La carte n’a pas pu se charger",
+    failedBody:
+      "Elle dépend d’un service extérieur qui ne répond pas pour le moment. Les biens restent consultables sous forme de liste.",
+    noScript: "La carte a besoin de JavaScript. Voici les biens sous forme de liste.",
+  },
   amenity: {
     pool: "Piscine",
     garden: "Jardin",

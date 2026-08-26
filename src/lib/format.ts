@@ -34,6 +34,22 @@ export function formatApproxPrice(
   return `≈ ${formatPrice(Math.round(converted), to, locale)}`;
 }
 
+/**
+ * The price, short enough to sit in a map pin: "18,5 M MAD", "1,2 M €".
+ *
+ * `compact` notation rather than a hand-rolled divide-and-suffix, so the
+ * abbreviation is the one the locale actually uses — French says "M", English
+ * says "M", and a locale that says something else gets it right for free.
+ */
+export function formatCompactPrice(amount: number, currency: Currency, locale: Locale): string {
+  return new Intl.NumberFormat(localeTag[locale], {
+    style: "currency",
+    currency,
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(amount);
+}
+
 /** Areas are always whole square metres; fractions read as false precision. */
 export function formatArea(sqm: number, locale: Locale): string {
   return `${new Intl.NumberFormat(localeTag[locale], { maximumFractionDigits: 0 }).format(sqm)} m²`;

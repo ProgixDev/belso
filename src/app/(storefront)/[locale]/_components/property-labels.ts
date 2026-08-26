@@ -1,6 +1,6 @@
 import { site } from "@/core/site";
 import type { Dictionary } from "@/features/i18n";
-import type { PropertyCardLabels } from "@/features/properties";
+import type { MapLabels, PropertyCardLabels } from "@/features/properties";
 
 /**
  * Bridges the dictionary to the properties slice, like `enquiry-labels.ts`.
@@ -31,5 +31,25 @@ export function propertyCardLabels(dict: Dictionary): Omit<PropertyCardLabels, "
     statusUnderOffer: dict.properties.statusUnderOffer,
     statusSold: dict.properties.statusSold,
     statusRented: dict.properties.statusRented,
+  };
+}
+
+/** The same bridge, for the map island. */
+export function mapLabels(dict: Dictionary): MapLabels {
+  return {
+    region: dict.map.region,
+    modeDefault: dict.map.modeDefault,
+    modePrices: dict.map.modePrices,
+    modeSatellite: dict.map.modeSatellite,
+    showList: dict.map.showList,
+    zoomIn: dict.map.zoomIn,
+    zoomOut: dict.map.zoomOut,
+    recenter: dict.map.recenter,
+    clusterLabel: dict.map.clusterLabel,
+    approximate: dict.map.approximate,
+    close: dict.map.close,
+    loading: dict.map.loading,
+    failedTitle: dict.map.failedTitle,
+    failedBody: dict.map.failedBody,
   };
 }
