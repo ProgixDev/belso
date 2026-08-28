@@ -40,20 +40,36 @@ test("AC-5: the catalogue says the listings cannot be loaded, and says nothing f
 });
 
 test("AC-5: the rest of the site is unaffected", async ({ page }) => {
-  // None of these need a listing to render, so none of them should suffer for
-  // the database being unreachable. If a shared layout ever starts reading the
-  // catalogue, this is what will notice.
-  for (const path of ["/fr", "/fr/a-propos", "/fr/contact", "/fr/quartiers"]) {
+  /*
+   * The home page and the neighbourhoods **do** read the catalogue — since the
+   * review board they render per request rather than from a build-time
+   * snapshot, so they genuinely reach the database and must degrade rather than
+   * fall over. About and contact do not read it and must be untouched.
+   */
+  const paths = [
+    ["/fr", "41-home"],
+    ["/fr/a-propos", "43-about"],
+    ["/fr/contact", "44-contact"],
+    ["/fr/quartiers", "45-neighbourhoods"],
+  ] as const;
+
+  for (const [path, name] of paths) {
     const response = await page.goto(path);
     expect(response?.status(), `${path} should still serve`).toBe(200);
-    // Not  — the bare global-error page has one of those too, which is
-    // exactly how a missing error boundary on the home page went unnoticed.
-    // The site chrome is what distinguishes "still working" from "fell over".
+
+    // Not `h1` — the bare global-error page has one of those too, which is
+    // exactly how a missing error boundary on the home page went unnoticed for
+    // as long as it did. The site's own chrome is what distinguishes "still
+    // working" from "fell over".
     await expect(page.locator("header").first()).toBeVisible();
     await expect(page.locator("footer").first()).toBeVisible();
-  }
 
-  await shot(page, "41-home-database-down");
+    // One shot per path, inside the loop. Taken after it, every file was the
+    // last path — so `41-home-database-down.png` was a picture of
+    // `/fr/quartiers`, and no evidence of the home page in this state existed.
+    // Which is how the home page's missing error boundary stayed invisible.
+    await shot(page, `${name}-database-down`);
+  }
 });
 
 test("AC-5: a visitor is not told their message was sent when it was not", async ({ page }) => {

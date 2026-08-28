@@ -53,9 +53,9 @@ measured against rather than being declared correct afterwards.
 ## Phase 6 — review & ship
 
 - [x] **T24** `/security-review` — new dependency, a new untrusted write path, PII at rest, and a new credential. Not optional here · done: APPROVE, no P1. Fixed in `d0c8e26`/`aa9b5b4` — attempts throttled as well as writes, SEC-AUTHZ-001 corrected for ADR-0008, SEC-DB-001/002 added, `getPool` un-exported. Open and the owner’s: the passphrase-less SSH key, and the forgeable `x-forwarded-for` until the app is behind Traefik
-- [ ] **T25** `/review`; fix P0/P1
-- [ ] **T26** `/feature-report` → `docs/reports/010-belso-data-layer.md`
-- [ ] **T27** `/update-docs` — rewrite `docs/architecture/backend.md` (it documents the RLS model that no longer applies), spec index → `shipped`
+- [x] **T25** `/review` — four lenses in parallel, all REQUEST-CHANGES. Four P0s: AC-7 unimplemented behind a passing test, the catalogue still prerendered for half the site, the AC-1 oracle a fixtures-vs-fixtures tautology inside the gate, and a missing `DATABASE_URL` serving invented listings as real inventory. All fixed; P1s fixed or recorded in the report
+- [x] **T26** `/feature-report` → [docs/reports/010-belso-data-layer.md](../../docs/reports/010-belso-data-layer.md)
+- [x] **T27** `/update-docs` — `docs/architecture/backend.md` rewritten (it described the RLS-first Supabase model as current, so any agent grounding on "backend" would have built the wrong thing), INDEX entry corrected, spec index → shipped
 - [ ] **T28** Follow-up, **not part of this spec**: delete `src/lib/supabase/`, `src/features/auth/`, `supabase/`, and the Supabase env vars. Purely subtractive, own commit, own diff
 
 ## AC coverage
