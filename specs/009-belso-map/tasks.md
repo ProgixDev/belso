@@ -53,8 +53,8 @@ Findings, deviations and anything learned go in `## Implementation notes` at the
 
 - [ ] T5.1 `/review` — P0/P1 fixed, P2 ticketed or declined in the PR
 - [ ] T5.2 `/security-review` — a new dependency and a header change each trigger it
-- [ ] T5.3 `docs/reports/009-belso-map.md` via `/feature-report`
-- [ ] T5.4 Register CUJ-05 (files: docs/product/critical-user-journeys.md) · done: row present
+- [x] T5.3 `docs/reports/009-belso-map.md` via `/feature-report`
+- [x] T5.4 Register CUJ-05 (files: docs/product/critical-user-journeys.md) · done: row present
 - [ ] T5.5 `/update-docs` — feature doc, INDEX, spec marked shipped
 
 ## Implementation notes
