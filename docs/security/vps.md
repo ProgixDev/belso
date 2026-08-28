@@ -64,3 +64,54 @@ patches. All 26 pending packages applied and the box rebooted onto kernel 6.8.0-
   seen or verified from inside the machine. Someone must confirm they are actually enabled.
 - Traefik reports a newer release available on most days; it is pinned to `latest` and only
   updates when the image is pulled.
+
+## Belso's database
+
+`postgres:17-alpine` in `/docker/belso-db/`, volume `belso_db_data`, initialised
+`--locale=C` so `ORDER BY` does not depend on the host's locale.
+
+**The only published port is bound to `127.0.0.1`.** That distinction is the whole
+security story: publishing on `0.0.0.0` would put Postgres on the public internet and the
+firewall would not save us, for the reason given above. Bound to loopback it is reachable only
+from the host — which means only over an SSH tunnel:
+
+```bash
+pnpm db:tunnel        # ssh -N -L 55432:127.0.0.1:5432 belso-vps
+```
+
+The password lives only in `/docker/belso-db/.env` (`chmod 600`) and has never been written
+anywhere else. The app reaches the database by service name on `belso-net` and does not use the
+published port at all.
+
+## Backups
+
+`/usr/local/bin/belso-backup.sh` — installed from `scripts/vps/belso-backup.sh` in the
+repository, which is the source of truth. Nightly at 03:20 UTC via `belso-backup.timer`
+(`Persistent=true`, so a box that was off runs it on the next boot rather than skipping a day).
+
+It deletes expired enquiries **before** dumping, not after: personal data past its retention
+date must not be copied into a fresh backup, which would silently extend its life by the
+backup's own lifetime. Then it dumps, **reads the dump back** with `pg_restore --list`, and only
+prunes older dumps once a good one exists.
+
+That read-back is the point. A job that reports success without verifying what it wrote will
+report success every night for a year and be found empty on the morning it is needed. Both
+failure paths were tested by causing them: with the container stopped it exits 1 and writes
+nothing, and `pg_restore` rejects a truncated archive.
+
+```bash
+systemctl list-timers belso-backup.timer     # is it scheduled
+journalctl -u belso-backup -n 20             # has it been running
+pnpm db:restore-check                        # prove a dump actually restores
+```
+
+`pnpm db:restore-check` restores the newest dump into a scratch database and runs the site's own
+golden snapshot against it — so what is proven is not "rows exist" but "the site would serve the
+same catalogue from this backup". The scratch database is dropped afterwards, including on
+failure.
+
+**The gap that remains, and it is the client's to close:** these dumps live on the same disk as
+the database they protect. They survive a bad migration or a deleted listing; they do not
+survive losing the machine. That is covered only by Hostinger's snapshots, which are configured
+in the provider's panel and cannot be seen or verified from inside the VPS — **someone has to
+confirm they are switched on.** Until then this is protection against mistakes, not against loss.

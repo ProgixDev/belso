@@ -34,7 +34,8 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:seed": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/seed.mjs",
     "test:db": "vitest run --config vitest.db.config.mts",
-    "verify:db": "pnpm db:migrate && pnpm db:seed && pnpm test:db"
+    "verify:db": "pnpm db:migrate && pnpm db:seed && pnpm test:db && pnpm db:restore-check",
+    "db:restore-check": "node scripts/restore-check.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [

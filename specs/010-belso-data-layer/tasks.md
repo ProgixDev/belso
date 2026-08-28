@@ -39,10 +39,10 @@ measured against rather than being declared correct afterwards.
 
 ## Phase 4 — failure, backup and restore (AC-5, AC-6)
 
-- [ ] **T17** Database-down path: repository surfaces a typed failure, catalogue renders an error state that says the listings cannot load · done: `e2e/db-down.spec.ts` with Postgres stopped — catalogue shows the message, `/contact` still serves (**AC-5**)
-- [ ] **T18** `scripts/backup.mjs` — nightly `pg_dump` to local disk, retention prune of dumps, and enquiry deletion past 24 months (the assumed period, as one constant) · done: run by hand produces a dump and deletes nothing on fresh data
-- [ ] **T19** Deploy T18 as a systemd timer on the VPS; document it in `docs/security/vps.md` · done: `systemctl list-timers` shows it, one manual run succeeds
-- [ ] **T20** `scripts/restore-check.mjs` — **performs a restore** into a scratch database and diffs row counts plus the golden snapshot against it; add `verify:db` to `package.json` · done: `pnpm verify:db` green (**AC-6**)
+- [x] **T17** Database-down path: repository surfaces a typed failure, catalogue renders an error state that says the listings cannot load · done: `e2e/db-down.spec.ts` with Postgres stopped — catalogue shows the message, `/contact` still serves (**AC-5**)
+- [x] **T18** `scripts/backup.mjs` — nightly `pg_dump` to local disk, retention prune of dumps, and enquiry deletion past 24 months (the assumed period, as one constant) · done: run by hand produces a dump and deletes nothing on fresh data
+- [x] **T19** Deploy T18 as a systemd timer on the VPS; document it in `docs/security/vps.md` · done: `systemctl list-timers` shows it, one manual run succeeds
+- [x] **T20** `scripts/restore-check.mjs` — **performs a restore** into a scratch database and diffs row counts plus the golden snapshot against it; add `verify:db` to `package.json` · done: `pnpm verify:db` green (**AC-6**)
 
 ## Phase 5 — verification
 
@@ -62,4 +62,4 @@ measured against rather than being declared correct afterwards.
 
 - [x] AC-1 → T2, T10 · [x] AC-2 → T11 · [x] AC-3 → T11 · [x] AC-4 → T14, T15
 - [x] AC-8 → T7 (proven: three seed runs, still 20 properties)
-- [ ] AC-5 → T17 · [ ] AC-6 → T20 · [x] AC-7 → T12
+- [x] AC-5 → T17 · [x] AC-6 → T20 · [x] AC-7 → T12

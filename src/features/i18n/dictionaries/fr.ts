@@ -197,6 +197,12 @@ export const fr = {
   },
   properties: {
     title: "Nos biens",
+    // Shown when the catalogue itself cannot be reached — not when a search
+    // returns nothing. Deliberately does not say “write to us”: the enquiry form
+    // needs the same database, so that would be sending them at a closed door.
+    unavailableTitle: "Les biens ne se chargent pas",
+    unavailableBody:
+      "La liste est momentanément indisponible. Rechargez dans un instant — le reste du site fonctionne normalement.",
     resultCount: "{count} biens",
     resultCountOne: "1 bien",
     searchedFor: "Votre recherche",

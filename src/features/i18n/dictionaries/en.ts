@@ -168,6 +168,9 @@ export const en: Dictionary = {
   },
   properties: {
     title: "Our properties",
+    unavailableTitle: "The properties aren’t loading",
+    unavailableBody:
+      "The list is unavailable for the moment. Reload in a little while — the rest of the site is working normally.",
     resultCount: "{count} properties",
     resultCountOne: "1 property",
     searchedFor: "Your search",
