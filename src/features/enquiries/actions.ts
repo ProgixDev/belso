@@ -46,6 +46,23 @@ export async function submitEnquiryAction(
 ): Promise<EnquiryResult> {
   const values = readValues(formData);
 
+  /*
+   * Counted before anything is parsed.
+   *
+   * Validation used to run first, which meant a malformed payload cost an
+   * attacker nothing — the throttle was never reached, so they could hammer
+   * this action indefinitely for free. This counter is looser than the one
+   * guarding the table precisely so that a person mistyping their email three
+   * times is unaffected by it.
+   */
+  if (isDatabaseConfigured()) {
+    const attempt = await consumeEnquiryAllowance(await senderKey(), "form", "attempt");
+    if (!attempt.allowed) {
+      logger.info("enquiry attempt throttled before validation");
+      return { ok: false, fieldErrors: {}, formError: "throttled", values };
+    }
+  }
+
   const parsed = enquirySchema.safeParse({
     ...values,
     reference: formData.get("reference") ?? "",
@@ -86,7 +103,11 @@ export async function submitEnquiryAction(
   }
 
   try {
-    const allowance = await consumeEnquiryAllowance(await senderKey(), parsed.data.reference || "");
+    const allowance = await consumeEnquiryAllowance(
+      await senderKey(),
+      parsed.data.reference || "",
+      "store",
+    );
 
     if (!allowance.allowed) {
       logger.info("enquiry throttled");

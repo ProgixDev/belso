@@ -24,8 +24,21 @@ import { query } from "@/core/db";
  * without recording who they are.
  */
 
-/** Five in an hour. Generous for a person, useless for a script. */
-const LIMIT = 5;
+/**
+ * Two limits, because they defend different things.
+ *
+ * `STORED` is what may reach the table: five enquiries an hour is generous for
+ * a person and useless for a script.
+ *
+ * `ATTEMPTED` counts every submission, valid or not. Without it, validation
+ * runs before the throttle and a malformed payload costs an attacker nothing —
+ * they can hammer the action indefinitely for free. Counting attempts closes
+ * that, and it is deliberately looser: someone mistyping their email three
+ * times is a buyer, not an attack, and locking them out of the form over it
+ * would cost the exact lead the form exists to capture.
+ */
+const STORED = 5;
+const ATTEMPTED = 20;
 const WINDOW_MINUTES = 60;
 
 /**
@@ -58,8 +71,12 @@ export type ThrottleDecision = { allowed: boolean };
 export async function consumeEnquiryAllowance(
   identifier: string,
   form: string,
+  kind: "attempt" | "store" = "store",
 ): Promise<ThrottleDecision> {
-  const key = keyFor(identifier, form);
+  const limit = kind === "attempt" ? ATTEMPTED : STORED;
+  // Salted with the kind as well as the form, so the two limits are two
+  // independent counters rather than one that both callers decrement.
+  const key = keyFor(identifier, `${kind}:${form}`);
 
   const rows = await query<{ count: number }>(
     `insert into enquiry_throttle (key_hash, window_start, count)
@@ -76,7 +93,7 @@ export async function consumeEnquiryAllowance(
     [key, String(WINDOW_MINUTES)],
   );
 
-  return { allowed: (rows[0]?.count ?? LIMIT + 1) <= LIMIT };
+  return { allowed: (rows[0]?.count ?? limit + 1) <= limit };
 }
 
 /**

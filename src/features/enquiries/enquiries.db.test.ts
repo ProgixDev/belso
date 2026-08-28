@@ -142,6 +142,32 @@ describeDb("enquiries against Postgres (spec 010 AC-4)", () => {
     expect((await submitEnquiryAction(null, form({ ...VALID }))).ok).toBe(true);
   });
 
+  it("throttles invalid submissions too, so malformed spam is not free", async () => {
+    const { submitEnquiryAction } = await import("./actions");
+    const bad = () => form({ ...VALID, email: "not-an-address" });
+
+    // Below the attempt limit these are ordinary validation failures.
+    for (let i = 0; i < 20; i++) {
+      const result = await submitEnquiryAction(null, bad());
+      expect(result.ok).toBe(false);
+      if (result.ok) throw new Error("unreachable");
+      expect(result.fieldErrors.email, `attempt ${i + 1} should be a field error`).toBe("email");
+    }
+
+    // Past it, the action stops parsing and refuses outright — the point being
+    // that an attacker sending garbage no longer gets unlimited free work.
+    const past = await submitEnquiryAction(null, bad());
+    expect(past.ok).toBe(false);
+    if (past.ok) throw new Error("unreachable");
+    expect(past.formError).toBe("throttled");
+
+    // And nothing invalid was ever written.
+    const { rows } = await sql.query("select count(*)::int as n from enquiries where email = $1", [
+      "not-an-address",
+    ]);
+    expect(rows[0].n).toBe(0);
+  });
+
   it("still rejects invalid input before it reaches the throttle or the table", async () => {
     const { submitEnquiryAction } = await import("./actions");
 
