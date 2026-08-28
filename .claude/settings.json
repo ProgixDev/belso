@@ -39,6 +39,16 @@
       "Bash(git add *)",
       "Bash(git commit *)"
     ],
-    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(git push --force*)", "Bash(git push -f*)"]
+    "$comment-deny": "The real env files are enumerated rather than matched with `.env.*`, so that `.env.example` stays readable. It carries no secrets by design, AGENTS.md names it as the one env file agents may edit, and protect-paths.mjs already exempts it from the write guard — the blanket glob contradicted both and blocked documenting a new variable.",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.env.*.local)",
+      "Read(./.env.development)",
+      "Read(./.env.production)",
+      "Read(./.env.test)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)"
+    ]
   }
 }

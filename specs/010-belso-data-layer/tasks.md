@@ -21,7 +21,7 @@ measured against rather than being declared correct afterwards.
 - [x] **T5** [P] `db/migrations/0003_enquiries.sql` — `enquiries` + the rate-limit counter table · done: applies cleanly
 - [x] **T6** `scripts/migrate.mjs` — applies pending numbered files in order, records them in `schema_migrations`, refuses to reapply · done: running twice applies nothing the second time
 - [x] **T7** `scripts/seed.mjs` — today's twenty fixtures into the database, **idempotent** (upsert on `reference`) · done: run twice → 20 properties, not 40 (**AC-8**)
-- [x] **T8** `src/core/db.ts` — `server-only` pool from `DATABASE_URL`; the var added to `src/core/env.ts` with the blank-is-unset guard · done: `pnpm verify` green, `pnpm secrets:check` green. **`.env.example` is outstanding** — the sandbox denies reads and writes under `.env*`, so the block documenting `DATABASE_URL` and `pnpm db:tunnel` has to be pasted in by a human
+- [x] **T8** `src/core/db.ts` — `server-only` pool from `DATABASE_URL`; the var added to `src/core/env.ts` with the blank-is-unset guard, and to `.env.example` with the tunnel instructions · done: `pnpm verify` green, `pnpm secrets:check` green
 
 ## Phase 2 — the swap (AC-1, AC-2, AC-3, AC-7)
 
