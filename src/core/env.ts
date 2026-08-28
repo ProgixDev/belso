@@ -21,8 +21,24 @@ const serverEnvSchema = z.object({
     .refine((v) => v === "" || v.length >= 20, "SUPABASE_SERVICE_ROLE_KEY looks truncated")
     .transform((v) => v || undefined)
     .optional(),
-  // Add real server vars here, mirrored in .env.example, e.g.:
-  // DATABASE_URL: z.string().url(),
+  /**
+   * Postgres, on our own VPS (ADR-0008, spec 010).
+   *
+   * Server-only and never `NEXT_PUBLIC_` — it carries a password, and
+   * `check-secrets` would reject the public spelling, correctly.
+   *
+   * Optional, with the same blank-is-unset treatment as the key above: a
+   * variable *declared* with an empty value is not a configured value, and
+   * treating it as one is precisely what broke the first Vercel deploy. Unset
+   * is a legitimate state today — the repository still reads fixtures — and it
+   * is what the "listings cannot be loaded" path (AC-5) is built for.
+   */
+  DATABASE_URL: z
+    .string()
+    .transform((v) => v.trim())
+    .refine((v) => v === "" || v.startsWith("postgres"), "DATABASE_URL must be a postgres:// URL")
+    .transform((v) => v || undefined)
+    .optional(),
 });
 
 export const env = serverEnvSchema.parse(process.env);

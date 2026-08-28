@@ -29,10 +29,7 @@
     "prepare": "husky || true",
     "sync:map-worker": "node scripts/sync-map-worker.mjs",
     "prebuild": "node scripts/sync-map-worker.mjs",
-    "predev": "node scripts/sync-map-worker.mjs",
-    "db:tunnel": "ssh -N -L 55432:127.0.0.1:5432 belso-vps",
-    "db:migrate": "node scripts/migrate.mjs",
-    "db:seed": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/seed.mjs"
+    "predev": "node scripts/sync-map-worker.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [
