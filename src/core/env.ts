@@ -79,7 +79,22 @@ export const env = serverEnvSchema.parse(process.env);
  */
 const isBuilding = process.env.NEXT_PHASE === "phase-production-build";
 
-if (env.NODE_ENV === "production" && !isBuilding && !env.DATABASE_URL) {
+/**
+ * The one deliberate way past this, and why it exists.
+ *
+ * `pnpm start` is `NODE_ENV=production`, so the guard also refuses to boot the
+ * local production server that Playwright drives — which would make `pnpm e2e`
+ * impossible on a machine with no database, and the e2e suite is exactly where
+ * a contributor with no tunnel needs to work. `playwright.config.ts` sets this
+ * when no `DATABASE_URL` is present.
+ *
+ * A real deployment never sets it, which is the whole point: the escape hatch
+ * has to be something a deploy could not do by accident, and an environment
+ * variable nobody writes into a production config is that.
+ */
+const allowFixtures = process.env.BELSO_ALLOW_FIXTURES === "1";
+
+if (env.NODE_ENV === "production" && !isBuilding && !allowFixtures && !env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL is required in production: without it the site would serve fixture listings " +
       "as real inventory and accept enquiries without storing them.",

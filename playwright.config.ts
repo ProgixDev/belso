@@ -53,5 +53,18 @@ export default defineConfig({
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    env: {
+      /*
+       * `pnpm start` is NODE_ENV=production, and `src/core/env.ts` refuses to
+       * boot production without a database — so that guard, added to stop a
+       * deploy silently serving fixture listings as real inventory, also stopped
+       * `pnpm e2e` on any machine without a tunnel. Which is most of them, and
+       * the e2e suite is exactly where someone without one needs to work.
+       *
+       * Declaring it here rather than weakening the guard: a real deployment
+       * never sets this, which is what keeps the guard worth having.
+       */
+      ...(databaseUrl ? {} : { BELSO_ALLOW_FIXTURES: "1" }),
+    },
   },
 });
