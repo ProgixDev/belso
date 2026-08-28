@@ -34,7 +34,22 @@ export function isDatabaseConfigured(): boolean {
   return Boolean(env.DATABASE_URL);
 }
 
-export function getPool(): Pool {
+/**
+ * Deliberately **not exported**.
+ *
+ * `query()` below is the only way to reach the database, and that is the whole
+ * control: it takes text and values separately, so a caller physically cannot
+ * hand Postgres an interpolated string without going out of their way. Export
+ * the pool and `getPool().query(`...${input}`)` becomes available — which is
+ * the one line that would turn every other precaution in this file into
+ * decoration.
+ *
+ * A lint rule was considered instead and rejected: `row.ts` legitimately
+ * composes SQL from a module-scope constant, so any rule strict enough to catch
+ * interpolated input also fires on correct code, and a rule that fires on
+ * correct code gets disabled. Removing the capability beats policing it.
+ */
+function getPool(): Pool {
   if (!env.DATABASE_URL) throw new DatabaseUnavailableError("DATABASE_URL is not set");
 
   pool ??= new Pool({
