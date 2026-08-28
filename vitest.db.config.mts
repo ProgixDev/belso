@@ -22,7 +22,7 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: "node",
-    include: ["src/**/*.db.test.ts"],
+    include: ["src/**/*.db.test.ts", "src/features/properties/repository.golden.test.ts"],
     fileParallelism: false,
   },
 });

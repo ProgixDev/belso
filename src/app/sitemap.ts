@@ -121,3 +121,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...staticEntries, ...districtEntries, ...listingEntries];
 }
+
+/*
+ * Rendered per request, because this page reads the catalogue.
+ *
+ * Without this it is prerendered at build: verified in the build output, where
+ * the home page shipped listing slugs and the sitemap shipped 60 listing URLs
+ * baked in. That makes the catalogue a build-time snapshot — a listing the
+ * client drafts or archives keeps being served until somebody redeploys, which
+ * is precisely what AC-2 and AC-3 forbid and what this spec exists to end.
+ *
+ * The cheaper answer is `revalidate` plus `revalidatePath` from the back-office
+ * write path. That is the right destination and it belongs with spec 011, which
+ * builds the write path; until then correctness beats the cache.
+ */
+export const dynamic = "force-dynamic";

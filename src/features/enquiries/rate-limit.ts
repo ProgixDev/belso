@@ -1,6 +1,7 @@
 import "server-only";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import { query } from "@/core/db";
+import { env } from "@/core/env";
 
 /**
  * The throttle on the only door into this site that anyone can open.
@@ -17,11 +18,10 @@ import { query } from "@/core/db";
  * every deploy resets it to zero. A counter that lies about its own value is
  * worse than none, because it reads as protection.
  *
- * **The key is hashed and the raw value never stored.** What identifies a
- * sender is their IP address, which is itself personal data under GDPR — and
- * this table exists to protect a table of personal data, not to quietly become
- * a second one. The hash answers "have I seen this sender in the last hour"
- * without recording who they are.
+ * **The key is an HMAC of a truncated network, never the address.** What
+ * identifies a sender is their IP, which is itself personal data under GDPR —
+ * and this table exists to protect a table of personal data, not to become a
+ * second one. See `keyFor` for why the first version did not achieve that.
  */
 
 /**
@@ -42,14 +42,40 @@ const ATTEMPTED = 20;
 const WINDOW_MINUTES = 60;
 
 /**
- * A stable, non-reversible key for one sender.
+ * A stable key for one sender that cannot be turned back into an address.
  *
- * Salted with the form so an enquiry about a listing and one from the contact
- * page are counted separately — someone asking about three properties in an
- * afternoon is a good lead, not an attack.
+ * The first version was a bare `sha256(ip)` and the comment called it
+ * non-reversible. **It was not.** The whole IPv4 space is 2^32 hashes — minutes
+ * of work — so anyone holding a nightly dump, which sits on the same disk as
+ * the database, could recover which address enquired about which listing. That
+ * is precisely the personal data this table exists to avoid holding.
+ *
+ * Two changes fix it. The address is **truncated first** — to a /24 for IPv4
+ * and a /64 for IPv6 — which is both privacy-preserving and better limiting:
+ * a residential IPv6 client rotates freely within its own /64, so counting the
+ * full address gave one attacker unlimited fresh buckets. And it is an **HMAC**
+ * under a server-side secret, so the preimage space cannot be enumerated at all
+ * without the key.
+ *
+ * The secret is optional. Unset, this degrades to the old hash rather than
+ * refusing to throttle — a limiter that fails open is worse than one that is
+ * merely less private — and `env.ts` documents that production should set it.
  */
-function keyFor(identifier: string, form: string): string {
-  return createHash("sha256").update(`${form}:${identifier}`).digest("hex");
+function networkOf(identifier: string): string {
+  if (identifier.includes(":")) {
+    // IPv6: the first four groups are the /64 a single subscriber is given.
+    return identifier.split(":").slice(0, 4).join(":");
+  }
+  const octets = identifier.split(".");
+  return octets.length === 4 ? octets.slice(0, 3).join(".") : identifier;
+}
+
+function keyFor(identifier: string, kind: string): string {
+  const subject = `${kind}:${networkOf(identifier)}`;
+  const secret = env.THROTTLE_SECRET;
+  return secret
+    ? createHmac("sha256", secret).update(subject).digest("hex")
+    : createHash("sha256").update(subject).digest("hex");
 }
 
 export type ThrottleDecision = { allowed: boolean };
@@ -70,13 +96,13 @@ export type ThrottleDecision = { allowed: boolean };
  */
 export async function consumeEnquiryAllowance(
   identifier: string,
-  form: string,
-  kind: "attempt" | "store" = "store",
+  kind: "attempt" | "store",
 ): Promise<ThrottleDecision> {
   const limit = kind === "attempt" ? ATTEMPTED : STORED;
-  // Salted with the kind as well as the form, so the two limits are two
-  // independent counters rather than one that both callers decrement.
-  const key = keyFor(identifier, `${kind}:${form}`);
+  // Keyed on the sender and the kind, and on nothing the sender supplies.
+  // Salting this with the listing reference — which arrives from the form —
+  // let a script mint a fresh counter per submission, so the limit never fired.
+  const key = keyFor(identifier, kind);
 
   const rows = await query<{ count: number }>(
     `insert into enquiry_throttle (key_hash, window_start, count)
@@ -94,19 +120,4 @@ export async function consumeEnquiryAllowance(
   );
 
   return { allowed: (rows[0]?.count ?? limit + 1) <= limit };
-}
-
-/**
- * Drop counters whose window has long passed.
- *
- * Called by the nightly job. Without it this table grows by one row per sender
- * forever, which is a slow leak in the one place we cannot afford one.
- */
-export async function pruneThrottleWindows(): Promise<number> {
-  const rows = await query<{ id: string }>(
-    `delete from enquiry_throttle
-     where window_start < now() - interval '1 day'
-     returning key_hash as id`,
-  );
-  return rows.length;
 }

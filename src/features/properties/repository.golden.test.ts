@@ -125,7 +125,24 @@ function writeSnapshotIfAsked(captured: Record<string, unknown>): boolean {
   return true;
 }
 
-describe("repository golden output (spec 010 AC-1)", () => {
+/**
+ * Skipped without a database, and that is the whole point.
+ *
+ * This used to run inside `pnpm test` with no `DATABASE_URL` — which meant the
+ * repository returned the fixtures, and the snapshot had been generated from
+ * those same fixtures. The oracle was comparing fixtures with a frozen copy of
+ * fixtures. It could not fail for any SQL reason, and it reported green under
+ * the heading "AC-1".
+ *
+ * A test that cannot fail is worse than a missing one, because it occupies the
+ * space where the real check would go and makes the gate look honest. It now
+ * runs under `vitest.db.config.mts` (`pnpm test:db`), against Postgres, where
+ * it was already proven capable of failing: changing one listing's price by a
+ * single dirham in the database alone turns it red and names the query.
+ */
+const describeGolden = process.env.DATABASE_URL ? describe : describe.skip;
+
+describeGolden("repository golden output (spec 010 AC-1)", () => {
   // 113 repository calls over an SSH tunnel to Paris at ~44ms a round trip.
   // In production the app sits on the same host as the database and this is
   // roughly a millisecond; the tunnel is a development cost, not a real one.

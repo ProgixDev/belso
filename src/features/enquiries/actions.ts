@@ -56,10 +56,26 @@ export async function submitEnquiryAction(
    * times is unaffected by it.
    */
   if (isDatabaseConfigured()) {
-    const attempt = await consumeEnquiryAllowance(await senderKey(), "form", "attempt");
-    if (!attempt.allowed) {
-      logger.info("enquiry attempt throttled before validation");
-      return { ok: false, fieldErrors: {}, formError: "throttled", values };
+    try {
+      const attempt = await consumeEnquiryAllowance(await senderKey(), "attempt");
+      if (!attempt.allowed) {
+        logger.info("enquiry attempt throttled before validation");
+        return { ok: false, fieldErrors: {}, formError: "throttled", values };
+      }
+    } catch (error) {
+      /*
+       * The throttle needs the database, so an outage reaches this line first.
+       *
+       * Letting it throw rejects the whole Server Action: the visitor meets an
+       * error boundary and **their typed message is destroyed** — the one
+       * guarantee this file spends eleven lines defending, broken by the guard
+       * that was added to protect it. Returning the same result shape the write
+       * path returns keeps their words on screen.
+       */
+      logger.error("enquiry throttle unavailable", {
+        cause: error instanceof Error ? error.name : "unknown",
+      });
+      return { ok: false, fieldErrors: {}, formError: "generic", values };
     }
   }
 
@@ -103,11 +119,21 @@ export async function submitEnquiryAction(
   }
 
   try {
-    const allowance = await consumeEnquiryAllowance(
-      await senderKey(),
-      parsed.data.reference || "",
-      "store",
-    );
+    /*
+     * Keyed on the sender alone — **not** on the listing reference.
+     *
+     * It was salted with `parsed.data.reference`, which arrives from the form
+     * and is never checked against a real listing. A script sending a fresh
+     * random reference on every submit therefore got a brand-new counter each
+     * time, so the five-an-hour ceiling never fired and every new value also
+     * created a throttle row. The limit read as protection and was none — and
+     * the tests missed it because they only ever sent an empty reference.
+     *
+     * The cost is that someone enquiring about three listings in an hour spends
+     * three of five. That is the right trade: five is generous for a person,
+     * and the alternative is a limit the attacker chooses.
+     */
+    const allowance = await consumeEnquiryAllowance(await senderKey(), "store");
 
     if (!allowance.allowed) {
       logger.info("enquiry throttled");

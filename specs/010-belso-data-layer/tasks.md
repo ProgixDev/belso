@@ -58,8 +58,8 @@ measured against rather than being declared correct afterwards.
 - [ ] **T27** `/update-docs` — rewrite `docs/architecture/backend.md` (it documents the RLS model that no longer applies), spec index → `shipped`
 - [ ] **T28** Follow-up, **not part of this spec**: delete `src/lib/supabase/`, `src/features/auth/`, `supabase/`, and the Supabase env vars. Purely subtractive, own commit, own diff
 
-## AC coverage (mirror of plan.md — keep ticked in sync)
+## AC coverage
 
-- [x] AC-1 → T2, T10 · [x] AC-2 → T11 · [x] AC-3 → T11 · [x] AC-4 → T14, T15
-- [x] AC-8 → T7 (proven: three seed runs, still 20 properties)
-- [x] AC-5 → T17 · [x] AC-6 → T20 · [x] AC-7 → T12
+Moved to [ac-coverage.md](ac-coverage.md) and corrected: the review board found two
+criteria ticked on tests that could not fail, and one ticked for behaviour that did not
+exist at any route. Five of eight are now qualified rather than green.
