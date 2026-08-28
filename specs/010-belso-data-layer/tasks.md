@@ -46,9 +46,9 @@ measured against rather than being declared correct afterwards.
 
 ## Phase 5 — verification
 
-- [ ] **T21** Full regression: `CI=true pnpm e2e` — CUJ-01, 03, 04, 05 must pass **unchanged**. Any edit to an existing CUJ assertion is a red flag, not a fix; stop and explain it · done: 84+ passing
-- [ ] **T22** `pnpm verify` green; `pnpm verify:db` green; commit history conventional
-- [ ] **T23** Measure: page render time for `/fr/biens` against fixtures vs database, recorded in the report. A data-layer swap that quietly costs 200ms is a regression even with green tests
+- [x] **T21** Full regression: `CI=true pnpm e2e` — CUJ-01, 03, 04, 05 must pass **unchanged**. Any edit to an existing CUJ assertion is a red flag, not a fix; stop and explain it · done: 84+ passing
+- [x] **T22** `pnpm verify` green; `pnpm verify:db` green; commit history conventional
+- [x] **T23** Measured with `scripts/measure-render.mjs`, reporting time-to-**complete** as well as first byte — TTFB alone showed the swap making the catalogue _faster_, which is an artefact: the page now suspends, so the shell leaves sooner while the visitor waits longer. `/fr/biens` full document: **33ms on fixtures → 177ms on Postgres over the SSH tunnel**. That delta is the tunnel, not the query — the same query runs in **6.4ms on the VPS itself**, and the payload is unchanged (259K → 261K, which independently corroborates AC-1). The production figure cannot be measured until the app is co-located with the database and must be re-taken then
 
 ## Phase 6 — review & ship
 
