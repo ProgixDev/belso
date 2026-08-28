@@ -9,29 +9,18 @@ import { z } from "zod";
  */
 const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  // Server-only secrets. NEVER prefix these NEXT_PUBLIC_ — they must not reach the
-  // browser. The Supabase service_role key bypasses RLS; use it only in trusted
-  // server code (e.g. the account-deletion route). Optional until you wire it up.
-  // `.transform` before `.optional()`: a variable declared with an empty value
-  // is not set, but zod would otherwise measure "" against min(20) and fail the
-  // build. Same trap that broke the first Vercel deploy (see env.client.ts).
-  SUPABASE_SERVICE_ROLE_KEY: z
-    .string()
-    .transform((v) => v.trim())
-    .refine((v) => v === "" || v.length >= 20, "SUPABASE_SERVICE_ROLE_KEY looks truncated")
-    .transform((v) => v || undefined)
-    .optional(),
+
   /**
    * Postgres, on our own VPS (ADR-0008, spec 010).
    *
    * Server-only and never `NEXT_PUBLIC_` — it carries a password, and
    * `check-secrets` would reject the public spelling, correctly.
    *
-   * Optional, with the same blank-is-unset treatment as the key above: a
-   * variable *declared* with an empty value is not a configured value, and
-   * treating it as one is precisely what broke the first Vercel deploy. Unset
-   * is a legitimate state today — the repository still reads fixtures — and it
-   * is what the "listings cannot be loaded" path (AC-5) is built for.
+   * Optional here with the blank-is-unset treatment: a variable *declared* with
+   * an empty value is not a configured value, and treating it as one is what
+   * broke the first Vercel deploy. Unset is legitimate for `pnpm verify`, the
+   * build and a fresh clone — but not for production, which the guard below
+   * enforces.
    */
   DATABASE_URL: z
     .string()

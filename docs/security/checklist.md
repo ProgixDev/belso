@@ -6,7 +6,7 @@ Queryable rule file. Severity: **P1** block-release · **P2** fix-before-merge �
 `id | severity | rule | how to verify | enforced by`
 
 ```
-SEC-SECRET-001 | P1 | No hardcoded secrets (Stripe sk_, Supabase sb_secret_/service_role JWT) in source or the client bundle | pnpm secrets:check; pnpm secrets:scan | check-secrets + gitleaks
+SEC-SECRET-001 | P1 | No hardcoded secrets (database passwords, Stripe sk_, any provider token) in source or the client bundle | pnpm secrets:check; pnpm secrets:scan | check-secrets + gitleaks
 SEC-SECRET-002 | P1 | No NEXT_PUBLIC_* var whose name implies a secret (SECRET/TOKEN/SERVICE_ROLE/PASSWORD/PRIVATE) | pnpm secrets:check | check-secrets
 SEC-ENV-001    | P1 | process.env is read ONLY through src/core/env.ts (server-only); client never imports it | grep for process.env outside env.ts; build fails on client import | server-only + review
 SEC-SECRET-003 | P1 | Secret keys (service_role, Stripe sk_) used only in server code (Server Actions / Route Handlers) | review server/client split | review
@@ -15,7 +15,7 @@ SEC-NET-002    | P2 | CSP tightened and switched from Report-Only to enforcing (
 SEC-INPUT-001  | P1 | Every trust-boundary input (Server Action args, Route Handler body, searchParams) passes a Zod schema | review input parsing | review (AGENTS hard rule)
 SEC-REDIR-001  | P1 | User-supplied redirect targets go through safeRedirectPath (no open redirect) | redirect.test.ts; grep redirect()/NextResponse.redirect | tests + review
 SEC-AUTHZ-001  | P1 | Authorization enforced server-side. No browser holds a database credential (ADR-0008 removed RLS); every public read filters publication='published' inside repository.ts, once, never at a caller | review repository.ts + Server Actions | review
-SEC-AUTH-001   | P1 | Sessions are server-validated; cookies are httpOnly + secure + sameSite | review @supabase/ssr setup + middleware | review (Phase 2)
+SEC-AUTH-001   | P1 | Sessions are server-validated; cookies are httpOnly + secure + sameSite. No session layer exists today — Supabase auth was removed with ADR-0008 and the back-office (spec 011) will bring its own | review the back-office gate in proxy.ts when it lands | review (spec 011)
 SEC-LOG-001    | P2 | No tokens/PII in logs; use the redacting logger for auth/network data | grep console.* near auth/network | logger + review
 SEC-CSRF-001   | P2 | State-changing requests are CSRF-safe (Server Actions are by default; custom Route Handlers verify origin/token) | review non-Action mutations | review
 SEC-SUPPLY-001 | P2 | Lockfile committed; deps reviewed; pnpm audit clean of highs | pnpm audit; review package.json diff | review

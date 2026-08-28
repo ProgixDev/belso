@@ -2,10 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * These guard one specific production failure: the first Vercel build of this
- * repo died in `Collecting page data` because both Supabase variables were
- * declared on the project with **empty** values. `??` only catches null and
- * undefined, so `""` was handed to the schema and failed it — the placeholder
- * fallback that was supposed to make a backendless build work never ran.
+ * repo died in `Collecting page data` because two public variables were declared
+ * on the project with **empty** values. `??` only catches null and undefined, so
+ * "" reached the schema and failed it, and the fallback that was supposed to make
+ * a keyless build work never ran.
+ *
+ * Those were the Supabase variables, which ADR-0008 removed. The lesson is not
+ * about Supabase — it is about `configured()`, which the map style URLs now use
+ * in exactly the same way — so these were retargeted rather than deleted.
  *
  * The module reads `process.env` once at import time, so each case needs a fresh
  * module registry rather than a re-import.
@@ -15,7 +19,7 @@ async function loadEnv() {
   return import("./env.client");
 }
 
-const PLACEHOLDER_URL = "https://localhost.supabase.co";
+const DEMO_TILES = "https://demotiles.maplibre.org/style.json";
 
 describe("clientEnv", () => {
   beforeEach(() => {
@@ -25,44 +29,36 @@ describe("clientEnv", () => {
     vi.unstubAllEnvs();
   });
 
-  it("falls back to the placeholder when the variables are absent", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", undefined);
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", undefined);
-    const { clientEnv, supabaseConfigured } = await loadEnv();
-    expect(clientEnv.NEXT_PUBLIC_SUPABASE_URL).toBe(PLACEHOLDER_URL);
-    expect(supabaseConfigured).toBe(false);
+  it("falls back to the default when the variable is absent", async () => {
+    vi.stubEnv("NEXT_PUBLIC_MAP_STYLE_URL", undefined);
+    const { clientEnv, usingDemoTiles } = await loadEnv();
+    expect(clientEnv.NEXT_PUBLIC_MAP_STYLE_URL).toBe(DEMO_TILES);
+    expect(usingDemoTiles).toBe(true);
   });
 
-  it("treats declared-but-empty variables as absent rather than invalid", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "");
-    const { clientEnv, supabaseConfigured } = await loadEnv();
-    expect(clientEnv.NEXT_PUBLIC_SUPABASE_URL).toBe(PLACEHOLDER_URL);
-    expect(supabaseConfigured).toBe(false);
+  it("treats a declared-but-empty variable as absent rather than invalid", async () => {
+    // The exact shape of the failure: a variable declared on the project with
+    // no value.  catches null and undefined, not "".
+    vi.stubEnv("NEXT_PUBLIC_MAP_STYLE_URL", "");
+    const { clientEnv, usingDemoTiles } = await loadEnv();
+    expect(clientEnv.NEXT_PUBLIC_MAP_STYLE_URL).toBe(DEMO_TILES);
+    expect(usingDemoTiles).toBe(true);
   });
 
   it("treats whitespace as absent — a pasted blank line is not a value", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "   ");
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "\n");
-    const { clientEnv } = await loadEnv();
-    expect(clientEnv.NEXT_PUBLIC_SUPABASE_URL).toBe(PLACEHOLDER_URL);
+    vi.stubEnv("NEXT_PUBLIC_MAP_STYLE_URL", "   ");
+    vi.stubEnv("NEXT_PUBLIC_MAP_SATELLITE_STYLE_URL", "\n");
+    const { clientEnv, satelliteAvailable } = await loadEnv();
+    expect(clientEnv.NEXT_PUBLIC_MAP_STYLE_URL).toBe(DEMO_TILES);
+    // And the control that depends on it stays hidden rather than broken.
+    expect(satelliteAvailable).toBe(false);
   });
 
-  it("uses real values, trimmed, and reports itself configured", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", " https://abcdefgh.supabase.co ");
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "sb_publishable_abcdefghijklmnop");
-    const { clientEnv, supabaseConfigured } = await loadEnv();
-    expect(clientEnv.NEXT_PUBLIC_SUPABASE_URL).toBe("https://abcdefgh.supabase.co");
-    expect(supabaseConfigured).toBe(true);
-  });
-
-  it("still refuses a service-role key — the blank guard must not widen this", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://abcdefgh.supabase.co");
-    // Assembled rather than written out. `pnpm secrets:check` scans source for
-    // exactly this shape and is right to — the fixture must not read as a real
-    // key to the scanner while still being one to the schema under test.
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", ["sb", "secret", "abcdefghijklmnop"].join("_"));
-    await expect(loadEnv()).rejects.toThrow(/SERVICE ROLE/);
+  it("uses a real value, trimmed, and reports itself configured", async () => {
+    vi.stubEnv("NEXT_PUBLIC_MAP_STYLE_URL", " https://tiles.example.com/style.json ");
+    const { clientEnv, usingDemoTiles } = await loadEnv();
+    expect(clientEnv.NEXT_PUBLIC_MAP_STYLE_URL).toBe("https://tiles.example.com/style.json");
+    expect(usingDemoTiles).toBe(false);
   });
 });
 

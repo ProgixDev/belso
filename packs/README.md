@@ -1,3 +1,10 @@
+> **These packs are built on Supabase, which Belso no longer uses** (ADR-0008). They are
+> parked outside the app — excluded from tsconfig, ESLint and the build — so they compile
+> nothing and break nothing, but installing one as-is would reintroduce a backend this repo
+> has removed. `media-upload` is the one Belso would actually have wanted, for property
+> photographs; it needs rewriting against `src/core/db.ts` and disk or object storage before
+> it is usable here.
+
 # Feature packs (web)
 
 A library of **ready-made, self-contained feature modules** for this Next.js app, built **web-native**
