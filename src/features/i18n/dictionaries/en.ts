@@ -276,6 +276,8 @@ export const en: Dictionary = {
     errorEmail: "Enter a valid email address.",
     errorMessage: "Write a line or two about what you’re looking for.",
     errorGeneric: "The enquiry couldn’t be sent. Try again in a moment.",
+    errorThrottled:
+      "You’ve already sent us several messages. Give us a little time to reply — we’ll be in touch shortly.",
     errorPhone: "That phone number is too long.",
     successBodyGeneral: "We’ll come back to you within 24 hours.",
     referenceNote: "Your enquiry will quote reference {reference}.",

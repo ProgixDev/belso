@@ -307,6 +307,8 @@ export const fr = {
     errorEmail: "Indiquez une adresse e-mail valide.",
     errorMessage: "Écrivez quelques mots sur ce que vous cherchez.",
     errorGeneric: "La demande n’a pas pu être envoyée. Réessayez dans un instant.",
+    errorThrottled:
+      "Vous avez déjà envoyé plusieurs messages. Laissez-nous le temps d’y répondre — nous revenons vers vous rapidement.",
     errorPhone: "Ce numéro de téléphone est trop long.",
     successBodyGeneral: "Nous revenons vers vous sous 24 heures.",
     referenceNote: "Votre demande portera la référence {reference}.",

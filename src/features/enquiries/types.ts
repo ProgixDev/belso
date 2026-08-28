@@ -49,8 +49,15 @@ export type EnquiryResult =
       ok: false;
       /** Field key → error key. Both are looked up in the page's dictionary. */
       fieldErrors: Partial<Record<EnquiryField, EnquiryField>>;
-      /** Set when the failure is not attributable to a field. */
-      formError?: "generic";
+      /**
+       * Set when the failure is not attributable to a field.
+       *
+       * `throttled` is separated from `generic` on purpose: "the enquiry could
+       * not be sent, try again" is untrue when we refused it deliberately, and
+       * a visitor told to retry immediately will — which is exactly what the
+       * limit exists to prevent.
+       */
+      formError?: "generic" | "throttled";
       /** Everything typed, returned verbatim so the form can refill itself. */
       values: EnquiryValues;
     };

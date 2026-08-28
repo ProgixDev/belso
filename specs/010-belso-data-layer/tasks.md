@@ -33,9 +33,9 @@ measured against rather than being declared correct afterwards.
 
 ## Phase 3 — enquiries (AC-4)
 
-- [ ] **T14** `src/features/enquiries/rate-limit.ts` — Postgres-backed window counter keyed by IP + form · done: unit test proves the 6th submit in the window is refused
-- [ ] **T15** Replace the painted-door comment in `actions.ts` with the insert, behind the rate-limit check. Keep the existing zod validation and result shape; keep logging free of visitor PII, as it already is · done: `actions.test.ts` — valid submit inserts one row carrying the reference; throttled submit inserts nothing (**AC-4**)
-- [ ] **T16** Remove the painted-door entry for enquiries from `docs/process/painted-door.md` and the note in `docs/product/features/public-storefront.md` · done: `pnpm check:docs` green, no stale claim that enquiries go nowhere
+- [x] **T14** `src/features/enquiries/rate-limit.ts` — Postgres-backed window counter keyed by IP + form · done: unit test proves the 6th submit in the window is refused
+- [x] **T15** Replace the painted-door comment in `actions.ts` with the insert, behind the rate-limit check. Keep the existing zod validation and result shape; keep logging free of visitor PII, as it already is · done: `actions.test.ts` — valid submit inserts one row carrying the reference; throttled submit inserts nothing (**AC-4**)
+- [x] **T16** Remove the painted-door entry for enquiries from `docs/process/painted-door.md` and the note in `docs/product/features/public-storefront.md` · done: `pnpm check:docs` green, no stale claim that enquiries go nowhere
 
 ## Phase 4 — failure, backup and restore (AC-5, AC-6)
 
@@ -60,6 +60,6 @@ measured against rather than being declared correct afterwards.
 
 ## AC coverage (mirror of plan.md — keep ticked in sync)
 
-- [x] AC-1 → T2, T10 · [x] AC-2 → T11 · [x] AC-3 → T11 · [ ] AC-4 → T14, T15
+- [x] AC-1 → T2, T10 · [x] AC-2 → T11 · [x] AC-3 → T11 · [x] AC-4 → T14, T15
 - [x] AC-8 → T7 (proven: three seed runs, still 20 properties)
 - [ ] AC-5 → T17 · [ ] AC-6 → T20 · [x] AC-7 → T12

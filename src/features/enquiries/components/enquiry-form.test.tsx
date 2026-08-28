@@ -1,5 +1,15 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+/**
+ * The action is stubbed, not loaded.
+ *
+ * Since spec 010 `actions.ts` reaches `@/core/db` — and so `pg`, `env` and
+ * `server-only` — which Next compiles away for the client but vitest resolves
+ * for real. This test renders a form; the action is exercised in
+ * `actions.test.ts` and, against a live database, in `enquiries.db.test.ts`.
+ */
+vi.mock("../actions", () => ({ submitEnquiryAction: vi.fn() }));
 import { EnquiryForm, type EnquiryLabels } from "./enquiry-form";
 
 /**
@@ -27,6 +37,7 @@ const labels: EnquiryLabels = {
     message: "Write a few words about what you’re looking for.",
   },
   errorGeneric: "The enquiry couldn’t be sent.",
+  errorThrottled: "You’ve already sent us several messages.",
 };
 
 describe("EnquiryForm", () => {
