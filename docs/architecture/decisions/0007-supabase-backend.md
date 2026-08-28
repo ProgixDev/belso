@@ -1,6 +1,6 @@
 # 0007 — Supabase as the backend, RLS-first (SSR)
 
-- **Status:** Accepted
+- **Status:** Superseded by [0008](0008-postgres-on-our-own-vps.md) for Belso
 - **Date:** 2026-06-19
 - **Deciders:** Achraf Arabi (lead)
 
