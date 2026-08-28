@@ -40,7 +40,7 @@ import type {
  */
 
 /** Exactly the shape the query below returns, before any of it is trusted. */
-type PropertyRow = {
+export type PropertyRow = {
   id: string;
   reference: string;
   district_id: string;
@@ -116,7 +116,7 @@ const SELECT_PUBLISHED = `
   where p.publication = 'published'
 `;
 
-function toProperty(row: PropertyRow): Property {
+export function toProperty(row: PropertyRow): Property {
   if (!isDistrictId(row.district_id)) {
     // A foreign key guarantees the district exists; it cannot guarantee the
     // TypeScript union still lists it. Failing loudly beats a listing that

@@ -168,6 +168,66 @@ describeDb("enquiries against Postgres (spec 010 AC-4)", () => {
     expect(rows[0].n).toBe(0);
   });
 
+  it("lets the sender through again once their window has passed", async () => {
+    const { submitEnquiryAction } = await import("./actions");
+
+    for (let i = 0; i < 5; i++) await submitEnquiryAction(null, form({ ...VALID }));
+    expect((await submitEnquiryAction(null, form({ ...VALID }))).ok).toBe(false);
+
+    /*
+     * The window-reset arm of the upsert had no test at all: every case ran
+     * inside one 60-minute window, so inverting the condition — making the
+     * reset never fire — left the whole suite green while a real visitor who
+     * sent five enquiries was locked out permanently.
+     *
+     * Ageing the row is the only way to reach that branch without waiting an
+     * hour.
+     */
+    await sql.query("update enquiry_throttle set window_start = now() - interval '61 minutes'");
+
+    const afterWindow = await submitEnquiryAction(null, form({ ...VALID }));
+    expect(afterWindow.ok, "the window should have reset").toBe(true);
+
+    const { rows } = await sql.query("select count from enquiry_throttle where count = 1");
+    expect(rows.length, "the counter should have restarted, not continued").toBeGreaterThan(0);
+  });
+
+  it("counts concurrent submissions exactly once each", async () => {
+    const { submitEnquiryAction } = await import("./actions");
+
+    /*
+     * The atomicity claim was a comment and nothing else. Read-then-write would
+     * let two requests arriving together both read four and both write five —
+     * the classic way a limiter is bypassed by exactly the traffic it exists to
+     * stop. Ten at once, from one sender, must yield five stored and five
+     * refused; a racy implementation stores six or more.
+     */
+    const results = await Promise.all(
+      Array.from({ length: 10 }, () => submitEnquiryAction(null, form({ ...VALID }))),
+    );
+
+    expect(results.filter((r) => r.ok)).toHaveLength(5);
+
+    const { rows } = await sql.query("select count(*)::int as n from enquiries where email = $1", [
+      VALID.email,
+    ]);
+    expect(rows[0].n, "no submission may slip past the limit under concurrency").toBe(5);
+  });
+
+  it("keeps an enquiry for the retention period the spec promises", async () => {
+    const { submitEnquiryAction } = await import("./actions");
+    await submitEnquiryAction(null, form({ ...VALID }));
+
+    // `expires_at > now()` passed if retention were one second. The 24 months
+    // is the promise the privacy copy has to make, so it is worth pinning.
+    const { rows } = await sql.query(
+      `select expires_at between now() + interval '23 months' and now() + interval '25 months'
+         as within_promise from enquiries where email = $1`,
+      [VALID.email],
+    );
+    expect(rows[0].within_promise).toBe(true);
+  });
+
   it("still rejects invalid input before it reaches the throttle or the table", async () => {
     const { submitEnquiryAction } = await import("./actions");
 

@@ -32,19 +32,30 @@ const ssh = (script) =>
 const psql = (db, sql) =>
   ssh(`docker exec ${CONTAINER} psql -U belso -d ${db} -tAc ${JSON.stringify(sql)}`);
 
-/** The tables whose contents a restore has to bring back. */
-const TABLES = [
-  "districts",
-  "district_translations",
-  "properties",
-  "property_translations",
-  "property_media",
-  "property_media_alt",
-  "enquiries",
-];
+/**
+ * Every table the live database has — asked, not assumed.
+ *
+ * This was a hardcoded list of seven, and it omitted `property_slug_history`
+ * (the table AC-7 depends on), `enquiry_throttle` and `schema_migrations`. A
+ * dump that lost any of them restored, compared clean, and printed ✓. A backup
+ * check that only looks at the tables someone remembered is a backup check that
+ * will miss the table someone forgot — which is the same table the migration
+ * that added it also forgot to tell anyone about.
+ */
+function tablesOf(db) {
+  // One line on purpose: this is quoted into `ssh … bash -s`, and a newline
+  // inside the argument ends the command rather than continuing the query.
+  return psql(
+    db,
+    "select table_name from information_schema.tables where table_schema = 'public' and table_type = 'BASE TABLE' order by table_name",
+  )
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
 
-function counts(db) {
-  const sql = TABLES.map((t) => `select '${t}', count(*) from ${t}`).join(" union all ");
+function counts(db, tables) {
+  const sql = tables.map((t) => `select '${t}', count(*) from ${t}`).join(" union all ");
   return Object.fromEntries(
     psql(db, sql)
       .split("\n")
@@ -76,12 +87,22 @@ try {
     docker exec ${CONTAINER} pg_restore -U belso -d ${SCRATCH} --no-owner ${dump.replace("/root/backups/belso", "/backups")}
   `);
 
-  const live = counts("belso");
-  const restored = counts(SCRATCH);
+  const liveTables = tablesOf("belso");
+  const restoredTables = tablesOf(SCRATCH);
+
+  // The set first, then the contents. A table that vanished entirely is the
+  // failure the old hardcoded list could not see.
+  const missing = liveTables.filter((t) => !restoredTables.includes(t));
+  if (missing.length) {
+    throw new Error(`the restore is missing ${missing.length} table(s): ${missing.join(", ")}`);
+  }
+
+  const live = counts("belso", liveTables);
+  const restored = counts(SCRATCH, liveTables);
 
   console.log("\n  table                     live   restored");
   let mismatch = false;
-  for (const table of TABLES) {
+  for (const table of liveTables) {
     const ok = live[table] === restored[table];
     if (!ok) mismatch = true;
     console.log(
