@@ -52,7 +52,7 @@ measured against rather than being declared correct afterwards.
 
 ## Phase 6 — review & ship
 
-- [ ] **T24** `/security-review` — new dependency, a new untrusted write path, PII at rest, and a new credential. Not optional here
+- [x] **T24** `/security-review` — new dependency, a new untrusted write path, PII at rest, and a new credential. Not optional here · done: APPROVE, no P1. Fixed in `d0c8e26`/`aa9b5b4` — attempts throttled as well as writes, SEC-AUTHZ-001 corrected for ADR-0008, SEC-DB-001/002 added, `getPool` un-exported. Open and the owner’s: the passphrase-less SSH key, and the forgeable `x-forwarded-for` until the app is behind Traefik
 - [ ] **T25** `/review`; fix P0/P1
 - [ ] **T26** `/feature-report` → `docs/reports/010-belso-data-layer.md`
 - [ ] **T27** `/update-docs` — rewrite `docs/architecture/backend.md` (it documents the RLS model that no longer applies), spec index → `shipped`
