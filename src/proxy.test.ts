@@ -4,28 +4,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LOCALE_COOKIE } from "@/core/i18n";
 
 /**
- * The proxy is the one place where two independent concerns are braided
- * together — Supabase session refresh and locale routing — and the failure
- * modes are silent: a dropped auth cookie signs a visitor out, a missed rewrite
- * 404s a translated URL. Both were previously proven only by hand.
+ * Locale routing, whose failures are silent: a missed rewrite 404s a
+ * translated URL, and a cookie written on a prefetch changes the language
+ * under a visitor who never asked.
  *
- * `updateSession` is mocked because it talks to Supabase; what matters here is
- * that the proxy *composes with* whatever it returns.
+ * It also composed with a Supabase session response until ADR-0008. Those two
+ * tests went with it — deliberately, rather than being left mocking a module
+ * that no longer exists.
  */
 
-vi.mock("@/lib/supabase/middleware", () => ({ updateSession: vi.fn() }));
-
-const { updateSession } = await import("@/lib/supabase/middleware");
-const { proxy } = await import("./proxy");
-
-const mockedUpdateSession = vi.mocked(updateSession);
-
-/** The ordinary case: a pass-through response carrying a refreshed auth cookie. */
-function sessionWithAuthCookie() {
-  const response = NextResponse.next();
-  response.cookies.set("sb-access-token", "refreshed-token", { path: "/" });
-  return response;
-}
+import { proxy } from "./proxy";
 
 /**
  * A real browser navigation unless told otherwise: `sec-fetch-dest: document`
@@ -45,22 +33,17 @@ function request(
 /** Where `NextResponse.rewrite` records its destination. */
 const rewriteTarget = (response: Response) => response.headers.get("x-middleware-rewrite");
 
-beforeEach(() => {
-  mockedUpdateSession.mockReset();
-  mockedUpdateSession.mockResolvedValue(sessionWithAuthCookie());
-});
-
 describe("unlocalised paths", () => {
-  it.each(["/account", "/sign-in", "/api/health", "/examples/tasks", "/auth/callback"])(
-    "hands %s straight to the session refresher, untouched",
-    async (path) => {
-      const response = await proxy(request(path));
+  // `/account`, `/sign-in` and `/auth/callback` were removed with Supabase
+  // (ADR-0008). The rest still exist and must keep their bare paths — and the
+  // list is worth keeping longer than the routes, because the back-office will
+  // add its own unlocalised paths and this is what proves they stay bare.
+  it.each(["/api/health", "/examples/tasks"])("passes %s through untouched", async (path) => {
+    const response = await proxy(request(path));
 
-      expect(mockedUpdateSession).toHaveBeenCalledOnce();
-      expect(response.headers.get("location")).toBeNull();
-      expect(rewriteTarget(response)).toBeNull();
-    },
-  );
+    expect(response.headers.get("location")).toBeNull();
+    expect(rewriteTarget(response)).toBeNull();
+  });
 
   it("leaves files alone so robots.txt does not become /fr/robots.txt", async () => {
     for (const path of ["/robots.txt", "/sitemap.xml", "/manifest.webmanifest"]) {
@@ -125,30 +108,6 @@ describe("translated segment rewrite", () => {
   it("does not rewrite a bare locale root", async () => {
     const response = await proxy(request("/fr", { cookies: `${LOCALE_COOKIE}=fr` }));
 
-    expect(rewriteTarget(response)).toBeNull();
-  });
-});
-
-describe("composition with the session response", () => {
-  it("carries refreshed auth cookies onto a rewritten response", async () => {
-    const response = await proxy(request("/fr/biens", { cookies: `${LOCALE_COOKIE}=fr` }));
-
-    // The regression this guards: replacing the session response instead of
-    // composing with it silently signs the visitor out on every translated URL.
-    expect(response.cookies.get("sb-access-token")?.value).toBe("refreshed-token");
-  });
-
-  it("lets a protected-route redirect win over the locale work", async () => {
-    const redirect = NextResponse.redirect(
-      new URL("http://localhost:3000/sign-in?next=%2Ffr%2Fbiens"),
-    );
-    mockedUpdateSession.mockResolvedValue(redirect);
-
-    const response = await proxy(request("/fr/biens", { cookies: `${LOCALE_COOKIE}=fr` }));
-
-    expect(response.headers.get("location")).toBe(
-      "http://localhost:3000/sign-in?next=%2Ffr%2Fbiens",
-    );
     expect(rewriteTarget(response)).toBeNull();
   });
 });

@@ -6,20 +6,19 @@ import {
   isLocale,
   toInternalPath,
 } from "@/core/i18n";
-import { updateSession } from "@/lib/supabase/middleware";
 
 /**
  * Named `proxy` per the Next 16 file convention — `middleware` is deprecated.
  *
- * Two jobs, in this order:
- *   1. Refresh the Supabase session and gate protected routes (`updateSession`).
- *   2. Put every storefront request under a locale and rewrite the translated
- *      public segment onto the real app-directory path (`/fr/biens/x` renders
- *      `/fr/properties/x`).
+ * One job: put every storefront request under a locale, and rewrite the
+ * translated public segment onto the real app-directory path (`/fr/biens/x`
+ * renders `/fr/properties/x`).
  *
- * The session response is *composed with*, never replaced: `updateSession`
- * returns a response carrying refreshed auth cookies, so a rewrite has to copy
- * them across or the visitor is silently signed out on any translated URL.
+ * It had a second until ADR-0008 — refreshing a Supabase session and gating
+ * protected routes — which went with Supabase itself. The back-office will need
+ * its own gate here, and the thing worth carrying forward from the old one is
+ * this: a rewrite must copy the response's cookies across, or a signed-in
+ * manager is silently signed out on every translated URL.
  */
 
 /** Not part of the localised storefront — these keep their bare paths. */
@@ -77,7 +76,7 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isUnlocalised(pathname)) {
-    return updateSession(request);
+    return NextResponse.next({ request });
   }
 
   const first = pathname.split("/")[1] ?? "";
@@ -95,23 +94,13 @@ export async function proxy(request: NextRequest) {
     return redirect;
   }
 
-  const sessionResponse = await updateSession(request);
-  // A protected-route redirect from updateSession outranks anything we do here.
-  if (sessionResponse.headers.get("location")) {
-    return sessionResponse;
-  }
-
   const internalPath = toInternalPath(pathname);
-  let response = sessionResponse;
+  let response = NextResponse.next({ request });
 
   if (internalPath && internalPath !== pathname) {
     const url = request.nextUrl.clone();
     url.pathname = internalPath;
     response = NextResponse.rewrite(url, { request });
-    // Carry the refreshed auth cookies onto the rewritten response.
-    for (const cookie of sessionResponse.cookies.getAll()) {
-      response.cookies.set(cookie);
-    }
   }
 
   // A locale in the URL is an explicit choice — persist it so the next bare
