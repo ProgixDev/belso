@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import { Badge } from "@/components/ui/badge";
 import { isLocale, localeTag, locales, toPublicPath } from "@/core/i18n";
@@ -10,6 +10,7 @@ import { getDictionary } from "@/features/i18n";
 import { enquiryLabels } from "../../../_components/enquiry-labels";
 import {
   Gallery,
+  getCurrentSlugFor,
   getLocaleSlugs,
   getPropertyBySlug,
   getSimilar,
@@ -81,7 +82,27 @@ export default async function PropertyDetailPage({
   if (!isLocale(locale)) notFound();
 
   const property = await getPropertyBySlug(slug, locale);
-  if (!property) notFound();
+
+  if (!property) {
+    /*
+     * Before giving up: is this an address this listing used to hold?
+     *
+     * The client can rename a listing from the back-office, and when she does,
+     * every link already published — a crawler's index, a message an agent sent
+     * a buyer last month — still points at the old slug. A 404 there is a lost
+     * enquiry, which on this site is the only thing that actually matters.
+     *
+     * A temporary redirect, not a permanent one. `permanentRedirect` is cached
+     * by browsers indefinitely and the client may well rename a listing back;
+     * a 308 that outlives the rename would strand the *current* address in the
+     * visitor's own cache. The SEO cost at this catalogue's size is negligible
+     * next to that.
+     */
+    const current = await getCurrentSlugFor(slug, locale);
+    if (current) redirect(toPublicPath(`/properties/${current}`, locale));
+
+    notFound();
+  }
 
   const dict = getDictionary(locale);
   const similar = await getSimilar(property.id, locale);

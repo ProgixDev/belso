@@ -487,6 +487,26 @@ test("the featured listing is the dearest thing actually for sale", async ({ pag
   const title = (await page.locator("#featured h3").first().textContent())!.trim();
 
   await page.goto("/fr/biens?sort=priceDesc");
+
+  /*
+   * Wait for the first card before reading them all.
+   *
+   * `allTextContents()` is one of the few Playwright calls that does **not**
+   * retry — it reports whatever is in the DOM at that instant. That was safe
+   * while the catalogue came from fixtures, because the data resolved in a
+   * microtask and the cards were in the first byte of HTML.
+   *
+   * Since spec 010 the listings come from Postgres, so the page genuinely
+   * suspends: React streams `loading.tsx` first and relocates the real content
+   * when the query returns. Measured mid-stream, `<main>` holds the skeleton
+   * and the twenty cards sit after `</main>` awaiting relocation — so the
+   * locator matched nothing and the listing looked absent from its own
+   * catalogue.
+   *
+   * The assertion below is unchanged. This waits for the page to finish
+   * arriving before measuring it, which is what the test always meant.
+   */
+  await expect(page.locator("main ul > li article").first()).toBeVisible();
   const cards = await page.locator("main ul > li article").allTextContents();
   const position = cards.findIndex((card) => card.includes(title));
   expect(position, "the featured listing is not in the catalogue").toBeGreaterThanOrEqual(0);

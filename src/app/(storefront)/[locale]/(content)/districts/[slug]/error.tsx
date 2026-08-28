@@ -32,8 +32,8 @@ export default function DistrictError({
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-24">
       <EmptyState
-        title={dict.common.errorTitle}
-        description={dict.common.errorBody}
+        title={dict.properties.unavailableTitle}
+        description={dict.properties.unavailableBody}
         action={<Button onClick={reset}>{dict.common.retry}</Button>}
       />
     </div>

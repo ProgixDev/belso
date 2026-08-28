@@ -40,5 +40,6 @@ export function enquiryLabels(
       message: dict.enquiry.errorMessage,
     },
     errorGeneric: dict.enquiry.errorGeneric,
+    errorThrottled: dict.enquiry.errorThrottled,
   };
 }

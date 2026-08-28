@@ -14,12 +14,14 @@ SEC-NET-001    | P1 | Security headers set on every route (HSTS, X-Frame-Options
 SEC-NET-002    | P2 | CSP tightened and switched from Report-Only to enforcing (nonces/hashes for inline) | check Content-Security-Policy header | review (per app)
 SEC-INPUT-001  | P1 | Every trust-boundary input (Server Action args, Route Handler body, searchParams) passes a Zod schema | review input parsing | review (AGENTS hard rule)
 SEC-REDIR-001  | P1 | User-supplied redirect targets go through safeRedirectPath (no open redirect) | redirect.test.ts; grep redirect()/NextResponse.redirect | tests + review
-SEC-AUTHZ-001  | P1 | Authorization enforced server-side / by RLS; the client is never trusted | review Server Actions + RLS policies | review (Phase 2)
+SEC-AUTHZ-001  | P1 | Authorization enforced server-side. No browser holds a database credential (ADR-0008 removed RLS); every public read filters publication='published' inside repository.ts, once, never at a caller | review repository.ts + Server Actions | review
 SEC-AUTH-001   | P1 | Sessions are server-validated; cookies are httpOnly + secure + sameSite | review @supabase/ssr setup + middleware | review (Phase 2)
 SEC-LOG-001    | P2 | No tokens/PII in logs; use the redacting logger for auth/network data | grep console.* near auth/network | logger + review
 SEC-CSRF-001   | P2 | State-changing requests are CSRF-safe (Server Actions are by default; custom Route Handlers verify origin/token) | review non-Action mutations | review
 SEC-SUPPLY-001 | P2 | Lockfile committed; deps reviewed; pnpm audit clean of highs | pnpm audit; review package.json diff | review
-SEC-RATE-001   | P3 | Auth + mutation endpoints are rate-limited | review (e.g. Upstash) | review (backlog)
+SEC-DB-001     | P1 | No database container publishes a port on 0.0.0.0. Docker writes its iptables rules ahead of ufw, so a published port is public even with the firewall denying — this is exactly how n8n came to serve its login over plain HTTP. Bind to 127.0.0.1 and reach it over SSH | ss -tlnp on the VPS; docker compose ports: entries | docs/security/vps.md + review
+SEC-DB-002     | P2 | Backups are verified by restoring one, not by inspecting the file, and personal data past its retention date is deleted before the dump — not after | pnpm db:restore-check | scripts/vps/belso-backup.sh
+SEC-RATE-001   | P2 | Unauthenticated mutations are rate-limited in shared storage, not per-process, and count attempts as well as writes | enquiries.db.test.ts | Postgres counter (spec 010)
 ```
 
 ## How `/security-review` uses this

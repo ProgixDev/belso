@@ -21,8 +21,82 @@ const serverEnvSchema = z.object({
     .refine((v) => v === "" || v.length >= 20, "SUPABASE_SERVICE_ROLE_KEY looks truncated")
     .transform((v) => v || undefined)
     .optional(),
-  // Add real server vars here, mirrored in .env.example, e.g.:
-  // DATABASE_URL: z.string().url(),
+  /**
+   * Postgres, on our own VPS (ADR-0008, spec 010).
+   *
+   * Server-only and never `NEXT_PUBLIC_` — it carries a password, and
+   * `check-secrets` would reject the public spelling, correctly.
+   *
+   * Optional, with the same blank-is-unset treatment as the key above: a
+   * variable *declared* with an empty value is not a configured value, and
+   * treating it as one is precisely what broke the first Vercel deploy. Unset
+   * is a legitimate state today — the repository still reads fixtures — and it
+   * is what the "listings cannot be loaded" path (AC-5) is built for.
+   */
+  DATABASE_URL: z
+    .string()
+    .transform((v) => v.trim())
+    .refine((v) => v === "" || v.startsWith("postgres"), "DATABASE_URL must be a postgres:// URL")
+    .transform((v) => v || undefined)
+    .optional(),
+
+  /**
+   * Keys the enquiry throttle's HMAC (`features/enquiries/rate-limit.ts`).
+   *
+   * Optional, and unset it degrades to a plain hash rather than refusing to
+   * throttle — a limiter that fails open would be worse than one that is merely
+   * less private. But **set it in production**: without it the key is a bare
+   * hash of a /24, and the entire IPv4 space is enumerable in minutes, so anyone
+   * holding a database dump could work out which network enquired.
+   */
+  THROTTLE_SECRET: z
+    .string()
+    .transform((v) => v.trim())
+    .transform((v) => v || undefined)
+    .optional(),
 });
 
 export const env = serverEnvSchema.parse(process.env);
+
+/**
+ * Production may not fall back to fixtures, and may not silently discard leads.
+ *
+ * `DATABASE_URL` is optional above because `pnpm verify`, the build and a fresh
+ * clone genuinely have no database, and the repository serves fixtures instead.
+ * That branch is correct for development and catastrophic in production: one
+ * mistyped variable on a deploy and the site serves twenty **invented** villas
+ * — fake addresses, fake prices — as the agency's real inventory, while the
+ * enquiry form answers every visitor "sent" and stores nothing. Silently, with
+ * nothing in the logs.
+ *
+ * So the same variable that is optional everywhere else is required here, and
+ * the boot fails rather than the catalogue quietly becoming fiction.
+ *
+ * **Not during `next build`**, which sets `NODE_ENV=production` itself. Guarding
+ * the build would make `pnpm verify` — which builds, on machines that correctly
+ * have no database — impossible to pass. What must never happen is *serving*
+ * without one, and that is what this checks.
+ */
+const isBuilding = process.env.NEXT_PHASE === "phase-production-build";
+
+/**
+ * The one deliberate way past this, and why it exists.
+ *
+ * `pnpm start` is `NODE_ENV=production`, so the guard also refuses to boot the
+ * local production server that Playwright drives — which would make `pnpm e2e`
+ * impossible on a machine with no database, and the e2e suite is exactly where
+ * a contributor with no tunnel needs to work. `playwright.config.ts` sets this
+ * when no `DATABASE_URL` is present.
+ *
+ * A real deployment never sets it, which is the whole point: the escape hatch
+ * has to be something a deploy could not do by accident, and an environment
+ * variable nobody writes into a production config is that.
+ */
+const allowFixtures = process.env.BELSO_ALLOW_FIXTURES === "1";
+
+if (env.NODE_ENV === "production" && !isBuilding && !allowFixtures && !env.DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL is required in production: without it the site would serve fixture listings " +
+      "as real inventory and accept enquiries without storing them.",
+  );
+}

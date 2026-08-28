@@ -39,6 +39,7 @@
       "Bash(git add *)",
       "Bash(git commit *)"
     ],
+    "$comment-deny": "Blanket deny on every .env file, restored deliberately after two attempts to carve out .env.example. Enumerating the real names (.env.local, .env.production, ...) left anything unlisted — .env.staging, .env.vps — readable by construction, which is the wrong default for files .gitignore already treats as secret. A negated glob (.env.[!e]*) is not supported by this matcher and silently blocked .env.example as well. So: deny everything, and read the committed example through git instead, which is not a Read of the path: `git show HEAD:.env.example`. Writing it is separately allowed — protect-paths.mjs exempts .env.example by name. Note the deny covers Read only.",
     "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(git push --force*)", "Bash(git push -f*)"]
   }
 }

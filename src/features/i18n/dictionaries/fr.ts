@@ -197,6 +197,12 @@ export const fr = {
   },
   properties: {
     title: "Nos biens",
+    // Shown when the catalogue itself cannot be reached — not when a search
+    // returns nothing. Deliberately does not say “write to us”: the enquiry form
+    // needs the same database, so that would be sending them at a closed door.
+    unavailableTitle: "Nos biens ne s’affichent pas",
+    unavailableBody:
+      "Le catalogue est momentanément indisponible. Réessayez dans quelques instants.",
     resultCount: "{count} biens",
     resultCountOne: "1 bien",
     searchedFor: "Votre recherche",
@@ -307,6 +313,14 @@ export const fr = {
     errorEmail: "Indiquez une adresse e-mail valide.",
     errorMessage: "Écrivez quelques mots sur ce que vous cherchez.",
     errorGeneric: "La demande n’a pas pu être envoyée. Réessayez dans un instant.",
+    // Dit d’abord que **ce message n’est pas parti** : la version précédente
+    // ouvrait sur « nous revenons vers vous », ce qui se lit comme un accusé de
+    // réception. Un acheteur pressé refermait l’onglet en croyant sa demande
+    // reçue — exactement l’échec silencieux que le reste de ce formulaire
+    // s’attache à éviter. Le reproche est retiré (docs/conventions/copy.md :
+    // ne jamais blâmer le visiteur) et une autre voie lui est toujours donnée.
+    errorThrottled:
+      "Ce message n’a pas été envoyé : nous en avons déjà reçu plusieurs de votre part dans l’heure. Nous répondons à chaque demande — pour une demande urgente, appelez-nous.",
     errorPhone: "Ce numéro de téléphone est trop long.",
     successBodyGeneral: "Nous revenons vers vous sous 24 heures.",
     referenceNote: "Votre demande portera la référence {reference}.",

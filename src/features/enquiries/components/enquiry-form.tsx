@@ -35,6 +35,7 @@ export type EnquiryLabels = {
   referenceNote?: string;
   errors: Record<EnquiryField, string>;
   errorGeneric: string;
+  errorThrottled: string;
 };
 
 function SubmitButton({ label, pending }: { label: string; pending: string }) {
@@ -150,7 +151,7 @@ export function EnquiryForm({
 
       {state?.ok === false && state.formError ? (
         <p role="alert" className="text-destructive text-sm font-medium">
-          {labels.errorGeneric}
+          {state.formError === "throttled" ? labels.errorThrottled : labels.errorGeneric}
         </p>
       ) : null}
 
