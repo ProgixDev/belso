@@ -115,3 +115,48 @@ the database they protect. They survive a bad migration or a deleted listing; th
 survive losing the machine. That is covered only by Hostinger's snapshots, which are configured
 in the provider's panel and cannot be seen or verified from inside the VPS — **someone has to
 confirm they are switched on.** Until then this is protection against mistakes, not against loss.
+
+## The app's own database role
+
+Migration `0004` creates `belso_app`: `select` on the catalogue tables, `insert` on
+`enquiries`, and `select/insert/update` on `enquiry_throttle`. Nothing else.
+
+Until it existed the app would have connected as `belso` — the Postgres image's **superuser**,
+which can create databases, read every table, and run `COPY … FROM PROGRAM`, meaning command
+execution inside the container. The storefront is the one part of this system any stranger can
+reach; a future injection or a compromised app container yielded the whole cluster.
+
+Verified by trying it rather than by reading the grants: as `belso_app`, reading published
+listings works, inserting an enquiry works, and **reading enquiries back, deleting a listing and
+creating a database are all denied.** The public role is write-only over the personal data it
+collects.
+
+One consequence to know before it looks like a bug: `insert … returning` needs `select` on the
+returned column, so the enquiry insert must stay `RETURNING`-free. The throttle upsert does use
+`returning count`, which is why `select` is granted there.
+
+Set its password and point the app at it:
+
+```bash
+ssh belso-vps "docker exec belso-db-db-1 psql -U belso -d postgres -c \"alter role belso_app with password '…'\""
+# DATABASE_URL=postgres://belso_app:<password>@db:5432/belso
+```
+
+Migrations, the seed and the backups keep using the owner — they are run by a human over SSH,
+not by a request from the internet.
+
+## Testing against this server
+
+`pnpm test:db` **refuses to run** unless `DATABASE_URL` names a database whose name ends in
+`_test` (`vitest.db.setup.ts`). These tests unpublish a live listing, rename another and
+truncate the throttle table; they restore what they change, right up until someone presses
+Ctrl+C. `pnpm verify:db` also runs the seed, which upserts every listing from the fixtures — so
+once the back-office ships, one run against the live database would silently revert the client's
+own edits.
+
+A scratch database exists for this:
+
+```bash
+ssh belso-vps "docker exec belso-db-db-1 createdb -U belso belso_test"
+DATABASE_URL=postgres://belso:<password>@127.0.0.1:55432/belso_test pnpm verify:db
+```

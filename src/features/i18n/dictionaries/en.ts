@@ -168,9 +168,8 @@ export const en: Dictionary = {
   },
   properties: {
     title: "Our properties",
-    unavailableTitle: "The properties aren’t loading",
-    unavailableBody:
-      "The list is unavailable for the moment. Reload in a little while — the rest of the site is working normally.",
+    unavailableTitle: "Our properties aren’t showing",
+    unavailableBody: "The catalogue is unavailable just now. Try again in a few moments.",
     resultCount: "{count} properties",
     resultCountOne: "1 property",
     searchedFor: "Your search",
@@ -280,7 +279,7 @@ export const en: Dictionary = {
     errorMessage: "Write a line or two about what you’re looking for.",
     errorGeneric: "The enquiry couldn’t be sent. Try again in a moment.",
     errorThrottled:
-      "You’ve already sent us several messages. Give us a little time to reply — we’ll be in touch shortly.",
+      "This message wasn’t sent: we’ve already had several from you in the past hour. We answer every enquiry — if it’s urgent, please call us.",
     errorPhone: "That phone number is too long.",
     successBodyGeneral: "We’ll come back to you within 24 hours.",
     referenceNote: "Your enquiry will quote reference {reference}.",

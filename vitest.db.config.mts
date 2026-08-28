@@ -24,5 +24,6 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.db.test.ts", "src/features/properties/repository.golden.test.ts"],
     fileParallelism: false,
+    setupFiles: ["./vitest.db.setup.ts"],
   },
 });

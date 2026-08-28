@@ -46,7 +46,11 @@ test("AC-5: the rest of the site is unaffected", async ({ page }) => {
   for (const path of ["/fr", "/fr/a-propos", "/fr/contact", "/fr/quartiers"]) {
     const response = await page.goto(path);
     expect(response?.status(), `${path} should still serve`).toBe(200);
-    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+    // Not  — the bare global-error page has one of those too, which is
+    // exactly how a missing error boundary on the home page went unnoticed.
+    // The site chrome is what distinguishes "still working" from "fell over".
+    await expect(page.locator("header").first()).toBeVisible();
+    await expect(page.locator("footer").first()).toBeVisible();
   }
 
   await shot(page, "41-home-database-down");
