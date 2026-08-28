@@ -1,6 +1,6 @@
 # Spec 010 — Listings come from a database, not from fixtures
 
-- **Status:** draft
+- **Status:** active
 - **Type:** feature
 - **Requested by / owner:** Houssem Ferrani
 - **Date:** 2026-08-28
@@ -90,18 +90,28 @@ And the data can be got back. A restore is rehearsed and proven, not assumed.
   unchanged** — they are the regression harness for the swap, and that is precisely their value
   here. AC-2 and AC-5 add cases to `e2e/properties.spec.ts` rather than a new journey.
 
+## Assumptions pending confirmation
+
+These were raised with the owner, who chose to proceed rather than answer. They are written down
+as decisions so the build is not blocked, and each is cheap to overturn while the catalogue is
+still twenty seeded rows. None of them changes the shape of the schema.
+
+- **Enquiry retention: 24 months**, then deletion. A single configured value, applied by the
+  same nightly job that takes the dump, so changing the period is changing one number. The
+  privacy copy must state it before real enquiries are collected — and that copy still has no
+  owner, the same gap flagged in spec 004.
+- **Archived listings are not shown to the public.** Records are retained, so deciding later to
+  show sold properties as proof of trade is a read filter, not a migration.
+- **Snapshots are assumed on until someone confirms otherwise.** This is panel-side and invisible
+  from the machine, so it cannot be verified or tested from here.
+
 ## Open questions
 
-- [ ] **Are Hostinger snapshots actually enabled and scheduled on this VPS?** The chosen backup
-      strategy is snapshots, and this has to be confirmed in the Hostinger panel — it is not
-      visible or configurable from inside the machine. If they are not on, there is no backup.
-- [ ] **How long are enquiries kept?** Storing them creates a retention duty under GDPR (the
-      audience is largely French). A period needs choosing — twelve or twenty-four months is
-      typical for a sales lead — and the privacy copy must say so. Needs the client, and it has
-      no owner today, which is the same gap the legal copy already has.
-- [ ] **Does the client want sold properties visible?** Archived is defined here as "out of the
-      catalogue". Some agencies deliberately show sold listings as proof of trade. Cheap to
-      decide now, expensive to retrofit once she has archived thirty of them.
+- [ ] **Are Hostinger snapshots actually enabled and scheduled?** Owner action, in the Hostinger
+      panel. Everything else here can be built and proven without it, but if they are off then
+      the nightly dump built by this spec is the _only_ backup and it lives on the same disk as
+      the database — which is not a backup at all. Blocking before real data is entered, not
+      before this spec is implemented.
 
 ## Notes on the accepted backup trade-off
 
