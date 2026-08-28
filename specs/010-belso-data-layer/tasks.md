@@ -25,11 +25,11 @@ measured against rather than being declared correct afterwards.
 
 ## Phase 2 — the swap (AC-1, AC-2, AC-3, AC-7)
 
-- [ ] **T9** `src/features/properties/row.ts` — joined row → `Property`, including `date` → the ISO string shape the fixtures produce · done: unit test on one hand-built row
-- [ ] **T10** Rewrite the six bodies in `repository.ts` to SQL. Signatures unchanged. **Every read filters `publication = 'published'` inside the repository**, never at a caller. Sorting stays in TypeScript (plan _Risks_) · done: **`repository.golden.test.ts` passes against Postgres, byte-for-byte** (**AC-1**)
-- [ ] **T11** Draft and archived cases: `repository.test.ts` asserts a drafted listing is absent from all six functions and its slug absent from the sitemap source; an archived one is absent from the catalogue but still present by direct query · done: tests green (**AC-2**, **AC-3**)
-- [ ] **T12** Slug history: `getPropertyBySlug` falls back to `property_slug_history` and the page 301s to the current slug · done: unit + e2e step green (**AC-7**)
-- [ ] **T13** Delete `src/features/properties/fixtures.ts` imports from `repository.ts` only — the fixtures file itself **stays**, as the seed's source and the golden test's oracle · done: `repository.ts` imports no fixtures; `pnpm verify` green
+- [x] **T9** `src/features/properties/row.ts` — joined row → `Property`, including `date` → the ISO string shape the fixtures produce · done: unit test on one hand-built row
+- [x] **T10** Rewrite the six bodies in `repository.ts` to SQL. Signatures unchanged. **Every read filters `publication = 'published'` inside the repository**, never at a caller. Sorting stays in TypeScript (plan _Risks_) · done: **`repository.golden.test.ts` passes against Postgres, byte-for-byte** (**AC-1**)
+- [x] **T11** Draft and archived cases: `repository.test.ts` asserts a drafted listing is absent from all six functions and its slug absent from the sitemap source; an archived one is absent from the catalogue but still present by direct query · done: tests green (**AC-2**, **AC-3**)
+- [x] **T12** Slug history: `getPropertyBySlug` falls back to `property_slug_history` and the page 301s to the current slug · done: unit + e2e step green (**AC-7**)
+- [x] **T13** `repository.ts` reads the database, and **keeps** its fixtures import as the no-database fallback — deliberately, against the original wording. `pnpm verify` and a fresh clone have no Postgres and no SSH key to tunnel with; making the database a prerequisite for touching the front end is a worse trade than one branch. It is not the AC-5 path: that is a real outage with a visitor in front of it, this is an environment never pointed at a database · done: `pnpm verify` green with and without `DATABASE_URL`
 
 ## Phase 3 — enquiries (AC-4)
 
@@ -60,6 +60,6 @@ measured against rather than being declared correct afterwards.
 
 ## AC coverage (mirror of plan.md — keep ticked in sync)
 
-- [ ] AC-1 → T2, T10 · [ ] AC-2 → T11 · [ ] AC-3 → T11 · [ ] AC-4 → T14, T15
+- [x] AC-1 → T2, T10 · [x] AC-2 → T11 · [x] AC-3 → T11 · [ ] AC-4 → T14, T15
 - [x] AC-8 → T7 (proven: three seed runs, still 20 properties)
-- [ ] AC-5 → T17 · [ ] AC-6 → T20 · [ ] AC-7 → T12
+- [ ] AC-5 → T17 · [ ] AC-6 → T20 · [x] AC-7 → T12

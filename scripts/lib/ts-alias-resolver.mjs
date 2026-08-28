@@ -14,7 +14,7 @@
  * `react-server` export condition would throw here. Stubbing it in this one
  * context keeps the guard intact everywhere it means something.
  */
-import { existsSync } from "node:fs";
+import { statSync } from "node:fs";
 import { dirname, join, resolve as resolvePath } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -30,12 +30,29 @@ const CANDIDATES = [".ts", ".tsx", ".mts", ".js", "/index.ts", "/index.tsx"];
  */
 const formatFor = (file) => (/\.(ts|tsx|mts)$/.test(file) ? "module-typescript" : "module");
 
-/** Try the extensions TypeScript lets source files leave off. */
+/** A path that exists *and is a file* — not a directory that happens to share the name. */
+const isFile = (path) => {
+  try {
+    return statSync(path).isFile();
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Try the extensions TypeScript lets source files leave off.
+ *
+ * The `isFile` check is load-bearing. `repository.ts` imports `./fixtures`, and
+ * there is a *directory* by that name — an `existsSync` here matched it and
+ * handed Node a directory to read, which fails as `EISDIR` from inside a
+ * worker thread and surfaces as a libuv assertion rather than anything
+ * resembling a module resolution error.
+ */
 function withExtension(base) {
-  if (existsSync(base) && !base.endsWith("/")) return base;
+  if (isFile(base)) return base;
   for (const suffix of CANDIDATES) {
     const candidate = base + suffix;
-    if (existsSync(candidate)) return candidate;
+    if (isFile(candidate)) return candidate;
   }
   return null;
 }

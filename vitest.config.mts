@@ -8,5 +8,19 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
+    /**
+     * `*.db.test.ts` is excluded here and run by `pnpm test:db` instead.
+     *
+     * Those tests **write** to the shared database — they unpublish a listing
+     * to prove a draft is invisible, then put it back. Vitest runs test files
+     * in parallel, so with a `DATABASE_URL` set they raced the golden snapshot:
+     * the capture read the catalogue mid-mutation and reported 109 queries
+     * where 111 were expected. The failure looked like a snapshot drift and was
+     * nothing of the kind.
+     *
+     * Separating them keeps `pnpm test` parallel and honest, and gives the
+     * writing tests a run of their own where nothing else is reading.
+     */
+    exclude: ["**/node_modules/**", "**/dist/**", "**/*.db.test.ts"],
   },
 });

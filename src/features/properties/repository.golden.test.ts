@@ -126,7 +126,10 @@ function writeSnapshotIfAsked(captured: Record<string, unknown>): boolean {
 }
 
 describe("repository golden output (spec 010 AC-1)", () => {
-  it("matches the committed snapshot exactly", async () => {
+  // 113 repository calls over an SSH tunnel to Paris at ~44ms a round trip.
+  // In production the app sits on the same host as the database and this is
+  // roughly a millisecond; the tunnel is a development cost, not a real one.
+  it("matches the committed snapshot exactly", { timeout: 180_000 }, async () => {
     const captured: Record<string, unknown> = JSON.parse(JSON.stringify(await captureCatalogue()));
 
     if (writeSnapshotIfAsked(captured)) {
@@ -148,18 +151,22 @@ describe("repository golden output (spec 010 AC-1)", () => {
     }
   });
 
-  it("covers every district, locale and sort, so the snapshot cannot go quietly stale", async () => {
-    const captured = await captureCatalogue();
-    const keys = Object.keys(captured);
+  it(
+    "covers every district, locale and sort, so the snapshot cannot go quietly stale",
+    { timeout: 180_000 },
+    async () => {
+      const captured = await captureCatalogue();
+      const keys = Object.keys(captured);
 
-    // Guards the oracle itself. If a locale or district is added later and this
-    // capture is not extended, the snapshot would still pass while covering
-    // less than it claims — a green test that has stopped watching.
-    for (const locale of locales) {
-      expect(keys.filter((key) => key.includes(`:${locale}:`)).length).toBeGreaterThanOrEqual(
-        propertySorts.length + districtIds.length,
-      );
-    }
-    expect(await countProperties()).toBeGreaterThan(0);
-  });
+      // Guards the oracle itself. If a locale or district is added later and this
+      // capture is not extended, the snapshot would still pass while covering
+      // less than it claims — a green test that has stopped watching.
+      for (const locale of locales) {
+        expect(keys.filter((key) => key.includes(`:${locale}:`)).length).toBeGreaterThanOrEqual(
+          propertySorts.length + districtIds.length,
+        );
+      }
+      expect(await countProperties()).toBeGreaterThan(0);
+    },
+  );
 });
