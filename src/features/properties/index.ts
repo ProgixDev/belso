@@ -73,6 +73,7 @@ export { SortControl } from "./components/sort-control";
 export {
   countByDistrict,
   countProperties,
+  getCurrentSlugFor,
   getLocaleSlugs,
   getPropertyBySlug,
   getSimilar,

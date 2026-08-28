@@ -1,4 +1,27 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// `server-only` resolves by export condition, not environment; the action now
+// reaches it through `@/core/db`. Stubbing here keeps the guard real elsewhere.
+vi.mock("server-only", () => ({}));
+
+/**
+ * No database, stated rather than inherited.
+ *
+ * These tests are about validation and the shape of what comes back — the half
+ * of the action that holds whether or not anything is stored. Left to the
+ * ambient environment they were quietly conditional: green on a machine with no
+ * `DATABASE_URL`, red on one with a tunnel open, because the action then took
+ * the storing branch and asked `next/headers` for a request that does not exist
+ * outside one.
+ *
+ * A test whose result depends on a shell variable nobody mentioned is worse
+ * than a failing one. Storage is proven in `enquiries.db.test.ts`, against a
+ * real database, where it can be.
+ */
+vi.mock("@/core/db", () => ({
+  isDatabaseConfigured: () => false,
+  query: vi.fn(),
+}));
 import { submitEnquiryAction } from "./actions";
 
 /**

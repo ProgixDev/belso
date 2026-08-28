@@ -1,0 +1,4957 @@
+{
+  "list:fr:newest": [
+    "BL-1117",
+    "BL-1110",
+    "BL-1114",
+    "BL-1107",
+    "BL-1103",
+    "BL-1105",
+    "BL-1113",
+    "BL-1102",
+    "BL-1108",
+    "BL-1101",
+    "BL-1115",
+    "BL-1106",
+    "BL-1119",
+    "BL-1111",
+    "BL-1116",
+    "BL-1112",
+    "BL-1118",
+    "BL-1104",
+    "BL-1120",
+    "BL-1109"
+  ],
+  "list:fr:priceAsc": [
+    "BL-1111",
+    "BL-1117",
+    "BL-1119",
+    "BL-1105",
+    "BL-1110",
+    "BL-1103",
+    "BL-1120",
+    "BL-1112",
+    "BL-1107",
+    "BL-1106",
+    "BL-1114",
+    "BL-1102",
+    "BL-1116",
+    "BL-1108",
+    "BL-1109",
+    "BL-1101",
+    "BL-1118",
+    "BL-1115",
+    "BL-1113",
+    "BL-1104"
+  ],
+  "list:fr:priceDesc": [
+    "BL-1104",
+    "BL-1113",
+    "BL-1115",
+    "BL-1118",
+    "BL-1101",
+    "BL-1109",
+    "BL-1108",
+    "BL-1116",
+    "BL-1102",
+    "BL-1114",
+    "BL-1106",
+    "BL-1107",
+    "BL-1112",
+    "BL-1120",
+    "BL-1103",
+    "BL-1110",
+    "BL-1105",
+    "BL-1119",
+    "BL-1117",
+    "BL-1111"
+  ],
+  "district:fr:palmeraie": [
+    "BL-1113",
+    "BL-1101"
+  ],
+  "district:fr:medina": [
+    "BL-1102",
+    "BL-1108"
+  ],
+  "district:fr:hivernage": [
+    "BL-1114",
+    "BL-1103"
+  ],
+  "district:fr:gueliz": [
+    "BL-1110",
+    "BL-1111"
+  ],
+  "district:fr:agdal": [
+    "BL-1117",
+    "BL-1106"
+  ],
+  "district:fr:amelkis": [
+    "BL-1107",
+    "BL-1118"
+  ],
+  "district:fr:targa": [
+    "BL-1105",
+    "BL-1116"
+  ],
+  "district:fr:route-ourika": [
+    "BL-1115",
+    "BL-1104"
+  ],
+  "district:fr:route-fes": [
+    "BL-1119",
+    "BL-1109"
+  ],
+  "district:fr:route-oukaimeden": [
+    "BL-1112",
+    "BL-1120"
+  ],
+  "search:fr:riad": [
+    "BL-1102",
+    "BL-1108"
+  ],
+  "search:fr:none": [],
+  "list:en:newest": [
+    "BL-1117",
+    "BL-1110",
+    "BL-1114",
+    "BL-1107",
+    "BL-1103",
+    "BL-1105",
+    "BL-1113",
+    "BL-1102",
+    "BL-1108",
+    "BL-1101",
+    "BL-1115",
+    "BL-1106",
+    "BL-1119",
+    "BL-1111",
+    "BL-1116",
+    "BL-1112",
+    "BL-1118",
+    "BL-1104",
+    "BL-1120",
+    "BL-1109"
+  ],
+  "list:en:priceAsc": [
+    "BL-1111",
+    "BL-1117",
+    "BL-1119",
+    "BL-1105",
+    "BL-1110",
+    "BL-1103",
+    "BL-1120",
+    "BL-1112",
+    "BL-1107",
+    "BL-1106",
+    "BL-1114",
+    "BL-1102",
+    "BL-1116",
+    "BL-1108",
+    "BL-1109",
+    "BL-1101",
+    "BL-1118",
+    "BL-1115",
+    "BL-1113",
+    "BL-1104"
+  ],
+  "list:en:priceDesc": [
+    "BL-1104",
+    "BL-1113",
+    "BL-1115",
+    "BL-1118",
+    "BL-1101",
+    "BL-1109",
+    "BL-1108",
+    "BL-1116",
+    "BL-1102",
+    "BL-1114",
+    "BL-1106",
+    "BL-1107",
+    "BL-1112",
+    "BL-1120",
+    "BL-1103",
+    "BL-1110",
+    "BL-1105",
+    "BL-1119",
+    "BL-1117",
+    "BL-1111"
+  ],
+  "district:en:palmeraie": [
+    "BL-1113",
+    "BL-1101"
+  ],
+  "district:en:medina": [
+    "BL-1102",
+    "BL-1108"
+  ],
+  "district:en:hivernage": [
+    "BL-1114",
+    "BL-1103"
+  ],
+  "district:en:gueliz": [
+    "BL-1110",
+    "BL-1111"
+  ],
+  "district:en:agdal": [
+    "BL-1117",
+    "BL-1106"
+  ],
+  "district:en:amelkis": [
+    "BL-1107",
+    "BL-1118"
+  ],
+  "district:en:targa": [
+    "BL-1105",
+    "BL-1116"
+  ],
+  "district:en:route-ourika": [
+    "BL-1115",
+    "BL-1104"
+  ],
+  "district:en:route-fes": [
+    "BL-1119",
+    "BL-1109"
+  ],
+  "district:en:route-oukaimeden": [
+    "BL-1112",
+    "BL-1120"
+  ],
+  "search:en:riad": [
+    "BL-1102",
+    "BL-1108"
+  ],
+  "search:en:none": [],
+  "countProperties": 20,
+  "countByDistrict": {
+    "palmeraie": 2,
+    "medina": 2,
+    "hivernage": 2,
+    "gueliz": 2,
+    "agdal": 2,
+    "amelkis": 2,
+    "targa": 2,
+    "route-ourika": 2,
+    "route-fes": 2,
+    "route-oukaimeden": 2
+  },
+  "similar:p-17": [
+    "BL-1111",
+    "BL-1103",
+    "BL-1105"
+  ],
+  "slugs:BL-1117": {
+    "fr": "appartement-meuble-location-agdal",
+    "en": "furnished-apartment-long-let-agdal"
+  },
+  "detail:fr:appartement-meuble-location-agdal": {
+    "id": "p-17",
+    "reference": "BL-1117",
+    "districtId": "agdal",
+    "kind": "rent",
+    "type": "apartment",
+    "status": "available",
+    "price": 22000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "builtArea": 165,
+    "builtYear": 2017,
+    "parking": 2,
+    "amenities": [
+      "furnished",
+      "pool",
+      "elevator",
+      "security",
+      "garage",
+      "airConditioning"
+    ],
+    "media": [
+      {
+        "id": "BL-1117-01",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1117-02",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1117-03",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1117-04",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-16",
+    "location": {
+      "lat": 31.60725,
+      "lng": -7.98843,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "appartement-meuble-location-agdal",
+    "title": "Appartement meublé en location, Agdal",
+    "description": "Trois chambres meublées dans une résidence fermée avec piscine et jardin commun, en location longue durée. Deuxième étage, ascenseur, deux places de parking en sous-sol.",
+    "district": "Agdal",
+    "city": "Marrakech"
+  },
+  "detail:en:furnished-apartment-long-let-agdal": {
+    "id": "p-17",
+    "reference": "BL-1117",
+    "districtId": "agdal",
+    "kind": "rent",
+    "type": "apartment",
+    "status": "available",
+    "price": 22000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "builtArea": 165,
+    "builtYear": 2017,
+    "parking": 2,
+    "amenities": [
+      "furnished",
+      "pool",
+      "elevator",
+      "security",
+      "garage",
+      "airConditioning"
+    ],
+    "media": [
+      {
+        "id": "BL-1117-01",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1117-02",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1117-03",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1117-04",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-16",
+    "location": {
+      "lat": 31.60725,
+      "lng": -7.98843,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "furnished-apartment-long-let-agdal",
+    "title": "Furnished apartment, long let, Agdal",
+    "description": "Three furnished bedrooms in a gated residence with a pool and a shared garden, on a long let. Second floor, lift, two parking spaces in the basement.",
+    "district": "Agdal",
+    "city": "Marrakech"
+  },
+  "similar:p-10": [
+    "BL-1103",
+    "BL-1114",
+    "BL-1113"
+  ],
+  "slugs:BL-1110": {
+    "fr": "maison-de-ville-gueliz",
+    "en": "townhouse-gueliz"
+  },
+  "detail:fr:maison-de-ville-gueliz": {
+    "id": "p-10",
+    "reference": "BL-1110",
+    "districtId": "gueliz",
+    "kind": "sale",
+    "type": "townhouse",
+    "status": "available",
+    "price": 1780000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "builtArea": 165,
+    "landArea": 120,
+    "builtYear": 1954,
+    "parking": 1,
+    "amenities": [
+      "terrace",
+      "garage",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1110-01",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1110-02",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1110-03",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1110-04",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1110-05",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-15",
+    "location": {
+      "lat": 31.63557,
+      "lng": -8.00805,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "maison-de-ville-gueliz",
+    "title": "Maison de ville, Guéliz",
+    "description": "Trois chambres sur trois niveaux, dans une rue calme du Guéliz, à distance de marche des commerces et des écoles.\n\nLa maison a été refaite en 2022 : électricité, plomberie et menuiseries extérieures sont neuves. Le garage ferme et donne directement dans l’entrée.",
+    "district": "Guéliz",
+    "city": "Marrakech"
+  },
+  "detail:en:townhouse-gueliz": {
+    "id": "p-10",
+    "reference": "BL-1110",
+    "districtId": "gueliz",
+    "kind": "sale",
+    "type": "townhouse",
+    "status": "available",
+    "price": 1780000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "builtArea": 165,
+    "landArea": 120,
+    "builtYear": 1954,
+    "parking": 1,
+    "amenities": [
+      "terrace",
+      "garage",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1110-01",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1110-02",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1110-03",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1110-04",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1110-05",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-15",
+    "location": {
+      "lat": 31.63557,
+      "lng": -8.00805,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "townhouse-gueliz",
+    "title": "Townhouse, Guéliz",
+    "description": "Three bedrooms over three floors, on a quiet Guéliz street, walking distance from the shops and schools.\n\nThe house was redone in 2022: wiring, plumbing and external joinery are all new. The garage locks and opens straight into the hall.",
+    "district": "Guéliz",
+    "city": "Marrakech"
+  },
+  "similar:p-14": [
+    "BL-1106",
+    "BL-1103",
+    "BL-1102"
+  ],
+  "slugs:BL-1114": {
+    "fr": "penthouse-dernier-etage-hivernage",
+    "en": "top-floor-penthouse-hivernage"
+  },
+  "detail:fr:penthouse-dernier-etage-hivernage": {
+    "id": "p-14",
+    "reference": "BL-1114",
+    "districtId": "hivernage",
+    "kind": "sale",
+    "type": "penthouse",
+    "status": "available",
+    "price": 5800000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "builtArea": 210,
+    "builtYear": 2018,
+    "parking": 2,
+    "amenities": [
+      "terrace",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage",
+      "pool"
+    ],
+    "media": [
+      {
+        "id": "BL-1114-01",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1114-02",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1114-03",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1114-04",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1114-05",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      }
+    ],
+    "listedAt": "2026-08-15",
+    "location": {
+      "lat": 31.62754,
+      "lng": -8.00199,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "penthouse-dernier-etage-hivernage",
+    "title": "Penthouse en dernier étage, Hivernage",
+    "description": "Le dernier niveau d’une résidence de six étages, avec une terrasse d’angle qui prend le coucher de soleil et, derrière, la Koutoubia.",
+    "district": "Hivernage",
+    "city": "Marrakech"
+  },
+  "detail:en:top-floor-penthouse-hivernage": {
+    "id": "p-14",
+    "reference": "BL-1114",
+    "districtId": "hivernage",
+    "kind": "sale",
+    "type": "penthouse",
+    "status": "available",
+    "price": 5800000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "builtArea": 210,
+    "builtYear": 2018,
+    "parking": 2,
+    "amenities": [
+      "terrace",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage",
+      "pool"
+    ],
+    "media": [
+      {
+        "id": "BL-1114-01",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1114-02",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1114-03",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1114-04",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1114-05",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      }
+    ],
+    "listedAt": "2026-08-15",
+    "location": {
+      "lat": 31.62754,
+      "lng": -8.00199,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "top-floor-penthouse-hivernage",
+    "title": "Top-floor penthouse, Hivernage",
+    "description": "The top level of a six-storey building, with a corner terrace that takes the sunset and, behind it, the Koutoubia.",
+    "district": "Hivernage",
+    "city": "Marrakech"
+  },
+  "similar:p-07": [
+    "BL-1120",
+    "BL-1118",
+    "BL-1112"
+  ],
+  "slugs:BL-1107": {
+    "fr": "terrain-constructible-amelkis",
+    "en": "building-plot-amelkis"
+  },
+  "detail:fr:terrain-constructible-amelkis": {
+    "id": "p-07",
+    "reference": "BL-1107",
+    "districtId": "amelkis",
+    "kind": "sale",
+    "type": "land",
+    "status": "available",
+    "price": 3200000,
+    "currency": "MAD",
+    "bedrooms": 0,
+    "bathrooms": 0,
+    "builtArea": 0,
+    "landArea": 5200,
+    "parking": 0,
+    "amenities": [
+      "atlasView",
+      "golfAccess"
+    ],
+    "media": [
+      {
+        "id": "BL-1107-01",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1107-02",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1107-03",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      }
+    ],
+    "listedAt": "2026-08-13",
+    "location": {
+      "lat": 31.60215,
+      "lng": -7.94148,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "terrain-constructible-amelkis",
+    "title": "Terrain constructible, Amelkis",
+    "description": "Cinq mille deux cents mètres carrés viabilisés, en bordure du parcours de golf, avec un titre foncier propre et un coefficient d’emprise au sol de trente pour cent.",
+    "district": "Amelkis",
+    "city": "Marrakech"
+  },
+  "detail:en:building-plot-amelkis": {
+    "id": "p-07",
+    "reference": "BL-1107",
+    "districtId": "amelkis",
+    "kind": "sale",
+    "type": "land",
+    "status": "available",
+    "price": 3200000,
+    "currency": "MAD",
+    "bedrooms": 0,
+    "bathrooms": 0,
+    "builtArea": 0,
+    "landArea": 5200,
+    "parking": 0,
+    "amenities": [
+      "atlasView",
+      "golfAccess"
+    ],
+    "media": [
+      {
+        "id": "BL-1107-01",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1107-02",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1107-03",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      }
+    ],
+    "listedAt": "2026-08-13",
+    "location": {
+      "lat": 31.60215,
+      "lng": -7.94148,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "building-plot-amelkis",
+    "title": "Building plot, Amelkis",
+    "description": "Five thousand two hundred serviced square metres on the edge of the golf course, with clean title and thirty per cent site coverage permitted.",
+    "district": "Amelkis",
+    "city": "Marrakech"
+  },
+  "similar:p-03": [
+    "BL-1110",
+    "BL-1114",
+    "BL-1117"
+  ],
+  "slugs:BL-1103": {
+    "fr": "appartement-terrasse-hivernage",
+    "en": "terrace-apartment-hivernage"
+  },
+  "detail:fr:appartement-terrasse-hivernage": {
+    "id": "p-03",
+    "reference": "BL-1103",
+    "districtId": "hivernage",
+    "kind": "sale",
+    "type": "apartment",
+    "status": "available",
+    "price": 2150000,
+    "currency": "MAD",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "builtArea": 128,
+    "builtYear": 2015,
+    "parking": 1,
+    "amenities": [
+      "terrace",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1103-01",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1103-02",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1103-03",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1103-04",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1103-05",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1103-06",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-11",
+    "location": {
+      "lat": 31.62799,
+      "lng": -8.00624,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "appartement-terrasse-hivernage",
+    "title": "Appartement avec terrasse, Hivernage",
+    "description": "Deux chambres au quatrième étage, avec une terrasse de quarante mètres carrés qui double la surface de vie une bonne partie de l’année.",
+    "district": "Hivernage",
+    "city": "Marrakech"
+  },
+  "detail:en:terrace-apartment-hivernage": {
+    "id": "p-03",
+    "reference": "BL-1103",
+    "districtId": "hivernage",
+    "kind": "sale",
+    "type": "apartment",
+    "status": "available",
+    "price": 2150000,
+    "currency": "MAD",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "builtArea": 128,
+    "builtYear": 2015,
+    "parking": 1,
+    "amenities": [
+      "terrace",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1103-01",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1103-02",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1103-03",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1103-04",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1103-05",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1103-06",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-11",
+    "location": {
+      "lat": 31.62799,
+      "lng": -8.00624,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "terrace-apartment-hivernage",
+    "title": "Apartment with terrace, Hivernage",
+    "description": "Two bedrooms on the fourth floor, with a forty-square-metre terrace that doubles the living space for a good part of the year.",
+    "district": "Hivernage",
+    "city": "Marrakech"
+  },
+  "similar:p-05": [
+    "BL-1119",
+    "BL-1116",
+    "BL-1117"
+  ],
+  "slugs:BL-1105": {
+    "fr": "villa-meublee-location-targa",
+    "en": "furnished-villa-long-let-targa"
+  },
+  "detail:fr:villa-meublee-location-targa": {
+    "id": "p-05",
+    "reference": "BL-1105",
+    "districtId": "targa",
+    "kind": "rent",
+    "type": "villa",
+    "status": "available",
+    "price": 45000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 380,
+    "landArea": 1100,
+    "builtYear": 2011,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "furnished",
+      "airConditioning",
+      "staffQuarters",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1105-01",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1105-02",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1105-03",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1105-04",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1105-05",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1105-06",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1105-07",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1105-08",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-09",
+    "location": {
+      "lat": 31.65201,
+      "lng": -8.04294,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-meublee-location-targa",
+    "title": "Villa meublée en location longue durée, Targa",
+    "description": "Quatre chambres meublées, jardin clos et piscine chauffée, disponible en location longue durée. Le prix affiché est mensuel, charges et jardinier compris.\n\nLe quartier est résidentiel et calme, à dix minutes du centre et à cinq des écoles internationales.",
+    "district": "Targa",
+    "city": "Marrakech"
+  },
+  "detail:en:furnished-villa-long-let-targa": {
+    "id": "p-05",
+    "reference": "BL-1105",
+    "districtId": "targa",
+    "kind": "rent",
+    "type": "villa",
+    "status": "available",
+    "price": 45000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 380,
+    "landArea": 1100,
+    "builtYear": 2011,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "furnished",
+      "airConditioning",
+      "staffQuarters",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1105-01",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1105-02",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1105-03",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1105-04",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1105-05",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1105-06",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1105-07",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1105-08",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-09",
+    "location": {
+      "lat": 31.65201,
+      "lng": -8.04294,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "furnished-villa-long-let-targa",
+    "title": "Furnished villa, long-term let, Targa",
+    "description": "Four furnished bedrooms, walled garden and heated pool, available on a long-term let. The price shown is monthly, including service charge and gardener.\n\nThe district is residential and quiet, ten minutes from the centre and five from the international schools.",
+    "district": "Targa",
+    "city": "Marrakech"
+  },
+  "similar:p-13": [
+    "BL-1101",
+    "BL-1118",
+    "BL-1115"
+  ],
+  "slugs:BL-1113": {
+    "fr": "villa-contemporaine-palmeraie",
+    "en": "contemporary-villa-palmeraie"
+  },
+  "detail:fr:villa-contemporaine-palmeraie": {
+    "id": "p-13",
+    "reference": "BL-1113",
+    "districtId": "palmeraie",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 18500000,
+    "currency": "MAD",
+    "bedrooms": 6,
+    "bathrooms": 6,
+    "builtArea": 780,
+    "landArea": 4200,
+    "builtYear": 2021,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "atlasView",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1113-01",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1113-02",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1113-03",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1113-04",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1113-05",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1113-06",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1113-07",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1113-08",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      }
+    ],
+    "listedAt": "2026-08-09",
+    "location": {
+      "lat": 31.68433,
+      "lng": -7.95529,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-contemporaine-palmeraie",
+    "title": "Villa contemporaine, Palmeraie",
+    "description": "Une maison basse, longue de soixante mètres, posée en L autour d’un bassin de nage.\n\nL’architecte a refusé la surenchère : murs à la chaux, sols en tadelakt gris, menuiseries en chêne, et rien d’autre. Toute la générosité est dans les volumes — quatre mètres sous plafond dans les pièces de réception, et des baies qui disparaissent entièrement dans l’épaisseur des murs.\n\nLes six chambres sont réparties en deux ailes, ce qui permet de fermer la seconde hors saison sans traverser une maison vide. Le jardin, planté d’oliviers repris sur pied, est déjà dense ; le forage est déclaré et l’autorisation transférable.",
+    "district": "Palmeraie",
+    "city": "Marrakech"
+  },
+  "detail:en:contemporary-villa-palmeraie": {
+    "id": "p-13",
+    "reference": "BL-1113",
+    "districtId": "palmeraie",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 18500000,
+    "currency": "MAD",
+    "bedrooms": 6,
+    "bathrooms": 6,
+    "builtArea": 780,
+    "landArea": 4200,
+    "builtYear": 2021,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "atlasView",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1113-01",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1113-02",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1113-03",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1113-04",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1113-05",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1113-06",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1113-07",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1113-08",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      }
+    ],
+    "listedAt": "2026-08-09",
+    "location": {
+      "lat": 31.68433,
+      "lng": -7.95529,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "contemporary-villa-palmeraie",
+    "title": "Contemporary villa, Palmeraie",
+    "description": "A low house, sixty metres long, set in an L around a swimming pond.\n\nThe architect refused to overstate anything: lime-washed walls, grey tadelakt floors, oak joinery, and nothing else. All the generosity is in the volumes — four metres to the ceiling in the reception rooms, and glazing that disappears entirely into the thickness of the walls.\n\nThe six bedrooms sit in two wings, so the second can be closed out of season without walking through an empty house. The garden, planted with mature transplanted olives, is already dense; the borehole is registered and the licence transferable.",
+    "district": "Palmeraie",
+    "city": "Marrakech"
+  },
+  "similar:p-02": [
+    "BL-1108",
+    "BL-1114",
+    "BL-1116"
+  ],
+  "slugs:BL-1102": {
+    "fr": "riad-restaure-medina",
+    "en": "restored-riad-medina"
+  },
+  "detail:fr:riad-restaure-medina": {
+    "id": "p-02",
+    "reference": "BL-1102",
+    "districtId": "medina",
+    "kind": "sale",
+    "type": "riad",
+    "status": "available",
+    "price": 6400000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 310,
+    "builtYear": 1926,
+    "parking": 0,
+    "amenities": [
+      "terrace",
+      "hammam",
+      "airConditioning",
+      "furnished"
+    ],
+    "media": [
+      {
+        "id": "BL-1102-01",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1102-02",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1102-03",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1102-04",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1102-05",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1102-06",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1102-07",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1102-08",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1102-09",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-04",
+    "location": {
+      "lat": 31.62937,
+      "lng": -7.98905,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "riad-restaure-medina",
+    "title": "Riad restauré, médina",
+    "description": "Un riad de quatre chambres restauré sans être dénaturé : les zelliges d’origine ont été déposés, nettoyés et reposés un à un.\n\nLe patio, planté d’un seul oranger, distribue toutes les pièces. La terrasse en toiture donne sur les toits de la médina et, par temps clair, sur la Koutoubia.",
+    "district": "Médina",
+    "city": "Marrakech"
+  },
+  "detail:en:restored-riad-medina": {
+    "id": "p-02",
+    "reference": "BL-1102",
+    "districtId": "medina",
+    "kind": "sale",
+    "type": "riad",
+    "status": "available",
+    "price": 6400000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 310,
+    "builtYear": 1926,
+    "parking": 0,
+    "amenities": [
+      "terrace",
+      "hammam",
+      "airConditioning",
+      "furnished"
+    ],
+    "media": [
+      {
+        "id": "BL-1102-01",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1102-02",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1102-03",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1102-04",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1102-05",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1102-06",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1102-07",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1102-08",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1102-09",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-04",
+    "location": {
+      "lat": 31.62937,
+      "lng": -7.98905,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "restored-riad-medina",
+    "title": "Restored riad, medina",
+    "description": "A four-bedroom riad restored without being stripped of itself: the original zellige was lifted, cleaned and relaid tile by tile.\n\nThe patio, planted with a single orange tree, gives onto every room. The roof terrace looks over the rooftops of the medina and, on a clear day, to the Koutoubia.",
+    "district": "Medina",
+    "city": "Marrakech"
+  },
+  "similar:p-08": [
+    "BL-1102",
+    "BL-1116",
+    "BL-1109"
+  ],
+  "slugs:BL-1108": {
+    "fr": "riad-double-patio-kasbah",
+    "en": "riad-double-patio-kasbah"
+  },
+  "detail:fr:riad-double-patio-kasbah": {
+    "id": "p-08",
+    "reference": "BL-1108",
+    "districtId": "medina",
+    "kind": "sale",
+    "type": "riad",
+    "status": "available",
+    "price": 8900000,
+    "currency": "MAD",
+    "bedrooms": 6,
+    "bathrooms": 6,
+    "builtArea": 480,
+    "builtYear": 1908,
+    "parking": 0,
+    "amenities": [
+      "pool",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "furnished"
+    ],
+    "media": [
+      {
+        "id": "BL-1108-01",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1108-02",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1108-03",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1108-04",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1108-05",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1108-06",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1108-07",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1108-08",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1108-09",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1108-10",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-01",
+    "location": {
+      "lat": 31.631,
+      "lng": -7.98626,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "riad-double-patio-kasbah",
+    "title": "Riad à double patio, quartier de la Kasbah",
+    "description": "Deux riads mitoyens réunis en une seule maison de six chambres, ce qui lui donne une chose rare en médina : deux patios, dont l’un assez large pour y installer un bassin de nage de douze mètres.\n\nLe premier patio garde sa fonction traditionnelle de distribution et reste couvert de vigne. Le second, entièrement dégagé, sert de pièce de vie extérieure du printemps à l’automne.\n\nLa maison est vendue meublée, avec le mobilier dessiné pour elle par l’atelier qui a mené la restauration. Un logement de personnel indépendant donne sur la ruelle latérale.",
+    "district": "Kasbah",
+    "city": "Marrakech"
+  },
+  "detail:en:riad-double-patio-kasbah": {
+    "id": "p-08",
+    "reference": "BL-1108",
+    "districtId": "medina",
+    "kind": "sale",
+    "type": "riad",
+    "status": "available",
+    "price": 8900000,
+    "currency": "MAD",
+    "bedrooms": 6,
+    "bathrooms": 6,
+    "builtArea": 480,
+    "builtYear": 1908,
+    "parking": 0,
+    "amenities": [
+      "pool",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "furnished"
+    ],
+    "media": [
+      {
+        "id": "BL-1108-01",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1108-02",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1108-03",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1108-04",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1108-05",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1108-06",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1108-07",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1108-08",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1108-09",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1108-10",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-08-01",
+    "location": {
+      "lat": 31.631,
+      "lng": -7.98626,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "fr",
+    "isFallback": true,
+    "slug": "riad-double-patio-kasbah",
+    "title": "Riad à double patio, quartier de la Kasbah",
+    "description": "Deux riads mitoyens réunis en une seule maison de six chambres, ce qui lui donne une chose rare en médina : deux patios, dont l’un assez large pour y installer un bassin de nage de douze mètres.\n\nLe premier patio garde sa fonction traditionnelle de distribution et reste couvert de vigne. Le second, entièrement dégagé, sert de pièce de vie extérieure du printemps à l’automne.\n\nLa maison est vendue meublée, avec le mobilier dessiné pour elle par l’atelier qui a mené la restauration. Un logement de personnel indépendant donne sur la ruelle latérale.",
+    "district": "Kasbah",
+    "city": "Marrakech"
+  },
+  "similar:p-01": [
+    "BL-1113",
+    "BL-1118",
+    "BL-1115"
+  ],
+  "slugs:BL-1101": {
+    "fr": "villa-vue-atlas-palmeraie",
+    "en": "atlas-view-villa-palmeraie"
+  },
+  "detail:fr:villa-vue-atlas-palmeraie": {
+    "id": "p-01",
+    "reference": "BL-1101",
+    "districtId": "palmeraie",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 12800000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 620,
+    "landArea": 2400,
+    "builtYear": 2006,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "atlasView",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1101-01",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1101-02",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1101-03",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1101-04",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1101-05",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1101-06",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1101-07",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1101-08",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1101-09",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1101-10",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1101-11",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1101-12",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-07-28",
+    "location": {
+      "lat": 31.68001,
+      "lng": -7.95022,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-vue-atlas-palmeraie",
+    "title": "Villa vue Atlas, Palmeraie",
+    "description": "Posée au bout d’une allée d’oliviers, la villa tourne le dos à la route et s’ouvre entièrement au sud, sur la chaîne de l’Atlas.\n\nLes pièces de réception s’enfilent sur près de trente mètres, séparées par des portes en cèdre que l’on peut replier entièrement : en hiver la maison se compartimente, en été elle ne fait plus qu’une seule pièce traversante. Le salon principal garde son plafond d’origine en tataoui.\n\nÀ l’étage, quatre chambres donnent chacune sur une terrasse privative. La suite parentale occupe l’aile ouest et dispose de son propre hammam.\n\nLe jardin, dessiné il y a vingt ans, est arrivé à maturité : oliviers centenaires, bougainvilliers, et une piscine de dix-huit mètres orientée pour capter la lumière de fin de journée. Un logement de gardien indépendant complète la propriété.",
+    "district": "Palmeraie",
+    "city": "Marrakech"
+  },
+  "detail:en:atlas-view-villa-palmeraie": {
+    "id": "p-01",
+    "reference": "BL-1101",
+    "districtId": "palmeraie",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 12800000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 620,
+    "landArea": 2400,
+    "builtYear": 2006,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "staffQuarters",
+      "atlasView",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1101-01",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1101-02",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1101-03",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1101-04",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1101-05",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1101-06",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1101-07",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1101-08",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1101-09",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1101-10",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1101-11",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1101-12",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-07-28",
+    "location": {
+      "lat": 31.68001,
+      "lng": -7.95022,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "atlas-view-villa-palmeraie",
+    "title": "Atlas view villa, Palmeraie",
+    "description": "Set at the end of an olive-lined drive, the villa turns its back on the road and opens entirely to the south, onto the Atlas range.\n\nThe reception rooms run in sequence for nearly thirty metres, divided by cedar doors that fold away completely: in winter the house closes into rooms, in summer it becomes a single space you can walk straight through. The main salon keeps its original tataoui ceiling.\n\nUpstairs, four bedrooms each open onto a private terrace. The principal suite takes the west wing and has its own hammam.\n\nThe garden was laid out twenty years ago and has come into its own: century-old olive trees, bougainvillea, and an eighteen-metre pool oriented to catch the late light. A separate caretaker’s house completes the property.",
+    "district": "Palmeraie",
+    "city": "Marrakech"
+  },
+  "similar:p-15": [
+    "BL-1113",
+    "BL-1101",
+    "BL-1116"
+  ],
+  "slugs:BL-1115": {
+    "fr": "villa-oliveraie-route-ourika",
+    "en": "olive-grove-villa-ourika-road"
+  },
+  "detail:fr:villa-oliveraie-route-ourika": {
+    "id": "p-15",
+    "reference": "BL-1115",
+    "districtId": "route-ourika",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 1450000,
+    "currency": "EUR",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 520,
+    "landArea": 6000,
+    "builtYear": 2014,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "atlasView",
+      "staffQuarters",
+      "underfloorHeating"
+    ],
+    "media": [
+      {
+        "id": "BL-1115-01",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1115-02",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1115-03",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1115-04",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1115-05",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1115-06",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1115-07",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1115-08",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1115-09",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1115-10",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1115-11",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      }
+    ],
+    "listedAt": "2026-07-21",
+    "location": {
+      "lat": 31.57312,
+      "lng": -7.9527,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-oliveraie-route-ourika",
+    "title": "Villa dans l’oliveraie, route de l’Ourika",
+    "description": "Six mille mètres carrés d’oliveraie, et une maison qui a eu l’intelligence de ne pas se mettre au milieu.\n\nElle est adossée au mur nord de la parcelle, ce qui laisse toute la vue libre depuis les pièces de vie : l’oliveraie d’abord, puis la plaine, puis l’Atlas. Les cinq chambres sont au rez-de-chaussée, chacune avec sa porte sur le jardin.\n\nLe chauffage est au sol sur l’ensemble — inhabituel ici, et déterminant de décembre à février, où la maison serait sinon froide malgré le soleil.",
+    "district": "Route de l’Ourika",
+    "city": "Marrakech"
+  },
+  "detail:en:olive-grove-villa-ourika-road": {
+    "id": "p-15",
+    "reference": "BL-1115",
+    "districtId": "route-ourika",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 1450000,
+    "currency": "EUR",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 520,
+    "landArea": 6000,
+    "builtYear": 2014,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "atlasView",
+      "staffQuarters",
+      "underfloorHeating"
+    ],
+    "media": [
+      {
+        "id": "BL-1115-01",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1115-02",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1115-03",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1115-04",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1115-05",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1115-06",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1115-07",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1115-08",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1115-09",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1115-10",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1115-11",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      }
+    ],
+    "listedAt": "2026-07-21",
+    "location": {
+      "lat": 31.57312,
+      "lng": -7.9527,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "olive-grove-villa-ourika-road",
+    "title": "Villa in the olive grove, Ourika road",
+    "description": "Six thousand square metres of olive grove, and a house with the sense not to stand in the middle of it.\n\nIt backs onto the northern wall of the plot, which leaves the view clear from every living room: the grove first, then the plain, then the Atlas. All five bedrooms are on the ground floor, each with its own door to the garden.\n\nUnderfloor heating throughout — unusual here, and decisive from December to February, when the house would otherwise be cold in spite of the sun.",
+    "district": "Ourika road",
+    "city": "Marrakech"
+  },
+  "similar:p-06": [
+    "BL-1114",
+    "BL-1110",
+    "BL-1103"
+  ],
+  "slugs:BL-1106": {
+    "fr": "penthouse-piscine-privee-agdal",
+    "en": "penthouse-private-pool-agdal"
+  },
+  "detail:fr:penthouse-piscine-privee-agdal": {
+    "id": "p-06",
+    "reference": "BL-1106",
+    "districtId": "agdal",
+    "kind": "sale",
+    "type": "penthouse",
+    "status": "available",
+    "price": 4750000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "builtArea": 210,
+    "builtYear": 2019,
+    "parking": 2,
+    "amenities": [
+      "terrace",
+      "pool",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage",
+      "gym"
+    ],
+    "media": [
+      {
+        "id": "BL-1106-01",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1106-02",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1106-03",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1106-04",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1106-05",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1106-06",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1106-07",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1106-08",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1106-09",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1106-10",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1106-11",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      }
+    ],
+    "listedAt": "2026-07-15",
+    "location": {
+      "lat": 31.60062,
+      "lng": -7.98339,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "penthouse-piscine-privee-agdal",
+    "title": "Penthouse avec piscine privée, Agdal",
+    "description": "Dernier étage d’une résidence de six niveaux, avec une terrasse de cent dix mètres carrés et une piscine privée à débordement.\n\nTrois chambres, toutes en suite. La cuisine ouvre sur la terrasse par une baie coulissante sur toute sa longueur.\n\nLa résidence dispose d’un gardiennage vingt-quatre heures sur vingt-quatre, d’une salle de sport et de deux places de parking en sous-sol attribuées au lot.",
+    "district": "Agdal",
+    "city": "Marrakech"
+  },
+  "detail:en:penthouse-private-pool-agdal": {
+    "id": "p-06",
+    "reference": "BL-1106",
+    "districtId": "agdal",
+    "kind": "sale",
+    "type": "penthouse",
+    "status": "available",
+    "price": 4750000,
+    "currency": "MAD",
+    "bedrooms": 3,
+    "bathrooms": 3,
+    "builtArea": 210,
+    "builtYear": 2019,
+    "parking": 2,
+    "amenities": [
+      "terrace",
+      "pool",
+      "elevator",
+      "airConditioning",
+      "security",
+      "garage",
+      "gym"
+    ],
+    "media": [
+      {
+        "id": "BL-1106-01",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1106-02",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1106-03",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1106-04",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1106-05",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1106-06",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1106-07",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1106-08",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1106-09",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1106-10",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1106-11",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      }
+    ],
+    "listedAt": "2026-07-15",
+    "location": {
+      "lat": 31.60062,
+      "lng": -7.98339,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "penthouse-private-pool-agdal",
+    "title": "Penthouse with private pool, Agdal",
+    "description": "Top floor of a six-storey building, with a hundred-and-ten-square-metre terrace and a private infinity pool.\n\nThree bedrooms, all en suite. The kitchen opens onto the terrace through a sliding wall running its full length.\n\nThe building has twenty-four-hour security, a gym, and two allocated basement parking spaces.",
+    "district": "Agdal",
+    "city": "Marrakech"
+  },
+  "similar:p-19": [
+    "BL-1105",
+    "BL-1109",
+    "BL-1117"
+  ],
+  "slugs:BL-1119": {
+    "fr": "villa-meublee-location-route-fes",
+    "en": "furnished-villa-long-let-fes-road"
+  },
+  "detail:fr:villa-meublee-location-route-fes": {
+    "id": "p-19",
+    "reference": "BL-1119",
+    "districtId": "route-fes",
+    "kind": "rent",
+    "type": "villa",
+    "status": "available",
+    "price": 38000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 480,
+    "landArea": 2000,
+    "builtYear": 2007,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "furnished",
+      "staffQuarters",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1119-01",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1119-02",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1119-03",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1119-04",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1119-05",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1119-06",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      }
+    ],
+    "listedAt": "2026-07-14",
+    "location": {
+      "lat": 31.66553,
+      "lng": -7.94137,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-meublee-location-route-fes",
+    "title": "Villa meublée en location, route de Fès",
+    "description": "Cinq chambres meublées sur deux mille mètres carrés de jardin planté, en location longue durée, avec un logement de gardien occupé.\n\nLa maison est livrée équipée jusqu’à la vaisselle : c’est une location d’expatriation, pensée pour être habitable le jour de l’arrivée. Le jardin et la piscine sont entretenus par le propriétaire, charge comprise.",
+    "district": "Route de Fès",
+    "city": "Marrakech"
+  },
+  "detail:en:furnished-villa-long-let-fes-road": {
+    "id": "p-19",
+    "reference": "BL-1119",
+    "districtId": "route-fes",
+    "kind": "rent",
+    "type": "villa",
+    "status": "available",
+    "price": 38000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 5,
+    "builtArea": 480,
+    "landArea": 2000,
+    "builtYear": 2007,
+    "parking": 4,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "furnished",
+      "staffQuarters",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1119-01",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1119-02",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1119-03",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1119-04",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1119-05",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1119-06",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      }
+    ],
+    "listedAt": "2026-07-14",
+    "location": {
+      "lat": 31.66553,
+      "lng": -7.94137,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "furnished-villa-long-let-fes-road",
+    "title": "Furnished villa, long let, Fès road",
+    "description": "Five furnished bedrooms on two thousand square metres of planted garden, on a long let, with an occupied caretaker’s house.\n\nIt comes equipped down to the crockery: this is a relocation let, meant to be habitable on the day you land. Garden and pool are maintained by the owner, included in the rent.",
+    "district": "Fès road",
+    "city": "Marrakech"
+  },
+  "similar:p-11": [
+    "BL-1117",
+    "BL-1103",
+    "BL-1105"
+  ],
+  "slugs:BL-1111": {
+    "fr": "appartement-meuble-gueliz",
+    "en": "furnished-apartment-gueliz"
+  },
+  "detail:fr:appartement-meuble-gueliz": {
+    "id": "p-11",
+    "reference": "BL-1111",
+    "districtId": "gueliz",
+    "kind": "rent",
+    "type": "apartment",
+    "status": "rented",
+    "price": 14500,
+    "currency": "MAD",
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "builtArea": 96,
+    "builtYear": 2008,
+    "parking": 1,
+    "amenities": [
+      "furnished",
+      "elevator",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1111-01",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1111-02",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1111-03",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1111-04",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      }
+    ],
+    "listedAt": "2026-07-02",
+    "location": {
+      "lat": 31.63985,
+      "lng": -8.01063,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "appartement-meuble-gueliz",
+    "title": "Appartement meublé, Guéliz",
+    "description": "Deux chambres meublées au cœur du Guéliz. Loué.",
+    "district": "Guéliz",
+    "city": "Marrakech"
+  },
+  "detail:en:furnished-apartment-gueliz": {
+    "id": "p-11",
+    "reference": "BL-1111",
+    "districtId": "gueliz",
+    "kind": "rent",
+    "type": "apartment",
+    "status": "rented",
+    "price": 14500,
+    "currency": "MAD",
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "builtArea": 96,
+    "builtYear": 2008,
+    "parking": 1,
+    "amenities": [
+      "furnished",
+      "elevator",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1111-01",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1111-02",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1111-03",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1111-04",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      }
+    ],
+    "listedAt": "2026-07-02",
+    "location": {
+      "lat": 31.63985,
+      "lng": -8.01063,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "furnished-apartment-gueliz",
+    "title": "Furnished apartment, Guéliz",
+    "description": "Two furnished bedrooms in the heart of Guéliz. Let.",
+    "district": "Guéliz",
+    "city": "Marrakech"
+  },
+  "similar:p-16": [
+    "BL-1109",
+    "BL-1113",
+    "BL-1101"
+  ],
+  "slugs:BL-1116": {
+    "fr": "villa-familiale-jardin-targa",
+    "en": "family-villa-garden-targa"
+  },
+  "detail:fr:villa-familiale-jardin-targa": {
+    "id": "p-16",
+    "reference": "BL-1116",
+    "districtId": "targa",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 7900000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 4,
+    "builtArea": 440,
+    "landArea": 1600,
+    "builtYear": 2004,
+    "parking": 2,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "garage",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1116-01",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1116-02",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1116-03",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1116-04",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1116-05",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1116-06",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1116-07",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      }
+    ],
+    "listedAt": "2026-07-02",
+    "location": {
+      "lat": 31.64656,
+      "lng": -8.03822,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-familiale-jardin-targa",
+    "title": "Villa familiale avec jardin, Targa",
+    "description": "Une villa de 2004 sur seize cents mètres carrés, tenue par la même famille depuis sa construction — cela se voit à l’état des menuiseries et à la taille des arbres.\n\nQuatre chambres à l’étage et une au rez-de-chaussée, ce qui rend la maison utilisable par trois générations sans transformation. La cuisine a été refaite en 2021 ; le reste est d’origine et n’en a pas besoin.",
+    "district": "Targa",
+    "city": "Marrakech"
+  },
+  "detail:en:family-villa-garden-targa": {
+    "id": "p-16",
+    "reference": "BL-1116",
+    "districtId": "targa",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 7900000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 4,
+    "builtArea": 440,
+    "landArea": 1600,
+    "builtYear": 2004,
+    "parking": 2,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "garage",
+      "airConditioning",
+      "security"
+    ],
+    "media": [
+      {
+        "id": "BL-1116-01",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1116-02",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1116-03",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1116-04",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1116-05",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1116-06",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1116-07",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      }
+    ],
+    "listedAt": "2026-07-02",
+    "location": {
+      "lat": 31.64656,
+      "lng": -8.03822,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "family-villa-garden-targa",
+    "title": "Family villa with garden, Targa",
+    "description": "A 2004 villa on sixteen hundred square metres, held by the same family since it was built — which shows in the condition of the joinery and the size of the trees.\n\nFour bedrooms upstairs and one on the ground floor, so the house works for three generations without alteration. The kitchen was redone in 2021; the rest is original and does not need to be.",
+    "district": "Targa",
+    "city": "Marrakech"
+  },
+  "similar:p-12": [
+    "BL-1120",
+    "BL-1107",
+    "BL-1113"
+  ],
+  "slugs:BL-1112": {
+    "fr": "chalet-pierre-oukaimeden",
+    "en": "stone-chalet-oukaimeden"
+  },
+  "detail:fr:chalet-pierre-oukaimeden": {
+    "id": "p-12",
+    "reference": "BL-1112",
+    "districtId": "route-oukaimeden",
+    "kind": "sale",
+    "type": "chalet",
+    "status": "available",
+    "price": 2950000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "builtArea": 240,
+    "landArea": 900,
+    "builtYear": 2016,
+    "parking": 4,
+    "amenities": [
+      "garden",
+      "terrace",
+      "underfloorHeating",
+      "atlasView",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1112-01",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1112-02",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1112-03",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1112-04",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1112-05",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1112-06",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      }
+    ],
+    "listedAt": "2026-06-30",
+    "location": {
+      "lat": 31.5529,
+      "lng": -7.97628,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "chalet-pierre-oukaimeden",
+    "title": "Chalet en pierre, route de l’Oukaïmeden",
+    "description": "À quarante-cinq minutes de Marrakech, un chalet de quatre chambres construit en pierre du pays, à mille six cents mètres d’altitude.\n\nLe séjour est chauffé par une cheminée centrale doublée d’un plancher chauffant, ce qui rend la maison habitable toute l’année et pas seulement l’été. La vue porte sur la vallée et, au-dessus, sur les crêtes.",
+    "district": "Route de l’Oukaïmeden",
+    "city": "Marrakech"
+  },
+  "detail:en:stone-chalet-oukaimeden": {
+    "id": "p-12",
+    "reference": "BL-1112",
+    "districtId": "route-oukaimeden",
+    "kind": "sale",
+    "type": "chalet",
+    "status": "available",
+    "price": 2950000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "builtArea": 240,
+    "landArea": 900,
+    "builtYear": 2016,
+    "parking": 4,
+    "amenities": [
+      "garden",
+      "terrace",
+      "underfloorHeating",
+      "atlasView",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1112-01",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1112-02",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1112-03",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1112-04",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1112-05",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1112-06",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      }
+    ],
+    "listedAt": "2026-06-30",
+    "location": {
+      "lat": 31.5529,
+      "lng": -7.97628,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "stone-chalet-oukaimeden",
+    "title": "Stone chalet, Oukaïmeden road",
+    "description": "Forty-five minutes from Marrakech, a four-bedroom chalet built in local stone at sixteen hundred metres.\n\nThe living room is heated by a central fireplace backed by underfloor heating, which makes the house usable all year rather than only in summer. The view runs down the valley and up to the ridges above.",
+    "district": "Oukaïmeden road",
+    "city": "Marrakech"
+  },
+  "similar:p-18": [
+    "BL-1101",
+    "BL-1113",
+    "BL-1115"
+  ],
+  "slugs:BL-1118": {
+    "fr": "villa-sur-fairway-amelkis",
+    "en": "fairway-villa-amelkis"
+  },
+  "detail:fr:villa-sur-fairway-amelkis": {
+    "id": "p-18",
+    "reference": "BL-1118",
+    "districtId": "amelkis",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 14200000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 520,
+    "landArea": 1800,
+    "builtYear": 2012,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "golfAccess",
+      "atlasView",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1118-01",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1118-02",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1118-03",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1118-04",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1118-05",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1118-06",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1118-07",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1118-08",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1118-09",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      }
+    ],
+    "listedAt": "2026-06-28",
+    "location": {
+      "lat": 31.59959,
+      "lng": -7.943,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-sur-fairway-amelkis",
+    "title": "Villa sur le fairway, Amelkis",
+    "description": "De plain-pied, ouverte sur le parcours, avec pour seule clôture une haie basse — ce qui n’est possible que dans un domaine déjà clos.\n\nLes pièces de réception forment un seul volume traversant, orienté nord-sud pour éviter le soleil de plein fouet. Les quatre chambres sont regroupées dans l’aile est, chacune avec sa salle d’eau.\n\nLa piscine et le jardin ont été dessinés ensemble : le bassin prolonge la terrasse plutôt que d’occuper le milieu de la pelouse, et l’Atlas apparaît dans son axe.",
+    "district": "Amelkis",
+    "city": "Marrakech"
+  },
+  "detail:en:fairway-villa-amelkis": {
+    "id": "p-18",
+    "reference": "BL-1118",
+    "districtId": "amelkis",
+    "kind": "sale",
+    "type": "villa",
+    "status": "available",
+    "price": 14200000,
+    "currency": "MAD",
+    "bedrooms": 4,
+    "bathrooms": 4,
+    "builtArea": 520,
+    "landArea": 1800,
+    "builtYear": 2012,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "golfAccess",
+      "atlasView",
+      "security",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1118-01",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1118-02",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1118-03",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1118-04",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1118-05",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1118-06",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1118-07",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1118-08",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1118-09",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      }
+    ],
+    "listedAt": "2026-06-28",
+    "location": {
+      "lat": 31.59959,
+      "lng": -7.943,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "fairway-villa-amelkis",
+    "title": "Villa on the fairway, Amelkis",
+    "description": "Single storey, open to the course, fenced by nothing more than a low hedge — which is only possible inside an estate that is already enclosed.\n\nThe reception rooms form one volume running right through the house, oriented north to south to keep the sun off. The four bedrooms are gathered in the east wing, each with its own bathroom.\n\nPool and garden were drawn together: the water extends the terrace rather than sitting in the middle of the lawn, and the Atlas appears along its axis.",
+    "district": "Amelkis",
+    "city": "Marrakech"
+  },
+  "similar:p-04": [
+    "BL-1115",
+    "BL-1110",
+    "BL-1114"
+  ],
+  "slugs:BL-1104": {
+    "fr": "domaine-route-ourika",
+    "en": "eighteen-hectare-estate-ourika"
+  },
+  "detail:fr:domaine-route-ourika": {
+    "id": "p-04",
+    "reference": "BL-1104",
+    "districtId": "route-ourika",
+    "kind": "sale",
+    "type": "estate",
+    "status": "underOffer",
+    "price": 3900000,
+    "currency": "EUR",
+    "bedrooms": 8,
+    "bathrooms": 9,
+    "builtArea": 1450,
+    "landArea": 18000,
+    "builtYear": 2009,
+    "parking": 6,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "gym",
+      "staffQuarters",
+      "security",
+      "atlasView",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1104-01",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1104-02",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1104-03",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1104-04",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1104-05",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1104-06",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1104-07",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1104-08",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1104-09",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1104-10",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1104-11",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1104-12",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1104-13",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1104-14",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1104-15",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      }
+    ],
+    "listedAt": "2026-06-19",
+    "location": {
+      "lat": 31.56984,
+      "lng": -7.94826,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "domaine-route-ourika",
+    "title": "Domaine de dix-huit hectares, route de l’Ourika",
+    "description": "Dix-huit hectares clos, dont six d’oliveraie en production et deux de verger.\n\nLa maison principale — huit chambres, mille quatre cent cinquante mètres carrés — a été construite en 2009 en pisé sur une ossature béton, ce qui lui donne l’inertie thermique d’une construction traditionnelle sans ses contraintes d’entretien. Les pièces de réception ouvrent au nord sur une cour d’eau de trente mètres et au sud sur la palmeraie, si bien qu’aucune façade ne prend le soleil de plein fouet aux heures chaudes.\n\nAutour, trois pavillons d’invités indépendants, un bâtiment technique, des écuries pour six chevaux et un manège en sable. Le forage est déclaré et l’autorisation de pompage transférable, ce qui est rare sur ce secteur et mérite d’être vérifié avant toute comparaison avec des biens voisins.\n\nL’ensemble est desservi par une allée privée de quatre cents mètres bordée de cyprès, plantée à la création du domaine et aujourd’hui pleinement formée. Le clos est en pisé sur tout son périmètre, sans grillage visible depuis la maison.\n\nLa propriété est vendue avec l’exploitation oléicole en cours, dont les rendements des trois dernières campagnes sont disponibles sur demande.",
+    "district": "Route de l’Ourika",
+    "city": "Marrakech"
+  },
+  "detail:en:eighteen-hectare-estate-ourika": {
+    "id": "p-04",
+    "reference": "BL-1104",
+    "districtId": "route-ourika",
+    "kind": "sale",
+    "type": "estate",
+    "status": "underOffer",
+    "price": 3900000,
+    "currency": "EUR",
+    "bedrooms": 8,
+    "bathrooms": 9,
+    "builtArea": 1450,
+    "landArea": 18000,
+    "builtYear": 2009,
+    "parking": 6,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "hammam",
+      "gym",
+      "staffQuarters",
+      "security",
+      "atlasView",
+      "garage"
+    ],
+    "media": [
+      {
+        "id": "BL-1104-01",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1104-02",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      },
+      {
+        "id": "BL-1104-03",
+        "url": "/design/stock/grid-terrace.jpg",
+        "width": 900,
+        "height": 600,
+        "alt": {
+          "fr": "Une maison blanche à terrasse plantée, vue à travers les arbres",
+          "en": "A white house with a planted roof terrace, seen through the trees"
+        }
+      },
+      {
+        "id": "BL-1104-04",
+        "url": "/design/stock/reveal-interior.jpg",
+        "width": 1800,
+        "height": 1198,
+        "alt": {
+          "fr": "Une chambre ouverte sur la végétation par une baie toute hauteur",
+          "en": "A bedroom opening onto greenery through a full-height window"
+        }
+      },
+      {
+        "id": "BL-1104-05",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1104-06",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1104-07",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1104-08",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1104-09",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1104-10",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1104-11",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      },
+      {
+        "id": "BL-1104-12",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1104-13",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1104-14",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      },
+      {
+        "id": "BL-1104-15",
+        "url": "/design/stock/grid-living-wide.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Une chambre et son dressing en menuiserie sur mesure",
+          "en": "A bedroom and its fitted dressing room"
+        }
+      }
+    ],
+    "listedAt": "2026-06-19",
+    "location": {
+      "lat": 31.56984,
+      "lng": -7.94826,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "eighteen-hectare-estate-ourika",
+    "title": "Eighteen-hectare estate, Ourika road",
+    "description": "Eighteen walled hectares, six of them productive olive grove and two orchard.\n\nThe main house — eight bedrooms, fourteen hundred and fifty square metres — was built in 2009 in rammed earth over a concrete frame, which gives it the thermal mass of traditional construction without the upkeep.\n\nAround it: three self-contained guest pavilions, a plant building, stabling for six horses and a sand school. The borehole is registered and the pumping licence transferable.\n\nThe property is sold with the olive operation running; yields for the last three harvests are available on request.",
+    "district": "Ourika road",
+    "city": "Marrakech"
+  },
+  "similar:p-20": [
+    "BL-1112",
+    "BL-1107",
+    "BL-1103"
+  ],
+  "slugs:BL-1120": {
+    "fr": "terrain-un-hectare-route-oukaimeden",
+    "en": "one-hectare-plot-oukaimeden-road"
+  },
+  "detail:fr:terrain-un-hectare-route-oukaimeden": {
+    "id": "p-20",
+    "reference": "BL-1120",
+    "districtId": "route-oukaimeden",
+    "kind": "sale",
+    "type": "land",
+    "status": "underOffer",
+    "price": 2400000,
+    "currency": "MAD",
+    "bedrooms": 0,
+    "bathrooms": 0,
+    "builtArea": 0,
+    "landArea": 10000,
+    "parking": 0,
+    "amenities": [
+      "atlasView"
+    ],
+    "media": [
+      {
+        "id": "BL-1120-01",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1120-02",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1120-03",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      }
+    ],
+    "listedAt": "2026-06-11",
+    "location": {
+      "lat": 31.56618,
+      "lng": -7.97773,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "terrain-un-hectare-route-oukaimeden",
+    "title": "Terrain d’un hectare, route de l’Oukaïmeden",
+    "description": "Un hectare plat, titré, avec la montagne plein sud et rien devant.\n\nLe terrain est viabilisé en bordure de route : électricité et eau au portail, ce qui représente l’essentiel du coût caché d’une parcelle à cette distance. Le certificat de propriété et la note de renseignements urbanistiques sont disponibles avant visite.",
+    "district": "Route de l’Oukaïmeden",
+    "city": "Marrakech"
+  },
+  "detail:en:one-hectare-plot-oukaimeden-road": {
+    "id": "p-20",
+    "reference": "BL-1120",
+    "districtId": "route-oukaimeden",
+    "kind": "sale",
+    "type": "land",
+    "status": "underOffer",
+    "price": 2400000,
+    "currency": "MAD",
+    "bedrooms": 0,
+    "bathrooms": 0,
+    "builtArea": 0,
+    "landArea": 10000,
+    "parking": 0,
+    "amenities": [
+      "atlasView"
+    ],
+    "media": [
+      {
+        "id": "BL-1120-01",
+        "url": "/design/stock/door-right.jpg",
+        "width": 1200,
+        "height": 1686,
+        "alt": {
+          "fr": "Le puits de lumière vu depuis la coursive du dernier niveau",
+          "en": "The light well seen from the top-floor walkway"
+        }
+      },
+      {
+        "id": "BL-1120-02",
+        "url": "/design/stock/grid-pool-dusk.jpg",
+        "width": 900,
+        "height": 1125,
+        "alt": {
+          "fr": "Une façade à balcons plantés, à l’heure dorée",
+          "en": "A façade of planted balconies at golden hour"
+        }
+      },
+      {
+        "id": "BL-1120-03",
+        "url": "/design/stock/grid-courtyard.jpg",
+        "width": 900,
+        "height": 1264,
+        "alt": {
+          "fr": "Le puits de lumière vitré et ses coursives",
+          "en": "The glazed light well and its walkways"
+        }
+      }
+    ],
+    "listedAt": "2026-06-11",
+    "location": {
+      "lat": 31.56618,
+      "lng": -7.97773,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "one-hectare-plot-oukaimeden-road",
+    "title": "One-hectare plot, Oukaïmeden road",
+    "description": "A flat, titled hectare, with the mountain due south and nothing in front of it.\n\nServices reach the roadside boundary: power and water at the gate, which is most of the hidden cost of a plot at this distance. Title certificate and planning note are available before a visit.",
+    "district": "Oukaïmeden road",
+    "city": "Marrakech"
+  },
+  "similar:p-09": [
+    "BL-1116",
+    "BL-1113",
+    "BL-1101"
+  ],
+  "slugs:BL-1109": {
+    "fr": "villa-jardin-route-de-fes",
+    "en": "garden-villa-fes-road"
+  },
+  "detail:fr:villa-jardin-route-de-fes": {
+    "id": "p-09",
+    "reference": "BL-1109",
+    "districtId": "route-fes",
+    "kind": "sale",
+    "type": "villa",
+    "status": "sold",
+    "price": 9500000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 4,
+    "builtArea": 540,
+    "landArea": 1800,
+    "builtYear": 2003,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "garage",
+      "airConditioning"
+    ],
+    "media": [
+      {
+        "id": "BL-1109-01",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1109-02",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1109-03",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1109-04",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1109-05",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1109-06",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1109-07",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-05-22",
+    "location": {
+      "lat": 31.66574,
+      "lng": -7.94707,
+      "precision": "approximate"
+    },
+    "locale": "fr",
+    "textLocale": "fr",
+    "isFallback": false,
+    "slug": "villa-jardin-route-de-fes",
+    "title": "Villa avec jardin, route de Fès",
+    "description": "Cinq chambres sur un terrain de mille huit cents mètres carrés, à quinze minutes du centre. Vendue.",
+    "district": "Route de Fès",
+    "city": "Marrakech"
+  },
+  "detail:en:garden-villa-fes-road": {
+    "id": "p-09",
+    "reference": "BL-1109",
+    "districtId": "route-fes",
+    "kind": "sale",
+    "type": "villa",
+    "status": "sold",
+    "price": 9500000,
+    "currency": "MAD",
+    "bedrooms": 5,
+    "bathrooms": 4,
+    "builtArea": 540,
+    "landArea": 1800,
+    "builtYear": 2003,
+    "parking": 3,
+    "amenities": [
+      "pool",
+      "garden",
+      "terrace",
+      "garage",
+      "airConditioning"
+    ],
+    "media": [
+      {
+        "id": "BL-1109-01",
+        "url": "/design/stock/grid-stone-detail.jpg",
+        "width": 900,
+        "height": 521,
+        "alt": {
+          "fr": "Une chambre en noir et blanc, miroir et coiffeuse",
+          "en": "A bedroom in black and white, with a mirror and dressing table"
+        }
+      },
+      {
+        "id": "BL-1109-02",
+        "url": "/design/stock/card-courtyard-07.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Une chambre aux tons chauds, séparée du dressing par une cloison vitrée",
+          "en": "A warm-toned bedroom, divided from the dressing room by a glass partition"
+        }
+      },
+      {
+        "id": "BL-1109-03",
+        "url": "/design/stock/card-garden-02.jpg",
+        "width": 400,
+        "height": 267,
+        "alt": {
+          "fr": "Des balcons courbes des années trente, en noir et blanc",
+          "en": "Curved 1930s balconies, in black and white"
+        }
+      },
+      {
+        "id": "BL-1109-04",
+        "url": "/design/stock/card-palm-04.jpg",
+        "width": 400,
+        "height": 266,
+        "alt": {
+          "fr": "Une chambre et son dressing ouvert, banquette orange au pied du lit",
+          "en": "A bedroom with an open dressing area and an orange bench at the foot of the bed"
+        }
+      },
+      {
+        "id": "BL-1109-05",
+        "url": "/design/stock/card-stone-01.jpg",
+        "width": 400,
+        "height": 251,
+        "alt": {
+          "fr": "Une façade de brique sombre percée de loggias",
+          "en": "A dark brick façade set with loggias"
+        }
+      },
+      {
+        "id": "BL-1109-06",
+        "url": "/design/stock/card-sky-11.jpg",
+        "width": 400,
+        "height": 225,
+        "alt": {
+          "fr": "Un immeuble résidentiel contemporain et ses abords plantés",
+          "en": "A contemporary residential block and its planted approach"
+        }
+      },
+      {
+        "id": "BL-1109-07",
+        "url": "/design/stock/door-left.jpg",
+        "width": 1200,
+        "height": 800,
+        "alt": {
+          "fr": "Les balcons arrondis d’un immeuble des années trente",
+          "en": "The rounded balconies of a 1930s building"
+        }
+      }
+    ],
+    "listedAt": "2026-05-22",
+    "location": {
+      "lat": 31.66574,
+      "lng": -7.94707,
+      "precision": "approximate"
+    },
+    "locale": "en",
+    "textLocale": "en",
+    "isFallback": false,
+    "slug": "garden-villa-fes-road",
+    "title": "Villa with garden, Fès road",
+    "description": "Five bedrooms on eighteen hundred square metres, fifteen minutes from the centre. Sold.",
+    "district": "Fès road",
+    "city": "Marrakech"
+  }
+}

@@ -168,6 +168,8 @@ export const en: Dictionary = {
   },
   properties: {
     title: "Our properties",
+    unavailableTitle: "Our properties aren’t showing",
+    unavailableBody: "The catalogue is unavailable just now. Try again in a few moments.",
     resultCount: "{count} properties",
     resultCountOne: "1 property",
     searchedFor: "Your search",
@@ -276,6 +278,8 @@ export const en: Dictionary = {
     errorEmail: "Enter a valid email address.",
     errorMessage: "Write a line or two about what you’re looking for.",
     errorGeneric: "The enquiry couldn’t be sent. Try again in a moment.",
+    errorThrottled:
+      "This message wasn’t sent: we’ve already had several from you in the past hour. We answer every enquiry — if it’s urgent, please call us.",
     errorPhone: "That phone number is too long.",
     successBodyGeneral: "We’ll come back to you within 24 hours.",
     referenceNote: "Your enquiry will quote reference {reference}.",

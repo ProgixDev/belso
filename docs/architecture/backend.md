@@ -1,75 +1,85 @@
-# Backend (Supabase, SSR)
+# Backend (Postgres, on our own VPS)
 
-The backend is Supabase, configured **RLS-first** with **SSR cookie auth** (ADR-0007). Golden rule:
-**the browser is untrusted and ships a public key — Postgres Row-Level Security is the
-authorization boundary, not the client.**
+The backend is **Postgres on a VPS the client owns** ([ADR-0008](decisions/0008-postgres-on-our-own-vps.md),
+which supersedes 0007). Golden rule: **no browser ever holds a database credential.** Every read
+goes through a `server-only` repository, and the authorization boundary is that the app is the
+only thing with a connection — not Row-Level Security, which the previous design relied on and
+this one does not have.
 
-## Clients (`src/lib/supabase/`)
+> This document described Supabase and an RLS-first model until 2026-08-28. If you are reading a
+> cached copy, or code that imports `@/lib/supabase/*`, that is the old design: those files are
+> due for deletion (spec 010, T28) and nothing in the storefront imports them.
 
-- **`client.ts`** — browser client (`createBrowserClient`) for Client Components. Sets auth cookies.
-- **`server.ts`** — server client (`createServerClient` + `next/headers` cookies) for Server
-  Components, Server Actions, and Route Handlers. Reads the session; RLS enforces access.
-- **`middleware.ts`** + **`src/middleware.ts`** — refresh the session on every request and redirect
-  unauthenticated users away from protected routes (`PROTECTED_PREFIXES`). Always returns the
-  `supabaseResponse` so cookies stay in sync. **Do not** run code between `createServerClient` and
-  `auth.getUser()`.
-- **`admin.ts`** — service-role client (`server-only`); **bypasses RLS**. Use sparingly (account
-  deletion). Never expose it or the key to the browser.
+## Why not RLS
 
-## Auth (`src/features/auth/`)
+RLS earns its keep when an untrusted browser talks to the database directly, holding a public
+key. Belso has no such browser. The public reads published listings; two or three people at the
+agency write them. There is no per-user row ownership and no multi-tenant boundary, so RLS would
+have guarded a door nobody walks through — at the cost of a policy on every table, each of which
+is a chance to get it subtly wrong.
 
-`SignInForm` (client) uses the browser client to sign in/up (Zod-validated). `signOut` and
-`deleteAccount` are server actions; `/account` is a Server Component guarded by the middleware and
-re-checked server-side. The `?next=` redirect target is sanitised by `safeRedirectPath`.
+What replaces it is narrower and easier to check: **one filter, in one place.**
 
-## Database — secure-by-default rules
+## The pieces
 
-Migrations in `supabase/migrations/` run in order. `0001_security_baseline` enforces deny-by-default:
-blanket grants revoked, RLS auto-enabled on every new public table, a `private` schema for
-`security definer` helpers (`search_path = ''` pinned).
+- **`src/core/db.ts`** — the connection pool and `query(text, values)`. `getPool` is deliberately
+  **not exported**: `query` taking text and values separately is the control, and one
+  `getPool().query(\`…\${input}\`)` would undo it. Module-level rather than per-request, unlike a
+  Zustand store — a pool holds no request state, and one per request would exhaust Postgres
+  within a page load.
+- **`src/features/properties/row.ts`** — SQL rows back into the domain, and the one `select` that
+  every public read goes through. `numeric` arrives as a string, `date` must not become a `Date`,
+  and a missing translation is a missing key: all three are documented there because all three
+  have been bugs.
+- **`src/features/properties/repository.ts`** — the seam. **Every public read filters
+  `publication = 'published'`** inside `row.ts`, once, never at a caller: AC-2 names five entry
+  points a draft must not appear at, and a filter applied per-caller is one that gets missed at
+  the sixth. `catalogue()` is wrapped in React `cache` so one render costs one query.
+- **`src/features/enquiries/`** — the only unauthenticated write path on the site. Zod-validated,
+  throttled in Postgres (not per-process), and it returns an error rather than a false
+  confirmation when a write fails.
 
-### Adding a per-user table (copy `0003_notes`)
+## Roles
 
-```sql
-create table public.things (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
-  created_at timestamptz not null default now()
-);
-grant select, insert, update, delete on public.things to authenticated;
-create index things_user_id_idx on public.things (user_id);
-create policy "things: select own" on public.things for select to authenticated
-  using ((select auth.uid()) = user_id);
-create policy "things: insert own" on public.things for insert to authenticated
-  with check ((select auth.uid()) = user_id);
-create policy "things: update own" on public.things for update to authenticated
-  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
-create policy "things: delete own" on public.things for delete to authenticated
-  using ((select auth.uid()) = user_id);
+| Role        | Used by                   | May                                                                                                                |
+| ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `belso`     | migrations, seed, backups | everything — it is the image's superuser, and it is never used by the app                                          |
+| `belso_app` | the web application       | `select` the catalogue, `insert` an enquiry, count the throttle. Nothing else — it cannot even read enquiries back |
+
+The app being write-only over the personal data it collects is the strongest control available
+short of not collecting it. See `docs/security/vps.md`, including the `RETURNING` consequence
+that looks like a broken grant and is not.
+
+## Schema and migrations
+
+`db/migrations/NNNN_*.sql`, applied in order and exactly once by `pnpm db:migrate`. Each runs in
+a transaction together with the row recording it, so a migration cannot half-apply and be marked
+done. Applied files are checksummed: editing one that has already run is refused, because the
+file and the database would then disagree silently.
+
+Two modelling points worth knowing before touching the schema:
+
+- **`publication` and `status` are different axes.** `status` is commercial (`available`,
+  `underOffer`, `sold`, `rented`); `publication` is visibility (`draft`, `published`,
+  `archived`). Conflating them makes a sold listing invisible and an archived one purchasable.
+- **Slug history is written by a trigger**, not by the application. A back-office that renames a
+  listing and forgets to record the old address is the failure being guarded against, and asking
+  the app to remember is how it gets forgotten.
+
+## Working against it
+
+Port 5432 is bound to the VPS's loopback, so everything goes through a tunnel:
+
+```bash
+pnpm db:tunnel                  # ssh -N -L 55432:127.0.0.1:5432 belso-vps
+pnpm db:migrate && pnpm db:seed
+pnpm verify:db                  # migrate, seed, database tests, restore check
 ```
 
-Rules: one policy **per command** (never `FOR ALL`); always `to authenticated`; wrap `auth.uid()`
-in `(select …)`; `WITH CHECK` on writes; index the policy column; never read `user_metadata` in a
-policy; split highly-sensitive columns into their own table.
+**`pnpm test:db` and `pnpm e2e` refuse any database not named `*_test`.** They unpublish live
+listings and submit real enquiries; a scratch database (`belso_test`) exists for them. That guard
+was added after an e2e run wrote a real enquiry into the client's table.
 
-## Payments (entitlement is server-owned)
-
-`public.subscriptions` is **client read-only**. Only a trusted server writes it: a Stripe webhook
-**Route Handler** that verifies the `Stripe-Signature` against the raw body, then upserts entitlement
-with the service-role client. Never trust the client for entitlement. (Add the `stripe` dep + the
-route when you wire payments.)
-
-## Verification (release gates)
-
-- `supabase test db` runs the pgTAP RLS tests in `supabase/tests/database/`.
-- `supabase db lint` (Security Advisor) must be clean of ERROR lints — **0007** (policy exists, RLS
-  disabled), **0013** (RLS disabled in public), **0015** (RLS references user_metadata).
-
-## Setup (on your machine)
-
-```
-pnpm add @supabase/ssr @supabase/supabase-js
-# set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY (+ SUPABASE_SERVICE_ROLE_KEY) in .env.local
-supabase init   # if you don't have a full config.toml
-supabase start && supabase db reset && supabase test db
-```
+With no `DATABASE_URL` the repository serves the fixtures, which is what `pnpm verify`, the build
+and a fresh clone do. **Production refuses to boot without one** — otherwise a mistyped variable
+serves twenty invented villas as the agency's real inventory.

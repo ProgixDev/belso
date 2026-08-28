@@ -20,5 +20,6 @@ ADRs capture decisions that shape the codebase: what we chose, what we rejected,
 | [0004](0004-ai-harness.md)                    | Repo-as-harness: agent docs, skills, hooks, persona review in CI                                                   | Accepted                     |
 | [0005](0005-progix-operating-system.md)       | Progix operating system: /progix front door, four surfaces, R2R loop, default automations                          | Partially superseded by 0006 |
 | [0006](0006-repo-only-operating-model.md)     | Repo-only operating model (drop cloud CI/CD + Notion/Slack)                                                        | Accepted                     |
-| [0007](0007-supabase-backend.md)              | Supabase as the backend: RLS-first, `@supabase/ssr` cookie auth, deny-by-default                                   | Accepted                     |
+| [0007](0007-supabase-backend.md)              | Supabase as the backend: RLS-first, `@supabase/ssr` cookie auth, deny-by-default                                   | Superseded by 0008           |
+| [0008](0008-postgres-on-our-own-vps.md)       | Postgres on our own VPS, no Supabase                                                                               | Accepted                     |
 | [0009](0009-maplibre-for-the-listings-map.md) | MapLibre GL JS + hosted vector tiles for the listings map                                                          | Accepted                     |
