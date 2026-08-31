@@ -21,6 +21,28 @@ import { RootShell, baseMetadata } from "@/app/_shell/root-shell";
  * so a crawler that never fetches the page still knows.
  */
 
+/**
+ * Nothing under `/admin` is ever prerendered.
+ *
+ * **This is a promise ADR-0010 makes, and without this line the build breaks
+ * it.** `/admin/listings` reads the catalogue through the editor connection and
+ * has no dynamic API of its own — the session is read by the layout below —
+ * so Next tried to generate it at build time, hit an unset
+ * `DATABASE_EDITOR_URL`, and failed the entire build. That is the opposite of
+ * what the ADR promises: unset, the back-office should report itself
+ * unconfigured while the storefront carries on serving. A build that does not
+ * finish serves nothing at all.
+ *
+ * It was invisible locally, because `.env.local` supplies the variable. It
+ * appeared on the first `pnpm verify` run from a clean clone of the remote —
+ * which is the state of CI, of a new machine, and of any deploy that has not
+ * set the variable yet.
+ *
+ * Declared on this root so it covers the sign-in page too, which must render
+ * for somebody who has no session by definition.
+ */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   ...baseMetadata,
   title: { default: "Espace de gestion", template: "%s · Espace de gestion" },

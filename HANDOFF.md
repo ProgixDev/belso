@@ -190,6 +190,10 @@ ticking should follow a real run rather than this document:
   upload, and PII all landed in one spec.
 - **T28 `/review`**, then fix P0/P1.
 - **T29 `/feature-report`** → `docs/reports/011-belso-back-office.md`.
+- **Worth proposing to the owner: there is no CI.** Every gate here is run by hand. A workflow
+  running `pnpm verify` on push — no secrets needed, since the build is meant to work without a
+  database — would have caught the prerender failure above before it reached the branch. Not added
+  unasked, because it is a decision with a cost.
 - **T30 `/update-docs`** — and specifically **reconcile `/plan.md`**, the product roadmap, which
   still promises this work as `specs/003-belso-backoffice` built on self-hosted Supabase that
   ADR-0008 removed. An agent grounding on that file plans against a repository that no longer
@@ -224,6 +228,13 @@ Each of these cost real time. They are recorded so they are not paid for twice.
    use them.
 7. `python`'s `write_text` on Windows writes CRLF unless you pass `newline="\n"`. A shell script
    with CRLF fails on the VPS with a message that looks like a bash version problem.
+8. **`pnpm verify` passing locally does not mean it passes on a clean clone.** Next reads
+   `.env.local`, so a machine that has one builds with a database configured and a fresh clone does
+   not. `/admin/listings` was being prerendered and threw on the unset `DATABASE_EDITOR_URL`,
+   failing the whole build — while local `verify` was green. Before pushing, run
+   `DATABASE_URL= DATABASE_EDITOR_URL= pnpm build`, or clone the branch somewhere clean and run
+   `pnpm verify` there. **There is no CI in this repository** (`.github/` holds a CODEOWNERS file
+   and a PR template, no workflows), so nothing else will catch it.
 
 ---
 
