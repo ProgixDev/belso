@@ -31,13 +31,18 @@ const serverEnvSchema = z.object({
     .optional(),
 
   /**
-   * Keys the enquiry throttle's HMAC (`features/enquiries/rate-limit.ts`).
+   * Keys both throttles' HMAC — the enquiry form's
+   * (`features/enquiries/rate-limit.ts`) and the back-office sign-in's
+   * (`features/admin/login-throttle.ts`).
    *
-   * Optional, and unset it degrades to a plain hash rather than refusing to
-   * throttle — a limiter that fails open would be worse than one that is merely
-   * less private. But **set it in production**: without it the key is a bare
-   * hash of a /24, and the entire IPv4 space is enumerable in minutes, so anyone
-   * holding a database dump could work out which network enquired.
+   * Optional here, and unset each limiter degrades to a plain hash rather than
+   * refusing to throttle — a limiter that fails open would be worse than one
+   * that is merely less private. **Production is a different matter, and the
+   * guard below enforces it**, because the degraded key is reversible for
+   * anything guessable: a bare hash of a /24 against an IPv4 space enumerable
+   * in minutes, and — since spec 011 — a bare hash of `login:account:<email>`,
+   * which turns the table that exists to prevent account enumeration into the
+   * enumeration list itself for anyone holding a dump.
    */
   THROTTLE_SECRET: z
     .string()
@@ -155,6 +160,35 @@ if (env.NODE_ENV === "production" && !isBuilding && !env.DATABASE_EDITOR_URL) {
   console.warn(
     "[belso] DATABASE_EDITOR_URL is not set: the back-office is unavailable. " +
       "The public site is unaffected. Set it to the belso_editor connection string.",
+  );
+}
+
+/**
+ * Production must key the throttles, and this is what makes that true.
+ *
+ * `login-throttle.ts` states that "env.ts says production must set it". Until
+ * this line, env.ts said no such thing — the variable was `optional()` with a
+ * docstring, which is a comment, not a guard. A security review found the claim
+ * and the code disagreeing, and the direction of the disagreement is the bad
+ * one: the code was weaker than the documentation said, so nobody reading
+ * either would go looking.
+ *
+ * It throws rather than warning, unlike `DATABASE_EDITOR_URL` above, because
+ * the failure is otherwise permanent and invisible. A missing editor
+ * connection announces itself the first time somebody tries to publish; a
+ * missing throttle secret produces a limiter that works perfectly and writes
+ * reversible keys, and the only way anyone finds out is by reading a dump of
+ * the table — which is the moment it has already cost something.
+ *
+ * Same carve-outs as the guard above, and for the same reasons: `next build`
+ * sets `NODE_ENV=production` itself, and `pnpm start` under Playwright is not a
+ * deployment. `playwright.config.ts` supplies a test value.
+ */
+if (env.NODE_ENV === "production" && !isBuilding && !allowFixtures && !env.THROTTLE_SECRET) {
+  throw new Error(
+    "THROTTLE_SECRET is required in production: without it the sign-in and enquiry throttles " +
+      "key on a bare hash of an email address and an IP prefix, so the tables that exist to " +
+      "prevent enumeration become enumerable themselves to anyone holding a backup.",
   );
 }
 

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { editorQuery, isEditorConfigured } from "./db";
+import { env } from "./env";
 import { ADMIN_SESSION_COOKIE, ADMIN_SIGN_IN_PATH } from "./session-cookie";
 
 /**
@@ -109,7 +110,11 @@ export async function createSession(userId: string): Promise<void> {
     sameSite: "lax",
     // Off over plain http so this works on localhost. Every real deployment is
     // behind Traefik with TLS, where it is on.
-    secure: process.env.NODE_ENV === "production",
+    //
+    // Through `env`, not `process.env`: SEC-ENV-001 makes `env.ts` the only
+    // reader, and the rule is worth more than the one case where reading the
+    // raw value would obviously have been harmless.
+    secure: env.NODE_ENV === "production",
     // Scoped, so the public storefront never carries the session — not in a
     // request, not in a proxy log, not in a cache key.
     path: "/admin",

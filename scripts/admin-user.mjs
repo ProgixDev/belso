@@ -71,6 +71,37 @@ async function readStdin() {
   return value;
 }
 
+/**
+ * Destroy every live session for one account. Returns how many there were.
+ *
+ * **Changing a password has to do this, and for a while it did not.** Only
+ * `disable` swept sessions; `password` wrote a new hash and left the old
+ * cookies working for the rest of their seven days. That is precisely backwards
+ * for the case the command exists to serve — you re-password an account because
+ * you think somebody else has it, and the whole point is that they stop being
+ * signed in. The reasoning had been done once, for `disable`, and never carried
+ * across to its neighbour; a security review found it. One function now, so
+ * there is one place to reason about rather than two to keep in step.
+ *
+ * `select id` rather than a join, so a typo'd address deletes nothing instead of
+ * everything.
+ */
+async function revokeSessions(email) {
+  const { rowCount } = await client.query(
+    `delete from admin_sessions
+      where user_id in (select id from admin_users where lower(email) = lower($1))`,
+    [email],
+  );
+  return rowCount;
+}
+
+/** Say what was revoked, if anything. Silence when there was nothing to revoke. */
+function reportRevoked(count) {
+  if (count > 0) {
+    console.log(`  ${count} existing session(s) signed out.`);
+  }
+}
+
 const client = new pg.Client({ connectionString: url });
 await client.connect();
 
@@ -102,8 +133,15 @@ try {
       );
 
       const { created } = rows[0];
+
+      // The `on conflict` branch above is a password change wearing another
+      // name, so it revokes like one. A genuinely new account has no sessions
+      // and this is a no-op.
+      const revoked = created ? 0 : await revokeSessions(email);
+
       console.log(`\nadmin-user: ${created ? "created" : "updated"} ${email} (${displayName})`);
       console.log(`  password: ${password}`);
+      reportRevoked(revoked);
       console.log("\nCopy it now — it is hashed, not stored, and cannot be shown again.");
       break;
     }
@@ -119,8 +157,14 @@ try {
       );
 
       if (rowCount === 0) usage(`no account for ${email}`);
+
+      // The new hash is not the whole job: the cookies issued under the old one
+      // stay valid for seven days unless they are destroyed here.
+      const revoked = await revokeSessions(email);
+
       console.log(`\nadmin-user: new password for ${email}`);
       console.log(`  password: ${password}`);
+      reportRevoked(revoked);
       console.log("\nCopy it now — it is hashed, not stored, and cannot be shown again.");
       break;
     }
@@ -147,13 +191,7 @@ try {
        * honoured, which is what somebody asking for an account to be closed
        * actually means.
        */
-      if (command === "disable") {
-        await client.query(
-          `delete from admin_sessions
-            where user_id in (select id from admin_users where lower(email) = lower($1))`,
-          [email],
-        );
-      }
+      if (command === "disable") await revokeSessions(email);
 
       console.log(`admin-user: ${command}d ${email}`);
       break;
