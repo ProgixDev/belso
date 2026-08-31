@@ -1,4 +1,5 @@
 import "server-only";
+import { resolve } from "node:path";
 import { z } from "zod";
 
 /**
@@ -39,6 +40,49 @@ const serverEnvSchema = z.object({
    * holding a database dump could work out which network enquired.
    */
   THROTTLE_SECRET: z
+    .string()
+    .transform((v) => v.trim())
+    .transform((v) => v || undefined)
+    .optional(),
+
+  /**
+   * The back-office's connection, as `belso_editor` (ADR-0010, spec 011).
+   *
+   * **It must never fall back to `DATABASE_URL`.** The whole point of the split
+   * is that the role the storefront holds cannot write a listing; a fallback
+   * would restore exactly the privilege the second role exists to remove, while
+   * looking like a kindness to whoever forgot to set it. Unset, `/admin`
+   * reports itself unconfigured and the public site is untouched — which is the
+   * right way round, because the storefront serving is worth more than the
+   * editor working.
+   *
+   * Same blank-is-unset treatment as `DATABASE_URL`, for the same reason.
+   */
+  DATABASE_EDITOR_URL: z
+    .string()
+    .transform((v) => v.trim())
+    .refine(
+      (v) => v === "" || v.startsWith("postgres"),
+      "DATABASE_EDITOR_URL must be a postgres:// URL",
+    )
+    .transform((v) => v || undefined)
+    .optional(),
+
+  /**
+   * Where uploaded photographs are written (spec 011, AC-6).
+   *
+   * **Not `public/`**, which is tempting and wrong: Next serves that directory
+   * from a manifest computed at build time, so a photograph uploaded at runtime
+   * is written to a path nothing will serve until the next deploy — a failure
+   * that looks like a broken upload and is a misunderstanding of the framework.
+   * Files are served by a route handler that resolves against this root instead.
+   *
+   * It is also the reason this is a variable rather than a constant: in
+   * production it points at a mounted volume that survives a container rebuild.
+   * Get it wrong and the client's photography disappears on the next deploy,
+   * which looks like data loss and is a mount.
+   */
+  MEDIA_ROOT: z
     .string()
     .transform((v) => v.trim())
     .transform((v) => v || undefined)
@@ -89,3 +133,35 @@ if (env.NODE_ENV === "production" && !isBuilding && !allowFixtures && !env.DATAB
       "as real inventory and accept enquiries without storing them.",
   );
 }
+
+/**
+ * A missing editor connection warns; it does not throw.
+ *
+ * The asymmetry with `DATABASE_URL` above is deliberate and is the ADR-0010
+ * trade-off written as code. Without `DATABASE_URL` the storefront would *lie*
+ * to visitors, so it must not boot. Without `DATABASE_EDITOR_URL` the storefront
+ * is entirely correct and only the back-office is unavailable — refusing to boot
+ * would take a working public site down to protect three people's editor, which
+ * is the wrong trade for an agency whose website is its shopfront.
+ *
+ * It is loud because the failure is otherwise silent until the client tries to
+ * publish something and cannot, at which point nobody remembers the deploy.
+ *
+ * `console` rather than `src/lib/logger.ts`: `core` is the bottom of the layer
+ * stack and may not import from `lib` (`module-boundaries.md`). There is nothing
+ * to redact in a fixed string.
+ */
+if (env.NODE_ENV === "production" && !isBuilding && !env.DATABASE_EDITOR_URL) {
+  console.warn(
+    "[belso] DATABASE_EDITOR_URL is not set: the back-office is unavailable. " +
+      "The public site is unaffected. Set it to the belso_editor connection string.",
+  );
+}
+
+/**
+ * The resolved media root, with a development default so uploads work on a
+ * fresh clone. Relative values resolve against the working directory, because a
+ * relative path in a deploy config is a question about which directory the
+ * process started in, and nobody wants to answer that at 2am.
+ */
+export const mediaRoot = resolve(env.MEDIA_ROOT ?? "media");

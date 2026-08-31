@@ -21,6 +21,25 @@ import {
 } from "@/features/properties";
 
 /**
+ * Rendered per request, because this page reads the catalogue.
+ *
+ * The build already reports this route as dynamic, so today this line changes
+ * nothing — and that is the reason to write it down rather than to leave it
+ * out. It is currently dynamic by *inference*: Next works it out from what the
+ * tree happens to do, and an edit that removes the last dynamic API from the
+ * page would silently turn the catalogue back into a build-time snapshot. That
+ * is exactly the failure spec 010's review found on the home page and the
+ * sitemap, where a listing the client had archived kept being served until
+ * somebody redeployed. Every other catalogue-reading route states this
+ * explicitly; these two were missed.
+ *
+ * The cheaper answer is `revalidate` plus `revalidatePath` from the back-office
+ * write path — which now exists (`admin-actions.ts`), so this can be revisited
+ * deliberately rather than by accident.
+ */
+export const dynamic = "force-dynamic";
+
+/**
  * The listing detail.
  *
  * **This route deliberately ships no `loading.tsx`.** A `loading.tsx` anywhere
@@ -35,6 +54,7 @@ import {
  * streaming, put a `<Suspense>` *inside* it around the slow part — below the
  * `notFound()` decision — rather than reintroducing `loading.tsx` above it.
  */
+
 export async function generateMetadata({
   params,
 }: {

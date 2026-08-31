@@ -23,3 +23,5 @@ ADRs capture decisions that shape the codebase: what we chose, what we rejected,
 | [0007](0007-supabase-backend.md)              | Supabase as the backend: RLS-first, `@supabase/ssr` cookie auth, deny-by-default                                   | Superseded by 0008           |
 | [0008](0008-postgres-on-our-own-vps.md)       | Postgres on our own VPS, no Supabase                                                                               | Accepted                     |
 | [0009](0009-maplibre-for-the-listings-map.md) | MapLibre GL JS + hosted vector tiles for the listings map                                                          | Accepted                     |
+| [0010](0010-two-database-roles.md)            | Two Postgres roles: the storefront reads, the back-office writes                                                   | Accepted                     |
+| [0011](0011-sessions-in-postgres.md)          | Sessions in Postgres, passwords with scrypt, no auth library                                                       | Accepted                     |

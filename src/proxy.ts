@@ -6,6 +6,12 @@ import {
   isLocale,
   toInternalPath,
 } from "@/core/i18n";
+import {
+  ADMIN_PREFIX,
+  ADMIN_SESSION_COOKIE,
+  ADMIN_SIGN_IN_PATH,
+  safeAdminPath,
+} from "@/core/session-cookie";
 
 /**
  * Named `proxy` per the Next 16 file convention — `middleware` is deprecated.
@@ -29,6 +35,15 @@ const UNLOCALISED_PREFIXES = [
   "/dashboard",
   "/sign-in",
   "/examples",
+  // The back-office. It is French, but it is not part of the localised
+  // storefront: there is no `/en/admin` and never will be, so locale-rewriting
+  // it would send `/admin` to `/fr/admin`, which does not exist.
+  ADMIN_PREFIX,
+  // Uploaded photographs, served by a route handler. Their names end in
+  // `.webp` so the extension rule below already covers them — this is here so
+  // that a URL without an extension, should one ever be added, does not start
+  // being redirected into a locale that has no such route.
+  "/media",
 ] as const;
 
 function isUnlocalised(pathname: string): boolean {
@@ -72,8 +87,54 @@ const localeCookie = {
   sameSite: "lax",
 } as const;
 
+/**
+ * Bounce a signed-out browser to the sign-in page before the page renders.
+ *
+ * **This is not the gate, and reading it as one would be the expensive
+ * mistake.** All it checks is that a cookie *exists*. It cannot check whether
+ * the session behind it is real, live, or attached to an account that has since
+ * been disabled, because verifying any of that means asking Postgres and this
+ * file runs on Edge, where `pg` cannot open a socket. Anyone can set a cookie
+ * named `belso_session` and get past this line.
+ *
+ * What it buys is that the ordinary signed-out visit — a bookmark, a stale tab
+ * — lands on the sign-in form rather than rendering a layout that then
+ * redirects. The authority is `admin/layout.tsx` for pages and
+ * `requireSession()` inside every action for mutations.
+ *
+ * **GET only, deliberately.** A signed-out POST is left to reach the action so
+ * that the action refuses it, which is the half of AC-1 that would otherwise
+ * ship open — a Server Action is reachable without ever rendering the page it
+ * lives on. Redirecting it here would make the e2e pass while proving nothing
+ * about the action, which is precisely the reassurance we do not want.
+ */
+function gateAdmin(request: NextRequest, pathname: string): NextResponse {
+  if (request.method !== "GET") return NextResponse.next({ request });
+  if (pathname === ADMIN_SIGN_IN_PATH) return NextResponse.next({ request });
+  if (request.cookies.has(ADMIN_SESSION_COOKIE)) return NextResponse.next({ request });
+
+  const url = request.nextUrl.clone();
+  url.pathname = ADMIN_SIGN_IN_PATH;
+  url.search = "";
+  // Validated even though it came from our own URL: `safeAdminPath` is the one
+  // place that decides what a redirect target may be, and routing every value
+  // through it is what keeps that true.
+  const next = safeAdminPath(pathname);
+  if (next && next !== ADMIN_PREFIX) url.searchParams.set("next", next);
+
+  return NextResponse.redirect(url);
+}
+
+function isAdminPath(pathname: string): boolean {
+  return pathname === ADMIN_PREFIX || pathname.startsWith(`${ADMIN_PREFIX}/`);
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (isAdminPath(pathname)) {
+    return gateAdmin(request, pathname);
+  }
 
   if (isUnlocalised(pathname)) {
     return NextResponse.next({ request });

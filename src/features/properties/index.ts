@@ -79,3 +79,36 @@ export {
   getSimilar,
   listProperties,
 } from "./repository";
+
+/* -------------------------------------------------------------------------- */
+/* The back-office half                                                        */
+/* -------------------------------------------------------------------------- */
+/*
+ * Reads that include drafts, and every write. Exported through the same barrel
+ * as the public reads because the boundary rule admits one entry point per
+ * slice — but they are separate modules on purpose, and the separation is the
+ * audit: `admin-repository.ts` and `writes.ts` go through `editorQuery` and
+ * `editorTransaction`, `repository.ts` and `row.ts` do not. If a grep for
+ * either of those names ever hits the public read path, the split in ADR-0010
+ * has been undone.
+ */
+
+export { type EditorListing, getListingForEditor, listListingsForEditor } from "./admin-repository";
+
+export {
+  type ListingActionError,
+  type ListingActionResult,
+  archiveListingAction,
+  createListingAction,
+  publishListingAction,
+  removePhotographAction,
+  reorderPhotographsAction,
+  saveAltTextAction,
+  saveListingAction,
+  unpublishListingAction,
+  uploadPhotographAction,
+} from "./admin-actions";
+
+export { PhotographManager } from "./components/photograph-manager";
+export { PropertyEditor } from "./components/property-editor";
+export { PublicationControls } from "./components/publication-controls";

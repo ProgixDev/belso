@@ -1,0 +1,187 @@
+#!/usr/bin/env node
+/**
+ * Create, re-password, disable and list back-office accounts.
+ *
+ * **The only way an account comes into existence.** There is no sign-up route
+ * and there will not be one: this is a back-office for three people at one
+ * agency, and a public registration form on it would be a door with a hinge and
+ * no lock. ADR-0011 records the decision; this file is what it costs — an SSH
+ * call to the owner, the same posture as `migrate.mjs`.
+ *
+ * Connects as the **owner**, not as `belso_editor`. The editor role has no
+ * `insert` on `admin_users` precisely so that a defect in the back-office
+ * cannot mint an account for whoever found it (`0006_editor_role.sql`), which
+ * means account creation has to come from somewhere else. This is somewhere
+ * else.
+ *
+ * Run:
+ *
+ *   node --import ./scripts/lib/ts-alias-hook.mjs scripts/admin-user.mjs create sofia@belso.ma "Sofia"
+ *   node --import ./scripts/lib/ts-alias-hook.mjs scripts/admin-user.mjs password sofia@belso.ma
+ *   node --import ./scripts/lib/ts-alias-hook.mjs scripts/admin-user.mjs disable sofia@belso.ma
+ *   node --import ./scripts/lib/ts-alias-hook.mjs scripts/admin-user.mjs list
+ *
+ * or `pnpm admin:user <command> …`, which supplies the hook.
+ */
+import { randomBytes } from "node:crypto";
+import pg from "pg";
+import { hashPassword } from "../src/features/admin/password.ts";
+
+const url = process.env.DATABASE_URL;
+if (!url?.trim()) {
+  console.error("admin-user: DATABASE_URL is not set — see `pnpm db:tunnel`.");
+  process.exit(1);
+}
+
+const [command, ...args] = process.argv.slice(2);
+
+function usage(message) {
+  if (message) console.error(`admin-user: ${message}\n`);
+  console.error("Usage:");
+  console.error("  admin-user create <email> <display name>");
+  console.error("  admin-user password <email>          [--stdin]");
+  console.error("  admin-user disable <email>");
+  console.error("  admin-user enable <email>");
+  console.error("  admin-user list");
+  process.exit(1);
+}
+
+/**
+ * A generated password rather than one typed at a prompt.
+ *
+ * Hiding terminal echo portably is more code than the rest of this file, and a
+ * password typed over SSH is a password chosen by a person under mild time
+ * pressure — which is how a back-office ends up protected by the agency's
+ * postcode. Twenty-four random characters go straight into a password manager
+ * and are never thought about again.
+ *
+ * `--stdin` exists for the person who genuinely wants to choose, and reads the
+ * value from a pipe rather than an argument: an argument is visible in `ps` to
+ * every other process on the box, which on this one includes the client's n8n.
+ */
+function generate() {
+  return randomBytes(18).toString("base64url");
+}
+
+async function readStdin() {
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(chunk);
+  const value = Buffer.concat(chunks).toString("utf8").trim();
+  if (!value) usage("--stdin was given but nothing arrived on stdin");
+  return value;
+}
+
+const client = new pg.Client({ connectionString: url });
+await client.connect();
+
+try {
+  switch (command) {
+    case "create": {
+      const [email, ...rest] = args;
+      const displayName = rest.join(" ").trim();
+      if (!email || !displayName) usage("create needs an email and a display name");
+
+      const password = args.includes("--stdin") ? await readStdin() : generate();
+      const hash = await hashPassword(password);
+
+      /*
+       * `on conflict` on the case-insensitive index, so re-running this against
+       * an existing address updates rather than failing — the difference
+       * between "run it again" and "work out what state the database is in".
+       */
+      const { rows } = await client.query(
+        `insert into admin_users (email, password_hash, display_name)
+         values ($1, $2, $3)
+         on conflict (lower(email)) do update
+           set password_hash = excluded.password_hash,
+               display_name  = excluded.display_name,
+               disabled_at   = null,
+               updated_at    = now()
+         returning id, (xmax = 0) as created`,
+        [email, hash, displayName],
+      );
+
+      const { created } = rows[0];
+      console.log(`\nadmin-user: ${created ? "created" : "updated"} ${email} (${displayName})`);
+      console.log(`  password: ${password}`);
+      console.log("\nCopy it now — it is hashed, not stored, and cannot be shown again.");
+      break;
+    }
+
+    case "password": {
+      const [email] = args;
+      if (!email) usage("password needs an email");
+
+      const password = args.includes("--stdin") ? await readStdin() : generate();
+      const { rowCount } = await client.query(
+        "update admin_users set password_hash = $2, updated_at = now() where lower(email) = lower($1)",
+        [email, await hashPassword(password)],
+      );
+
+      if (rowCount === 0) usage(`no account for ${email}`);
+      console.log(`\nadmin-user: new password for ${email}`);
+      console.log(`  password: ${password}`);
+      console.log("\nCopy it now — it is hashed, not stored, and cannot be shown again.");
+      break;
+    }
+
+    case "disable":
+    case "enable": {
+      const [email] = args;
+      if (!email) usage(`${command} needs an email`);
+
+      const { rowCount } = await client.query(
+        `update admin_users
+            set disabled_at = ${command === "disable" ? "now()" : "null"}, updated_at = now()
+          where lower(email) = lower($1)`,
+        [email],
+      );
+
+      if (rowCount === 0) usage(`no account for ${email}`);
+
+      /*
+       * Disabling has to take effect now, not at the end of a seven-day
+       * session. `currentSession` checks `disabled_at is null` on every
+       * request, so this is already true — but destroying the rows means the
+       * cookie in her browser stops working rather than merely stops being
+       * honoured, which is what somebody asking for an account to be closed
+       * actually means.
+       */
+      if (command === "disable") {
+        await client.query(
+          `delete from admin_sessions
+            where user_id in (select id from admin_users where lower(email) = lower($1))`,
+          [email],
+        );
+      }
+
+      console.log(`admin-user: ${command}d ${email}`);
+      break;
+    }
+
+    case "list": {
+      const { rows } = await client.query(
+        `select email, display_name, disabled_at,
+                (select count(*) from admin_sessions s
+                  where s.user_id = u.id and s.expires_at > now()) as sessions
+           from admin_users u order by email`,
+      );
+
+      if (rows.length === 0) {
+        console.log("admin-user: no accounts. Create one with `admin-user create`.");
+        break;
+      }
+
+      for (const row of rows) {
+        const state = row.disabled_at ? "disabled" : `${row.sessions} session(s)`;
+        console.log(`  ${row.email.padEnd(28)} ${row.display_name.padEnd(20)} ${state}`);
+      }
+      break;
+    }
+
+    default:
+      usage(command ? `unknown command "${command}"` : undefined);
+  }
+} finally {
+  await client.end();
+}

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Locale } from "@/core/i18n";
 import { cn } from "@/lib/utils";
+import { altFor } from "../lib";
 import type { PropertyMedia } from "../types";
 
 /**
@@ -45,7 +46,7 @@ export function Gallery({
         <Image
           key={current.id}
           src={current.url}
-          alt={current.alt[locale]}
+          alt={altFor(current.alt, locale)}
           fill
           priority
           sizes="(min-width: 1024px) 66vw, 100vw"
@@ -96,7 +97,7 @@ export function Gallery({
               <button
                 type="button"
                 onClick={() => setIndex(i)}
-                aria-label={frame.alt[locale]}
+                aria-label={altFor(frame.alt, locale)}
                 aria-current={i === index ? "true" : undefined}
                 className={cn(
                   "focus-visible:ring-ring relative h-14 w-20 overflow-hidden rounded-md transition-opacity focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:transition-none",

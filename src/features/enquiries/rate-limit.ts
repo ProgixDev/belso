@@ -2,6 +2,7 @@ import "server-only";
 import { createHash, createHmac } from "node:crypto";
 import { query } from "@/core/db";
 import { env } from "@/core/env";
+import { networkOf } from "@/lib/network";
 
 /**
  * The throttle on the only door into this site that anyone can open.
@@ -60,16 +61,11 @@ const WINDOW_MINUTES = 60;
  * The secret is optional. Unset, this degrades to the old hash rather than
  * refusing to throttle — a limiter that fails open is worse than one that is
  * merely less private — and `env.ts` documents that production should set it.
+ *
+ * `networkOf` moved to `lib/` when the back-office sign-in became its second
+ * consumer. The limiters themselves stay apart — different tables, different
+ * grants — but truncating an address is arithmetic and belongs in one place.
  */
-function networkOf(identifier: string): string {
-  if (identifier.includes(":")) {
-    // IPv6: the first four groups are the /64 a single subscriber is given.
-    return identifier.split(":").slice(0, 4).join(":");
-  }
-  const octets = identifier.split(".");
-  return octets.length === 4 ? octets.slice(0, 3).join(".") : identifier;
-}
-
 function keyFor(identifier: string, kind: string): string {
   const subject = `${kind}:${networkOf(identifier)}`;
   const secret = env.THROTTLE_SECRET;

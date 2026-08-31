@@ -3,6 +3,7 @@ import { convert, displayCurrency } from "@/core/currency";
 import { districts } from "./districts";
 import { propertyFixtures } from "./fixtures";
 import {
+  altFor,
   approximateLocation,
   localizeProperty,
   matchScore,
@@ -69,6 +70,41 @@ describe("resolveTranslation (AC-9)", () => {
 
   it("returns null when a property has no text at all", () => {
     expect(resolveTranslation({ ...translated, translations: {} }, "fr")).toBeNull();
+  });
+});
+
+describe("altFor", () => {
+  it("uses the language of the page when it is there", () => {
+    expect(altFor({ fr: "La piscine au crépuscule", en: "The pool at dusk" }, "en")).toBe(
+      "The pool at dusk",
+    );
+  });
+
+  it("falls back to French rather than leaving the photograph silent", () => {
+    /*
+     * The regression this whole function exists for. Every seeded photograph
+     * carries both locales, so `alt[locale]` was never `undefined` — until the
+     * back-office lets the client caption in French alone, which spec 011
+     * explicitly encourages. Unhandled, the first such caption puts
+     * `alt={undefined}` on the *English* site and the photograph is announced by
+     * its file name: an accessibility regression caused by the feature built to
+     * stop alt text being an afterthought.
+     */
+    expect(altFor({ fr: "La piscine au crépuscule" }, "en")).toBe("La piscine au crépuscule");
+  });
+
+  it("uses whatever language exists when neither the page's nor French is there", () => {
+    expect(altFor({ en: "The pool at dusk" }, "fr")).toBe("The pool at dusk");
+  });
+
+  it("is an empty string, never undefined, when there is no text at all", () => {
+    /*
+     * `""` tells a screen reader the image is decorative and to skip it — a
+     * small lie about a photograph of a house, and the right one when there is
+     * nothing to say. `undefined` makes the browser read out the URL instead,
+     * which is the outcome worth ruling out.
+     */
+    expect(altFor({}, "fr")).toBe("");
   });
 });
 

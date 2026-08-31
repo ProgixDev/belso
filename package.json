@@ -33,6 +33,7 @@
     "db:tunnel": "ssh -N -L 55432:127.0.0.1:5432 belso-vps",
     "db:migrate": "node scripts/migrate.mjs",
     "db:seed": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/seed.mjs",
+    "admin:user": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/admin-user.mjs",
     "test:db": "vitest run --config vitest.db.config.mts",
     "verify:db": "pnpm db:migrate && pnpm db:seed && pnpm test:db && pnpm db:restore-check",
     "db:restore-check": "node scripts/restore-check.mjs"
@@ -56,6 +57,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
+    "sharp": "^0.35.4",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"

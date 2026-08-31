@@ -83,6 +83,21 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Don't advertise the framework version.
   poweredByHeader: false,
+  /*
+   * The back-office uploads photographs through a Server Action, and the
+   * default body limit is 1MB — a camera file is eight.
+   *
+   * Sixteen, not two hundred. **Photographs are uploaded one per submission**
+   * (`admin-actions.ts`), so this only ever has to hold a single frame. A limit
+   * generous enough for a whole gallery in one request would mean two hundred
+   * megabytes buffered in memory on a two-core box that also runs Postgres and
+   * the client's n8n — the upload of one listing's photographs would take the
+   * public site down with it.
+   *
+   * Still under `experimental` in Next 16 — verified against
+   * `node_modules/next/dist/server/config-shared.d.ts` rather than guessed.
+   */
+  experimental: { serverActions: { bodySizeLimit: "16mb" } },
   images: {
     /*
      * The hero scene plates are photoreal architectural renders shown full-bleed.

@@ -32,6 +32,15 @@ if (databaseUrl && process.env.BELSO_ALLOW_PROD_TESTS !== "1") {
 }
 export default defineConfig({
   testDir: "./e2e",
+  /*
+   * Clears the rate-limiter tables, on a scratch database only. Without it the
+   * suite is not repeatable within an hour: it submits the enquiry form four
+   * times, the throttle allows five per hour per network, and a local run has
+   * no forwarding header so every request counts into one bucket. The second
+   * run of the day then fails with the form reporting a throttle, which reads
+   * as a broken enquiry form and is the limiter working.
+   */
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

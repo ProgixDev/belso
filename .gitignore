@@ -41,3 +41,11 @@ CLAUDE.local.md
 # Claude Design handoff bundles — source-of-truth mockups, ~60MB of PNG/MP4.
 # The assets the app actually ships are copied into public/design/.
 *-handoff/
+
+# Photographs uploaded through the back-office (MEDIA_ROOT, default ./media).
+#
+# The client's real photography must never enter this repository — and the e2e
+# suite alone writes fifteen files here on every run. In production this path is
+# a mounted volume outside the checkout; locally it is working data, like the
+# database it points at.
+/media/

@@ -122,6 +122,28 @@ export function resolveTranslation(
 }
 
 /**
+ * The alt text for one photograph, in the language of the page.
+ *
+ * The same three steps as `resolveTranslation`, for the same reason: asked-for
+ * language, then the default, then whatever exists. A caption written in French
+ * alone must still describe the photograph on the English site — a French
+ * sentence read by an English voice is imperfect and is enormously better than
+ * silence, or than a screen reader falling back to announcing a file name.
+ *
+ * The last resort is `""`, which is not laziness: an empty `alt` tells a screen
+ * reader the image is decorative and to skip it. That is a small lie about a
+ * photograph of a house, and it is the correct one when there is genuinely no
+ * text — the alternative, `undefined`, makes the browser read out the URL.
+ *
+ * It cannot be reached today (`fixtures/properties.test.ts` requires both
+ * locales on every seeded photograph) and it will be reachable the moment the
+ * back-office writes its first caption.
+ */
+export function altFor(alt: Partial<Record<Locale, string>>, locale: Locale): string {
+  return alt[locale] ?? alt[defaultLocale] ?? Object.values(alt)[0] ?? "";
+}
+
+/**
  * Flatten a property into the shape components render. Null when it has no text
  * at all.
  *
@@ -362,4 +384,30 @@ export function pickSimilar(subject: Property, pool: Property[], limit = 3): Pro
     )
     .slice(0, limit)
     .map((entry) => entry.candidate);
+}
+
+/**
+ * Turn a title into an address segment.
+ *
+ * Used when the client creates a listing, so she does not have to invent a URL
+ * — and only then. Once a listing exists its slug is hers to edit, because
+ * renaming is a deliberate act with consequences (`property_slug_history`
+ * remembers the old address so the links already published keep working, AC-5).
+ * Re-deriving it from the title on every save would rename listings behind her
+ * back, and every such rename retires an address.
+ *
+ * Accents are stripped rather than encoded: `Villa vue Atlas, Palmeraie` has to
+ * become `villa-vue-atlas-palmeraie`, not `villa-vue-atlas-palmeraie` with a
+ * percent-encoded é sitting in the middle of a URL an agent pastes into an
+ * email. NFD splits a letter from its diacritic so the diacritic can be dropped.
+ */
+export function toSlug(title: string): string {
+  return title
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/g, "");
 }

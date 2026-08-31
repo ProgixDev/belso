@@ -73,7 +73,7 @@ export type PropertyRow = {
  * than disappearing from an inner join — which is how a `draft` with no
  * photographs would otherwise vanish twice over.
  */
-const SELECT_PUBLISHED = `
+const SELECT_LISTING = `
   select
     p.id, p.reference, p.district_id, p.kind, p.type, p.status,
     -- text, not float: see the note above.
@@ -82,6 +82,13 @@ const SELECT_PUBLISHED = `
     p.lat, p.lng, p.amenities,
     -- text, so no timezone is ever applied to a calendar day.
     p.listed_at::text as listed_at,
+    -- Selected for the back-office (admin-repository.ts) and ignored by
+    -- toProperty, which lists every field it maps. Two small columns on the
+    -- public read is a better trade than a second copy of these joins, which
+    -- would drift from this one and take the golden snapshot with it.
+    -- (No backticks in here: this is inside a template literal, and one would
+    -- end it — which is how this comment broke the file the first time.)
+    p.publication, p.version,
     t.translations,
     m.media
   from properties p
@@ -112,9 +119,24 @@ const SELECT_PUBLISHED = `
     ) alt on true
     where pm.property_id = p.id
   ) m on true
-  -- The filter that matters, applied once, here, rather than at six callers.
+`;
+
+/**
+ * The public read, and the filter that matters — applied once, here, rather
+ * than at six callers.
+ *
+ * `SELECT_LISTING` above is deliberately unfiltered so that the back-office can
+ * reuse the same joins to read a draft (`admin-repository.ts`). That split is
+ * the one thing in this file worth being careful about: **nothing on the public
+ * path may use the unfiltered constant.** The filter has to stay attached to
+ * the name the storefront asks for, because a `where` a caller can forget is a
+ * `where` a caller will forget — and forgetting it publishes every draft.
+ */
+const SELECT_PUBLISHED = `${SELECT_LISTING}
   where p.publication = 'published'
 `;
+
+export { SELECT_LISTING };
 
 export function toProperty(row: PropertyRow): Property {
   if (!isDistrictId(row.district_id)) {
@@ -129,7 +151,7 @@ export function toProperty(row: PropertyRow): Property {
     url: item.url,
     width: item.width,
     height: item.height,
-    alt: (item.alt ?? {}) as Record<Locale, string>,
+    alt: (item.alt ?? {}) as Partial<Record<Locale, string>>,
   }));
 
   return {

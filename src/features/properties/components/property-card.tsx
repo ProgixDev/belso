@@ -5,6 +5,7 @@ import { displayCurrency } from "@/core/currency";
 import { type Locale, toPublicPath } from "@/core/i18n";
 import { formatApproxPrice, formatArea, formatDate, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { altFor } from "../lib";
 import type { LocalizedProperty } from "../types";
 
 /**
@@ -172,7 +173,7 @@ export function PropertyCard({
         {cover ? (
           <Image
             src={cover.url}
-            alt={cover.alt[locale]}
+            alt={altFor(cover.alt, locale)}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             priority={priority}

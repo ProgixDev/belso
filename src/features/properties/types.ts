@@ -80,7 +80,23 @@ export type PropertyMedia = {
   url: string;
   width: number;
   height: number;
-  alt: Record<Locale, string>;
+  /**
+   * **`Partial`, and the change from `Record` is the point.**
+   *
+   * Every seeded photograph carries both locales, so a full `Record` typechecked
+   * and `alt[locale]` was never once `undefined` — right up until spec 011 lets
+   * the client caption a photograph in French alone, which is exactly what she is
+   * being encouraged to do. The first such caption would have rendered
+   * `alt={undefined}` on the **English** site: the photograph announced by its
+   * file name, by the feature built to stop alt text being an afterthought.
+   *
+   * As `Partial`, `alt[locale]` is `string | undefined` and will not satisfy
+   * `<Image alt>`, so the compiler refuses every reader that has not thought
+   * about a missing locale. Read it through `altFor` in `lib.ts`, the way prose
+   * is read through `resolveTranslation` — the rule is the same and so is the
+   * reason for it.
+   */
+  alt: Partial<Record<Locale, string>>;
 };
 
 /**
