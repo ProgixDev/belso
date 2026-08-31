@@ -147,7 +147,42 @@ should be re-run immediately after being restored, not at the end of the phase.
 
 - [x] **T24** `CI=true pnpm e2e` — CUJ-01/03/04/05 **unchanged**; any edit to an existing CUJ assertion is a red flag, not a fix · done 31/08: 95 passed, 3 skipped (`db-down`, which wants `DB_DOWN=1`), 0 failed. No CUJ assertion was touched
 - [ ] **T25** `pnpm verify` green ✓; `pnpm verify:db` **blocked** — migrate, seed and the 42 db tests pass, `db:restore-check` fails and is right to (see below); screenshots ✓ captured to `artifacts/screenshots/011-belso-back-office/` and looked at
-- [ ] **T26** Register **CUJ-06**; measure the editor's save time against the two-core box rather than assuming it
+- [x] **T26** Register **CUJ-06**; measure the editor's save time against the two-core box rather than assuming it · done 31/08 — CUJ-06 was already registered; the measurement is below and repeatable as `pnpm measure:upload`
+
+### T26 — what the editor actually costs
+
+Measured, not assumed, with `scripts/measure-upload.mjs`:
+
+|                | per photograph    | gallery of fifteen |
+| -------------- | ----------------- | ------------------ |
+| this machine   | **381 ms** median | 5.5 s of CPU       |
+| VPS, projected | ~460 ms           | ~6.7 s             |
+
+The projection uses `openssl speed -evp sha256` on both sides — 2,176,622k here
+against 1,776,877k on the VPS at 16 KB blocks, a single core about 1.2x slower.
+Rough, and a floor rather than a promise: the two cores are shared with Postgres
+and the client's n8n, so a number taken on an idle box is the best case.
+
+**The risk `plan.md` flagged is real and modest.** Photographs are uploaded one
+per submission, so a full gallery is fifteen separate requests of about half a
+second each, not one seven-second wait. That is comfortable. What would not be
+comfortable is batching them into a single submission, which is worth knowing
+before somebody improves the upload form.
+
+**Two measurement traps paid for here, so they are not paid for twice.**
+
+The first fixture was `sharp({create})` with a flat background, copied from
+`media.test.ts` where it is entirely correct — that file asserts on dimensions
+and EXIF and does not care about pixels. It reported **205 ms**, and it is a
+best case the product never produces: a solid colour compresses to a tenth of a
+megabyte and both decode and encode finish early. Real photographic content
+nearly doubled the number. A performance fixture has to be representative in the
+dimension being measured, and for a codec that dimension is entropy, not size.
+
+The CPU ratio was first taken with `dd | sha256sum`, which reported the VPS at
+less than half the local wall clock — not credible, and it is not measuring the
+processor: on Windows it measures Git Bash's pipe and process overhead. A
+benchmark that runs inside one process is the point.
 
 ### What phase 5 turned up
 
