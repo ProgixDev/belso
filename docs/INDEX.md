@@ -84,4 +84,6 @@ The docs tree is the repository's long-term memory. Agents and humans ground the
 
 ## Related (outside docs/)
 
+- [/HANDOFF.md](../HANDOFF.md) — where spec 011 stands, and what a session on a new machine needs before it can run the gates
+
 - [/AGENTS.md](../AGENTS.md) — agent operating model · [/specs/constitution.md](../specs/constitution.md) — engineering principles · [/specs/](../specs/README.md) — feature specs (SDD)

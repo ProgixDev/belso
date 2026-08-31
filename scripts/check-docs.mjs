@@ -7,7 +7,10 @@
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
-const TARGETS = ["docs", "specs", ".claude", "AGENTS.md", "CLAUDE.md", "README.md"];
+// `HANDOFF.md` is included for the reason the rest are: it is written to be read
+// by an agent with no memory of the session that produced it, so a dead link in
+// it is a dead link at exactly the moment nobody can work around one.
+const TARGETS = ["docs", "specs", ".claude", "AGENTS.md", "CLAUDE.md", "README.md", "HANDOFF.md"];
 const violations = [];
 
 function collect(path, out) {
