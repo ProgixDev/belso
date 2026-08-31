@@ -1,6 +1,6 @@
 # Spec 010 — Listings come from a database, not from fixtures
 
-- **Status:** active
+- **Status:** shipped 2026-08-28 — [PR #3](https://github.com/ProgixDev/belso/pull/3) · [report](../../docs/reports/010-belso-data-layer.md)
 - **Type:** feature
 - **Requested by / owner:** Houssem Ferrani
 - **Date:** 2026-08-28

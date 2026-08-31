@@ -3,6 +3,10 @@
 - **Source of truth:** `Belso_Cahier_des_charges.pdf` (Info Progix Inc., v1, French)
 - **Scope of this plan:** the **Luxe** site only — `belso-luxury`, properties above 500 000 €
 - **Author:** Engineering · **Date:** 2026-08-14 · **Status:** draft, pending client validation
+- **Last reconciled against the repository:** 2026-08-31. Sections 2, 3, 4, 6, 7, 8 and 9 were
+  rewritten to describe what was actually decided and built. The original phase numbering
+  (`002-belso-foundation`, `003-belso-backoffice`) never existed as specs and is gone; §7 now
+  maps to the specs that do.
 
 This is the master delivery roadmap. It does not replace the spec-driven workflow: each phase below becomes a `specs/NNN-slug/` folder (`spec.md` → `plan.md` → `tasks.md`) before any code is written. See `AGENTS.md` for the loop.
 
@@ -38,46 +42,74 @@ Belso is a Marrakech real-estate agency run by a single person (the manager). Sh
 
 These come from §9 of the cahier des charges. Phase 0 exists only to close them; some genuinely block code.
 
-| #   | Item                                                                  | Blocks                                   | Severity |
-| --- | --------------------------------------------------------------------- | ---------------------------------------- | -------- |
-| B-1 | **Hostinger VPS specs** (RAM, CPU, disk, bandwidth)                   | Whole infrastructure decision            | Blocking |
-| B-2 | Final domain name                                                     | SSL, canonical URLs, `hreflang`          | Blocking |
-| B-3 | Exhaustive list of property types and amenity tags                    | DB enums, AI extraction vocabulary       | Blocking |
-| B-4 | Exchange-rate rule: manual entry or automatic API                     | Pricing model, cron job                  | High     |
-| B-5 | Whether AI search history is visible in the back-office               | Logging schema (cheap now, costly later) | Medium   |
-| B-6 | Translation supply: who writes AR / EN / IT / NL content              | Launch date for 5 locales                | High     |
-| B-7 | Logo and final typography                                             | Design tokens, header                    | Medium   |
-| B-8 | SEO budget beyond technical structure (keyword audit, content, links) | Commercial scope, not code               | Low      |
+| #    | Item                                                                  | Blocks                                   | Status                                                                            |
+| ---- | --------------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------- |
+| B-1  | **Hostinger VPS specs** (RAM, CPU, disk, bandwidth)                   | Whole infrastructure decision            | **Closed.** 2 vCPU / 7.8 GB / 96 GB, Paris (ADR-0008) — above the floor below     |
+| B-2  | Final domain name                                                     | SSL, canonical URLs, `hreflang`          | **Open.** `NEXT_PUBLIC_SITE_URL` is unset and nothing is deployed yet             |
+| B-3  | Exhaustive list of property types and amenity tags                    | DB enums, AI extraction vocabulary       | **Partly closed.** Types and facets are in the schema; the amenity vocabulary the |
+|      |                                                                       |                                          | extractor needs is not agreed                                                     |
+| B-4  | Exchange-rate rule: manual entry or automatic API                     | Pricing model, cron job                  | **Open.** Spec 004 ships a fixed fixture rate, shown as approximate               |
+| B-5  | Whether AI search history is visible in the back-office               | Logging schema (cheap now, costly later) | **Open**, and cheaper to answer late than feared — there is no AI search yet      |
+| B-6  | Translation supply: who writes AR / EN / IT / NL content              | Launch date for the remaining locales    | **Open**, and descoped — see §6. The site ships `fr` + `en`                       |
+| B-7  | Logo and final typography                                             | Design tokens, header                    | **Open.** Tokens are in place; the mark is not final                              |
+| B-8  | SEO budget beyond technical structure (keyword audit, content, links) | Commercial scope, not code               | **Open.** Commercial, not blocking code                                           |
+| B-9  | **Who owns the privacy notice** (raised by spec 010)                  | Setting a production `DATABASE_URL`      | **Open, and it gates production.** The site stores names, emails, phone numbers   |
+| B-10 | **Which mail provider, and who owns the account** (spec 011)          | Spec 012, the enquiry notification       | **Open.** It is the reason 012 was split out of 011                               |
 
-**B-1 is the real risk.** One Next.js app + Postgres + an object store + 5 locales + heavy imagery on an entry-level VPS (1–2 GB RAM) will not hold. Realistic floor: **4 GB RAM, 2 vCPU, 80 GB NVMe**. If the current plan is smaller, the options are a Hostinger tier upgrade or offloading media to external object storage (S3-compatible) — both should be priced before development starts, not after.
+**B-1 was the real risk, and it came back fine.** The floor this plan set was 4 GB RAM, 2 vCPU,
+80 GB NVMe. The box is 2 vCPU / 7.8 GB / 96 GB in Paris, already running Traefik with Let’s
+Encrypt (ADR-0008). It also runs n8n, so the two cores are shared — the media pipeline is the
+part that will feel that, which is why §7 asks for it to be measured rather than assumed.
 
-**B-6 is the second risk.** The client asked for all five languages at launch. Arabic in particular means RTL layout work, not just strings. Translation delivery must be scheduled as a client dependency with a hard date, or launch slips.
+**B-9 is the blocking one now.** The database holds real names, emails and phone numbers and no
+privacy notice has an owner. That gates pointing anything at a production database at all; it is
+not a launch-week task.
+
+**B-6 stopped being a launch risk by being descoped.** The site ships French and English; Arabic,
+Italian and Dutch became a later phase, so RTL is a scheduled cost rather than the critical path.
+The translation dependency is still real — it just no longer holds the launch date.
 
 ---
 
 ## 3. Architecture
 
-### 3.1 Hosting — self-hosted on the client’s VPS
+### 3.1 Hosting — Postgres on the client’s VPS, no Supabase
 
-The repository is currently wired for hosted Supabase (ADR-0007). The client owns a Hostinger VPS and wants to use it, so **this plan targets self-hosted Supabase via Docker Compose on that VPS**, not hosted Supabase.
+The client owns a Hostinger VPS and wants to host on it. The question this plan originally
+answered was whether to run the **Supabase stack** on that box.
+**[ADR-0008](docs/architecture/decisions/0008-postgres-on-our-own-vps.md) answered it differently
+and supersedes ADR-0007: plain Postgres, and Supabase is gone from the repository.**
 
-Rationale: self-hosting Supabase (Postgres + GoTrue auth + Storage + PostgREST) keeps every pattern already built in this repo — the SSR cookie clients in `src/lib/supabase/`, the RLS-first migrations, the pgTAP tests — while satisfying the “on my VPS” requirement. Swapping to plain Postgres + a hand-rolled auth layer would throw that away and add work with no benefit for a single-user back-office.
+The reasoning, in short. RLS earns its keep when an untrusted browser holds a database key, and
+Belso has no such browser — every read goes through a `server-only` repository in Server
+Components, and two or three people at the agency do the writing. Self-hosting the full stack
+meant roughly eight containers on two shared cores in order to use Postgres and a login form.
+Auth is instead first-party: sessions as a Postgres table and scrypt passwords
+([ADR-0011](docs/architecture/decisions/0011-sessions-in-postgres.md)), with the storefront and
+the back-office holding two different database roles
+([ADR-0010](docs/architecture/decisions/0010-two-database-roles.md)), so the role that serves the
+public cannot write a listing.
 
-**This contradicts ADR-0007 and therefore requires ADR-0008 (“Self-hosted Supabase on Hostinger VPS”) written and accepted before phase 1 code.** ADR-0008 must state honestly what self-hosting costs us: we now own upgrades, backups, disk monitoring, SSL renewal and incident response. That is the price of the requirement.
-
-Target topology on the VPS:
+Topology on the VPS as it actually stands:
 
 ```
-Caddy (TLS, HTTP/3, static cache)
- ├── Next.js (standalone output, PM2 or Docker)
- └── Supabase stack (docker compose)
-      ├── Postgres 16  ← nightly pg_dump to off-VPS storage
-      ├── GoTrue (auth — one user)
-      ├── Storage (HQ photos, S3-on-disk driver)
-      └── PostgREST / Kong
+Traefik (TLS via Let’s Encrypt)   ← already there, shared with n8n
+ ├── Next.js (standalone output)  ← NOT DEPLOYED YET; B-2 blocks it
+ └── Postgres 17 (docker compose)
+      ├── belso         migrations, seed, backups — the superuser, never the app
+      ├── belso_app     the storefront: select the catalogue, insert an enquiry
+      └── belso_editor  the back-office: the only role that writes listings
 ```
 
-**Fallback documented in ADR-0008:** if B-1 comes back short, media moves to external S3-compatible storage first (biggest win per euro), and hosted Supabase stays the escape hatch — the application code is identical either way, only environment variables change.
+Postgres is bound to the VPS loopback and is not reachable from the internet; local work goes
+through an SSH tunnel (`pnpm db:tunnel`). Photographs are files on the VPS disk served by a route
+handler rather than out of `public/`, which Next serves from a build-time manifest and so would
+not serve a runtime upload from at all.
+A nightly `pg_dump` with a rehearsed restore landed with spec 010.
+
+**The media fallback still stands:** if the two shared cores turn out to be the constraint, media
+moves to external S3-compatible storage first. That changes the media route’s backing store and
+an environment variable, not the application.
 
 ### 3.2 Application stack
 
@@ -85,16 +117,21 @@ Unchanged from the skeleton, which is the point: Next.js 16 (App Router, RSC by 
 
 ### 3.3 Slices
 
-| Slice                            | Responsibility                                                     |
-| -------------------------------- | ------------------------------------------------------------------ |
-| `src/features/properties/`       | Listing queries, detail fetch, similar-properties matching         |
-| `src/features/ai-search/`        | Query parsing, criteria extraction, DB filtering, fallback ranking |
-| `src/features/enquiries/`        | Contact forms (listing + general), spam protection                 |
-| `src/features/admin-listings/`   | Back-office CRUD, media ordering, status, SEO fields               |
-| `src/features/admin-inbox/`      | Messages list, processing status, history                          |
-| `src/features/i18n/`             | Locale detection and switching, dictionaries, RTL direction        |
-| `src/features/currency/`         | Rate table, conversion, currency switcher                          |
-| `src/features/cinematic-scroll/` | **Already built** — the home hero scene, to be adapted             |
+| Slice                            | Responsibility                                                                          | State            |
+| -------------------------------- | --------------------------------------------------------------------------------------- | ---------------- |
+| `src/features/properties/`       | Catalogue and detail reads — **and every catalogue write**, including the back-office’s | Built            |
+| `src/features/admin/`            | Sign-in, scrypt passwords, the two-axis login throttle                                  | Built (spec 011) |
+| `src/features/enquiries/`        | Contact forms, Zod validation, throttling held in Postgres                              | Built            |
+| `src/features/i18n/`             | Locale detection and switching, dictionaries                                            | Built            |
+| `src/features/cinematic-scroll/` | The home hero scene                                                                     | Built            |
+| `src/features/ai-search/`        | Query parsing, criteria extraction, DB filtering, fallback ranking                      | Not started      |
+| `src/features/currency/`         | Rate table, conversion, currency switcher                                               | Not started      |
+
+Two corrections to the original list, both deliberate. There is **no `admin-listings` slice** —
+the back-office writes through `src/features/properties/`, because a second slice owning the same
+tables would have split the publication rules across two places and one of them would have been
+forgotten. And there is **no `admin-inbox` slice** yet: reading enquiries is
+[spec 012](specs/012-belso-inbox/spec.md), which B-10 blocks.
 
 Features never import each other. Anything shared goes to `src/components/ui/` or `src/lib/`.
 
@@ -109,9 +146,20 @@ Already decided and partly implemented — the `cinematic-scroll` slice and the 
 
 ## 4. Data model
 
-Single-tenant. All tables live in `public`, RLS enabled by the `0001` event trigger, one policy per command.
+Single-tenant. **The authorization boundary is the role a connection holds, not RLS** (ADR-0008,
+ADR-0010). The storefront connects as `belso_app`, which may select the catalogue and insert an
+enquiry and nothing else — it cannot read an enquiry back, let alone write a listing. The
+back-office connects as `belso_editor`. Those grants are written as executable assertions in
+`db/checks/role-grants.sql` and run by a test, so the split is verified rather than believed.
 
-**Read access is public** (anonymous visitors read published listings); **write access is the manager only**. That is the inverse of the skeleton’s owner-scoped `notes` pattern, so the policies must be written deliberately rather than copied.
+The sketch below is the shape this plan set out. **The schema as built is `db/migrations/0001`
+through `0006`**, described in [docs/architecture/backend.md](docs/architecture/backend.md).
+Three differences before you read the sketch as truth: `publication` (draft / published /
+archived) and `status` (available / under offer / sold / rented) are separate axes, because
+conflating them makes a sold listing invisible and an archived one purchasable; slug history is
+written by a trigger rather than by the application, because a back-office that renames a listing
+and forgets to record the old address is exactly the failure being guarded against; and `0005`
+added the account, session and row-version tables the sketch never had.
 
 ```
 properties
@@ -213,7 +261,13 @@ The same slice must also work with **no** AI: if the API is down or the cap is h
 
 ## 6. Internationalisation, currency, SEO
 
-**Locales:** `fr` (default), `ar`, `en`, `it`, `nl` — all five at launch, per the client’s decision.
+**Locales:** `fr` (default) and `en` are built and shipping. `ar`, `it` and `nl` are structurally
+unblocked and not built — the routing, the dictionaries and the per-locale translation rows all
+take them; no content exists. The five-at-launch commitment was traded away deliberately in spec
+004 and confirmed in spec 011: a listing publishes with **French alone** and appears on the
+English site in French, carrying an untranslated note. Requiring a translation before publishing
+would either hold finished properties off the site or produce hurried English that reads worse
+than the honest note.
 
 - Routing: `/[locale]/…`, `fr` as default. `hreflang` for all five plus `x-default`. Slugs translated per locale (`/en/properties/villa-atlas-view` vs `/fr/biens/villa-vue-atlas`).
 - Detection: `Accept-Language` header on first visit, persisted in a cookie, always manually overridable. **Never redirect based on IP without letting the user out of it** — it breaks crawlers and infuriates expats.
@@ -233,49 +287,67 @@ The same slice must also work with **no** AI: if the API is down or the cap is h
 
 Each phase = one spec folder, one branch, one review, one report. `pnpm verify` green at every step.
 
-### Phase 0 — Unblock (no code)
+### What has shipped
 
-Close B-1 through B-8. Deliverables: VPS audit report with a go/no-go on capacity, confirmed domain, final property-type and amenity vocabulary, signed-off exchange-rate rule, translation delivery schedule. **Do not start phase 1 on an unaudited VPS.**
+The original Phase 0 / 1 / 2 numbering was overtaken by events: there was never a
+`002-belso-foundation` or a `003-belso-backoffice`. The foundation was not one phase but was
+spread across the storefront and the data layer, and the back-office arrived last rather than
+second — building the public site on fixtures first meant the design was settled before there was
+a database to argue with. This is the real ledger:
 
-### Phase 1 — Foundation → `specs/002-belso-foundation/`
+| Spec                                       | What it delivered                                                                    | Status                                                   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| [004](specs/004-belso-public/spec.md)      | The public storefront on fixtures: home, listing detail, contact, legal, `fr` + `en` | Shipped 2026-08-17                                       |
+| [009](specs/009-belso-map/spec.md)         | Map view of the catalogue (MapLibre, ADR-0009)                                       | Active — [report](docs/reports/009-belso-map.md)         |
+| [010](specs/010-belso-data-layer/spec.md)  | Postgres replaces the fixtures; enquiries stored; backup and rehearsed restore       | Shipped — [report](docs/reports/010-belso-data-layer.md) |
+| [011](specs/011-belso-back-office/spec.md) | The editor: sign in, draft, publish, translate later, rename, archive, photographs   | Code-complete; verification and ship remain              |
+| [012](specs/012-belso-inbox/spec.md)       | The agency is told when someone writes                                               | Draft, blocked on B-10                                   |
 
-ADR-0008 (self-hosted Supabase). Docker Compose stack provisioned on the VPS. Full schema + RLS policies + pgTAP tests for public-read/owner-write. Design tokens promoted from the cinematic-scroll palette. `/[locale]` routing skeleton with dictionaries and RTL support. Manager auth (one account, MFA on).
+Spec 001 is the skeleton’s demo feature, not Belso.
 
-_Done when:_ `supabase test db` green, a seeded listing renders in all five locales at a placeholder URL, Arabic renders RTL without layout breakage.
+**Owner autonomy — the success condition this plan opened with — is met in code and not in
+production**, because nothing is deployed: B-2 has no domain and B-9 has no privacy notice. What
+is left of spec 011 is verification and review, not building.
 
-### Phase 2 — Back-office → `specs/003-belso-backoffice/`
+### What remains
 
-Listing CRUD with the full field set. Media upload with drag-to-reorder, server-side resize, alt text per locale. Status and visibility workflow. Per-locale SEO fields with translation-completeness indicators. Messages inbox with processing status.
+Numbers 005–008 stay reserved for the four phases below, as spec 009’s tasks record.
 
-_Done when:_ the manager creates a complete bilingual listing, uploads and reorders 15 photos, publishes it, and sees it live — screenshot-evidenced, no dev involvement.
+**Finish spec 011.** `/security-review` — a new auth surface, a new credential, file upload and
+PII all landed in one spec, so this one is not optional — then `/review`, the feature report and
+the docs pass. The editor’s save time against the two shared cores has not been measured, and the
+upload path is fifteen sequential decode-and-encode cycles; that is the number worth knowing
+before the client meets it.
 
-### Phase 3 — Public site → `specs/004-belso-public/`
+**Spec 012 — the inbox.** Enquiries are stored and nobody is told, while the contact page promises
+a reply within 24 hours. B-10 first.
 
-Home page: the existing cinematic scroll adapted to Marrakech imagery, with the single centred search bar. Listing detail: HQ gallery, key facts, dual-currency price, map, similar properties, pre-filled contact form. General contact page. Legal pages (privacy, cookies, terms).
+**AI search → `specs/005-belso-ai-search/`.** Extraction endpoint, Zod contract, SQL filter
+builder, fallback ranking, `search_queries` logging, rate limiting, spend cap, no-AI degraded
+mode. Similar-properties reuses the same ranking function. Needs B-3’s vocabulary.
 
-_Done when:_ the browse-to-enquiry CUJ passes e2e with screenshots, and the pages clear `docs/design/quality-bar.md`.
+_Done when:_ a fixture suite of real-world queries extracts correctly, empty-result queries return
+exactly 3 ranked fallbacks, and the endpoint rejects abuse.
 
-### Phase 4 — AI search → `specs/005-belso-ai-search/`
+**Content and currency → `specs/006-belso-content/`.** The remaining locales including Arabic and
+RTL, the currency switcher, the rate cron with a manual override (B-4), real listing data, real
+photography.
 
-Extraction endpoint, Zod contract, SQL filter builder, fallback ranking, `search_queries` logging, rate limiting, spend cap, no-AI degraded mode. Similar-properties block reuses the same ranking function.
+**SEO and performance → `specs/007-belso-seo/`.** `hreflang`, sitemaps, structured data, metadata
+defaults, image pipeline tuning, Lighthouse and Core Web Vitals on real content at real weight.
 
-_Done when:_ a fixture suite of ~30 real-world queries across all five languages extracts correctly, empty-result queries return exactly 3 ranked fallbacks, and the endpoint rejects abuse.
+**Hardening and launch → `specs/008-belso-launch/`.** The privacy notice (B-9) and consent
+handling, invisible captcha, the domain and SSL (B-2), **deploying the application to the VPS at
+all**, off-VPS backups of the machine as well as of the database, uptime and error monitoring,
+load test at expected peak, DNS cutover.
 
-### Phase 5 — Content and currency → `specs/006-belso-content/`
+**Handover.** Back-office manual in French (the client’s working language), with screenshots.
+Runbook: backups, restore, dependency updates, what to do when the AI budget cap trips.
 
-Translation import for all five locales, currency switcher, rate cron with manual override, real listing data loaded, real photography.
-
-### Phase 6 — SEO and performance → `specs/007-belso-seo/`
-
-`hreflang`, sitemaps, structured data, metadata defaults, image pipeline tuning, Lighthouse and Core Web Vitals passes on real content at real weight.
-
-### Phase 7 — Hardening and launch → `specs/008-belso-launch/`
-
-Invisible captcha on forms, GDPR cookie banner and consent handling, SSL, nightly off-VPS backups with a **tested restore**, uptime and error monitoring, load test at expected peak, DNS cutover.
-
-### Phase 8 — Handover
-
-Back-office manual in French (the client’s working language), with screenshots. Runbook: backups, restore, dependency updates, what to do when the AI budget cap trips.
+**Outside every phase, and worth putting to the owner: there is no CI.** Every gate here is run by
+hand; `.github/` holds a CODEOWNERS file and a PR template and no workflows. A workflow running
+`pnpm verify` on push needs no secrets, since the build is meant to work without a database, and
+would have caught a prerender failure that reached a branch during spec 011.
 
 ---
 
@@ -284,22 +356,28 @@ Back-office manual in French (the client’s working language), with screenshots
 The harness attests, not the author. Per `docs/process/definition-of-done.md`:
 
 - `pnpm verify` green — lint, typecheck, format, docs, typography, tests, build.
-- `supabase test db` green for every RLS policy, including negative cases (anonymous write must fail).
+- `pnpm test:db` green against `belso_test`, and `pnpm verify:db` — migrate, seed, database tests,
+  restore check — as one command. Both suites refuse a database whose name is not a scratch one:
+  they write, and a previous session wrote into the client’s live table.
+- `db/checks/role-grants.sql` green: the role split asserted, negative cases included —
+  `belso_app` must fail to write a listing and fail to read an enquiry back.
 - Playwright CUJs with screenshots: home → search → listing → enquiry; back-office create → publish; locale switch; currency switch; RTL rendering.
 - Lighthouse ≥ 90 performance / 100 SEO on the listing template with real photography.
 - `pnpm web:check` and the `SEC-*` catalogue in `docs/security/checklist.md`.
 
 ## 9. Risks
 
-| Risk                                 | Impact                | Mitigation                                                                    |
-| ------------------------------------ | --------------------- | ----------------------------------------------------------------------------- |
-| VPS undersized (B-1)                 | Blocks everything     | Phase 0 audit; media-to-S3 fallback; hosted Supabase escape hatch in ADR-0008 |
-| Translations arrive late (B-6)       | Launch slips          | Hard client deadline; per-locale publish gate so `fr`/`en` can ship first     |
-| RTL underestimated                   | Rework in phase 3     | Logical properties from phase 1; Arabic in the CUJ suite from day one         |
-| HQ photography kills Core Web Vitals | SEO priority missed   | Image budget enforced in phase 1, measured continuously, not at the end       |
-| Self-hosting operational burden      | Post-launch fragility | Runbook + tested restore in phase 7; state the cost plainly in ADR-0008       |
-| AI search abused                     | Cost spike            | Rate limit + spend cap + cache, all in phase 4 scope                          |
-| Client later wants both sites synced | Architectural rework  | Anti-goal recorded here; a change of mind is an R2R, not a bug fix            |
+| Risk                                 | Impact                  | Mitigation                                                                   |
+| ------------------------------------ | ----------------------- | ---------------------------------------------------------------------------- |
+| VPS shares two cores with n8n        | Media pipeline stalls   | Measure the editor’s save time before handover; media-to-S3 fallback (§3.1)  |
+| No privacy notice (B-9)              | Cannot go live          | An owner assigned before any production `DATABASE_URL` is set                |
+| Translations arrive late (B-6)       | Locales slip            | No longer a launch risk — `fr` publishes alone, `en` falls back visibly (§6) |
+| RTL underestimated                   | Rework in phase 3       | Logical properties from phase 1; Arabic in the CUJ suite from day one        |
+| HQ photography kills Core Web Vitals | SEO priority missed     | Image budget enforced in phase 1, measured continuously, not at the end      |
+| Self-hosting operational burden      | Post-launch fragility   | Runbook + the restore rehearsed in spec 010; the cost is stated in ADR-0008  |
+| No CI; every gate is run by hand     | A bad push reaches main | Proposed in §7 — `pnpm verify` on push, no secrets needed                    |
+| AI search abused                     | Cost spike              | Rate limit + spend cap + cache, all in phase 4 scope                         |
+| Client later wants both sites synced | Architectural rework    | Anti-goal recorded here; a change of mind is an R2R, not a bug fix           |
 
 ## 10. Open questions for the client
 
