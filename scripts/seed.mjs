@@ -19,6 +19,7 @@
  * Run: `pnpm db:seed` (with DATABASE_URL set — see `pnpm db:tunnel`).
  */
 import pg from "pg";
+import "./lib/env-local.mjs";
 import { districts, districtOrder } from "../src/features/properties/districts.ts";
 import { propertyFixtures } from "../src/features/properties/fixtures/index.ts";
 import { locales } from "../src/core/i18n.ts";

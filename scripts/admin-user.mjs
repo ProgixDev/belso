@@ -25,6 +25,7 @@
  */
 import { randomBytes } from "node:crypto";
 import pg from "pg";
+import "./lib/env-local.mjs";
 import { hashPassword } from "../src/features/admin/password.ts";
 
 const url = process.env.DATABASE_URL;

@@ -145,13 +145,47 @@ should be re-run immediately after being restored, not at the end of the phase.
 
 ## Phase 5 — verification
 
-- [ ] **T24** `CI=true pnpm e2e` — CUJ-01/03/04/05 **unchanged**; any edit to an existing CUJ assertion is a red flag, not a fix
-- [ ] **T25** `pnpm verify` green; `pnpm verify:db` green against `belso_test`; screenshots captured to `artifacts/screenshots/011-belso-back-office/` and **looked at**
+- [x] **T24** `CI=true pnpm e2e` — CUJ-01/03/04/05 **unchanged**; any edit to an existing CUJ assertion is a red flag, not a fix · done 31/08: 95 passed, 3 skipped (`db-down`, which wants `DB_DOWN=1`), 0 failed. No CUJ assertion was touched
+- [ ] **T25** `pnpm verify` green ✓; `pnpm verify:db` **blocked** — migrate, seed and the 42 db tests pass, `db:restore-check` fails and is right to (see below); screenshots ✓ captured to `artifacts/screenshots/011-belso-back-office/` and looked at
 - [ ] **T26** Register **CUJ-06**; measure the editor's save time against the two-core box rather than assuming it
+
+### What phase 5 turned up
+
+**Production is two migrations behind the code, and `db:restore-check` is what found it.**
+`db/migrations/0005` and `0006` were applied to `belso_test` and never to `belso`, which still
+sits at 0004. The check restores the newest live dump and runs the site's own golden snapshot
+against the copy; it failed on `column p.version does not exist`. That column is selected in
+`row.ts` — the one query **every public read** goes through — so deploying this spec against
+production as it stands would 500 the whole storefront, not only the back-office, and
+`belso_editor` would not exist to connect with either. The backup itself is healthy: the dump
+restored and every table matched. Comparing row counts would have printed a tick, which is the
+argument for running a real query that the script's own docstring makes.
+
+`pnpm verify:db` stays red at its last stage until somebody migrates production. That is a
+decision for the owner, not a task to tick.
+
+**Nothing warns that a photograph has no description.** `publishableSchema` requires the
+reference, the price, the built area and the French title, description, district, city and slug —
+and says nothing about alt text. The editor shows fifteen photographs with empty description
+fields and publishes them without comment. The spec calls this the field most likely to be
+skipped, and the one the site has already been burned by, and then nothing in the product acts on
+that. No acceptance criterion requires it, so this is a gap between the spec's stated concern and
+what shipped rather than a defect against a criterion — but it is what looking at the screenshots
+produced, and it should reach `/review`.
+
+**Reordering fifteen photographs is fourteen clicks.** Ordering is one-step up/down buttons per
+row, so moving the last photograph to the front means fourteen separate saves. `plan.md` phase 2
+asked for drag-to-reorder. Not a defect against any criterion — AC-6 only says she orders them —
+and worth putting in front of the person who will do it fifteen times per listing.
+
+**The screenshot recipe in T25 does not capture this feature.** `pnpm e2e:shots` runs
+`--grep @cuj`, and only one test in `listing-editor.spec.ts` carries the tag, so it produces
+`60-` alone. The other ten shots (`50-52`, `61-67`) live in untagged tests and need the two admin
+specs named directly with `FEATURE` set.
 
 ## Phase 6 — review & ship
 
-- [ ] **T27** `/security-review` — a new auth surface, a new credential, file upload, and PII. Not optional
+- [x] **T27** `/security-review` — a new auth surface, a new credential, file upload, and PII. Not optional · done 31/08: APPROVE, no P1. Three P2s fixed on `fix/011-security-review`; CSP enforcement (SEC-NET-002) deferred to the deploy
 - [ ] **T28** `/review`; fix P0/P1
 - [ ] **T29** `/feature-report` → `docs/reports/011-belso-back-office.md`
 - [ ] **T30** `/update-docs` — `backend.md` gains the roles and sessions; **reconcile `/plan.md`**, which still promises this work as `specs/003-belso-backoffice` with self-hosted Supabase; spec index → shipped

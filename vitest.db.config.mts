@@ -1,5 +1,11 @@
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
+// Fills DATABASE_URL and DATABASE_EDITOR_URL from `.env.local` when they are not
+// exported, so this suite resolves its database the same way the application
+// does. Without it `pnpm verify:db` fails with "DATABASE_URL is not set" on a
+// machine where the site itself runs — and the guard in `vitest.db.setup.ts`
+// reads the absence as "no database, nothing to protect".
+import "./scripts/lib/env-local.mjs";
 
 /**
  * The tests that need a real database, run on their own.
