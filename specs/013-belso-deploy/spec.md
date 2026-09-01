@@ -51,9 +51,10 @@ take at speed, without reconstructing what the previous version was.
 - **AC-5:** Given a deploy that started and left the site broken, when the documented rollback is
   followed, then the previous version is serving again, and the person doing it did not have to
   work out which version that was.
-- **AC-6:** Given the application cannot reach the database at boot, then it refuses to start rather
-  than starting and serving a catalogue it cannot read — and the previously running version keeps
-  serving.
+- **AC-6:** Given a deploy whose new container cannot read the catalogue, when the deploy runs, then
+  it does not replace the running version, and the probe that decides this requires listings rather
+  than a 200. The application's own behaviour on database loss is unchanged and deliberately so
+  (spec 010, AC-5): it serves the outage page and does not exit.
 - **AC-7:** Given the site is live, when the deployment's configuration is inspected, then no
   secret is present in the repository, in the image, or in any log line.
 
@@ -87,6 +88,16 @@ take at speed, without reconstructing what the previous version was.
   and phone numbers, so this stops being a documentation debt and becomes the thing that decides
   whether the site may lawfully be public. It has been open since spec 010. It gates the deploy
   even though nothing technical depends on it.
+
+## Amended after testing
+
+**AC-6 originally said the application must refuse to start without a database.** Testing it showed
+that would contradict spec 010, whose AC-5 deliberately keeps the site up and honest during an
+outage — an unreachable database today produces a healthy container serving "indisponible", which
+is correct and tested by `db-down.spec.ts`. Implementing the criterion as written would have
+replaced a graceful outage page with a crash-looping container on a live site.
+
+The requirement underneath it was about deploys, not the application, and AC-6 now says so.
 
 ## Resolved before planning
 

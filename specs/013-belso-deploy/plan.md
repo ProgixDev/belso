@@ -51,17 +51,19 @@ surface — which is why the placement table is mostly empty and that is the cor
 
 ## Acceptance criteria → verification mapping
 
-| AC       | Proven by                                                                                                                                                                                                                                 |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **AC-1** | Manual, once, against the real domain, walking CUJ-01/03/04/05 — plus `curl -I http://<domain>` asserting a 308 to HTTPS and a valid certificate. Recorded in `docs/reports/013-belso-deploy.md`                                          |
-| **AC-2** | Manual: publish a change in `/admin` on the live site, load the public page in a second browser, see it. This is CUJ-06 against production and is the acceptance for the whole spec                                                       |
-| **AC-3** | `deploy/media-volume.db.test.ts` is the wrong shape — this is infrastructure, so: a scripted check (`pnpm ops:check-media`) that writes a file into the volume, recreates the container, and reads it back. Run in T-04 and recorded      |
-| **AC-4** | Two real pushes: one green (deploys), one with a deliberately failing test on a branch merged to a scratch ref (does not deploy, previous container still `Up`). Evidence is the Actions run plus `docker ps`                             |
-| **AC-5** | Follow `docs/ops/deploy.md`'s rollback from a cold read, with a stopwatch, and record the elapsed time. If it needs a step that is not written down, the runbook is wrong                                                                 |
-| **AC-6** | Deploy with a deliberately wrong `DATABASE_URL`: the container must exit non-zero, the deploy must abort, and the previous container must still be serving. `src/core/env.ts`'s guard already throws — this proves the deploy respects it |
-| **AC-7** | `pnpm secrets:check` in the pipeline, plus a manual `docker history` and `docker inspect` for the image and `journalctl` for the runner, asserting no credential appears                                                                  |
+| AC       | Proven by                                                                                                                                                                                                                                                                                 |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AC-1** | Manual, once, against the real domain, walking CUJ-01/03/04/05 — plus `curl -I http://<domain>` asserting a 308 to HTTPS and a valid certificate. Recorded in `docs/reports/013-belso-deploy.md`                                                                                          |
+| **AC-2** | Manual: publish a change in `/admin` on the live site, load the public page in a second browser, see it. This is CUJ-06 against production and is the acceptance for the whole spec                                                                                                       |
+| **AC-3** | `deploy/media-volume.db.test.ts` is the wrong shape — this is infrastructure, so: a scripted check (`pnpm ops:check-media`) that writes a file into the volume, recreates the container, and reads it back. Run in T-04 and recorded                                                      |
+| **AC-4** | Two real pushes: one green (deploys), one with a deliberately failing test on a branch merged to a scratch ref (does not deploy, previous container still `Up`). Evidence is the Actions run plus `docker ps`                                                                             |
+| **AC-5** | Follow `docs/ops/deploy.md`'s rollback from a cold read, with a stopwatch, and record the elapsed time. If it needs a step that is not written down, the runbook is wrong                                                                                                                 |
+| **AC-6** | `pnpm ops:check-serving` against a container pointed at an unreachable database: it must fail, because the catalogue is empty. Against a healthy one it must pass. The container itself stays up and serves the outage page either way — that is spec 010's AC-5 and is not being changed |
+| **AC-7** | `pnpm secrets:check` in the pipeline, plus a manual `docker history` and `docker inspect` for the image and `journalctl` for the runner, asserting no credential appears                                                                                                                  |
 
-**AC-3 and AC-6 are the two that will actually fail first**, and both are cheap to check and
+**AC-3 and AC-6 are the two that will actually fail first** — AC-6 already did, by contradicting spec 010 before a line was written for it. It is reworded in the spec, not quietly reinterpreted here.
+
+**Original note:**, and both are cheap to check and
 expensive to discover late. They are sequenced early in `tasks.md` for that reason.
 
 ## Risks & unknowns

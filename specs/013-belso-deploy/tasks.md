@@ -48,9 +48,15 @@ Deliberately before any deploy machinery. Both are cheap now and expensive after
       done 01/09: `pnpm ops:check-media` green, including a negative control — a container with no
       volume mounted cannot see the marker, so the volume is provably what carried it rather than
       the image (**AC-3**)
-- [ ] **T-05** Prove the boot guard survives containerisation: run the image with a deliberately
-      wrong `DATABASE_URL` · done: the container exits non-zero rather than serving, and
-      `docker compose up -d` leaves the previous container running (**AC-6**)
+- [x] **T-05** `pnpm ops:check-serving` — the probe a deploy uses to decide whether the new
+      container is fit to replace the old one. Requires **listings**, not a 200 · done: green
+      against a healthy container, red against one pointed at an unreachable database, with the
+      container staying up and serving the outage page in both cases (**AC-6**, as amended) · done
+      01/09: healthy container → 40 listings, pass; unreachable database → sitemap 500, fail; both
+      containers `Up (healthy)` throughout, which is the whole point — the healthcheck cannot tell
+      them apart and this can. **One branch is untested:** a database that is reachable but empty
+      would give a 200 sitemap with no listings, and only the 500 path has been exercised. It needs
+      a migrated-but-unseeded database to reach, which nothing has yet
 
 ## Phase 2 — the VPS, still without a domain
 

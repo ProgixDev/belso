@@ -38,7 +38,8 @@
     "verify:db": "pnpm db:migrate && pnpm db:seed && pnpm test:db && pnpm db:restore-check",
     "db:restore-check": "node scripts/restore-check.mjs",
     "measure:upload": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/measure-upload.mjs",
-    "ops:check-media": "node scripts/check-media.mjs"
+    "ops:check-media": "node scripts/check-media.mjs",
+    "ops:check-serving": "node scripts/check-serving.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [
