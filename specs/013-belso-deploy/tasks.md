@@ -75,10 +75,22 @@ VPS hostname.
       `X-Forwarded-For: 1.2.3.4` was sent through Traefik and arrived as the real client address.
       SEC-RATE-003 was recorded as an assumption from Traefik's documentation; it is now measured.
 
-- [ ] **T-07** Provision production configuration on the box — `THROTTLE_SECRET` (`openssl rand -base64 32`),
+- [x] **T-07** Provision production configuration on the box — `THROTTLE_SECRET` (`openssl rand -base64 32`),
       `DATABASE_EDITOR_URL` via `scripts/vps/belso-roles.sh belso_editor`, `MEDIA_ROOT`,
       `NEXT_PUBLIC_SITE_URL` · done: present in the compose env file, `chmod 600`, owned by root,
-      and **not** in the repository · **undo:** the file is new; delete it
+      and **not** in the repository · **undo:** the file is new; delete it · done 01/09 via
+      `scripts/vps/belso-app-env.sh`, which generates the secrets **on the box and writes them
+      straight to the file** — `belso-roles.sh` prints them for a person to copy, and copying is
+      the step where a credential passes through a terminal, a clipboard or an agent transcript.
+      Verified by connecting as both rotated roles: `belso_app` reads 20 properties from
+      production, `belso_editor` reads `admin_users`. Mode 600, root:root, nothing printed but
+      key names
+- [ ] **T-07b** Create the client’s back-office account on **production** · done: an account
+      exists in `belso` and she can sign in · **found by T-07:** `admin_users` on production is
+      empty. Her account exists only in `belso_test`, so a deployed site would have a back-office
+      nobody can enter. Nothing in the spec noticed, because every test of the editor has run
+      against the scratch database
+
 - [ ] **T-08** Deploy by hand, once, to the VPS hostname · done: the catalogue serves the twenty
       real listings from the production database, and `/admin` signs in · **undo:**
       `docker compose down` — the site was not public, so there is nothing to restore
