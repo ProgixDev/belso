@@ -36,12 +36,25 @@ if (!url?.trim()) {
   process.exit(1);
 }
 
-const [command, ...args] = process.argv.slice(2);
+const [command, ...argv] = process.argv.slice(2);
+
+/*
+ * Flags separated from positional arguments before either is read.
+ *
+ * `create` half-supported `--stdin`: it checked for the flag when choosing the
+ * password, and then folded it into the display name, which is "everything
+ * after the email". `create sofia@belso.ma "Sofia Belso" --stdin` made an
+ * account called `Sofia Belso --stdin` with the piped password — wrong in the
+ * direction that hides itself, because the password works and the name is only
+ * seen later, in the back-office header.
+ */
+const useStdin = argv.includes("--stdin");
+const args = argv.filter((argument) => argument !== "--stdin");
 
 function usage(message) {
   if (message) console.error(`admin-user: ${message}\n`);
   console.error("Usage:");
-  console.error("  admin-user create <email> <display name>");
+  console.error("  admin-user create <email> <display name>  [--stdin]");
   console.error("  admin-user password <email>          [--stdin]");
   console.error("  admin-user disable <email>");
   console.error("  admin-user enable <email>");
@@ -115,7 +128,7 @@ try {
       const displayName = rest.join(" ").trim();
       if (!email || !displayName) usage("create needs an email and a display name");
 
-      const password = args.includes("--stdin") ? await readStdin() : generate();
+      const password = useStdin ? await readStdin() : generate();
       const hash = await hashPassword(password);
 
       /*
@@ -161,7 +174,7 @@ try {
       const [email] = args;
       if (!email) usage("password needs an email");
 
-      const password = args.includes("--stdin") ? await readStdin() : generate();
+      const password = useStdin ? await readStdin() : generate();
 
       /*
        * One transaction, because the two halves are one act.

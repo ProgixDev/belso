@@ -85,11 +85,25 @@ VPS hostname.
       Verified by connecting as both rotated roles: `belso_app` reads 20 properties from
       production, `belso_editor` reads `admin_users`. Mode 600, root:root, nothing printed but
       key names
-- [ ] **T-07b** Create the client’s back-office account on **production** · done: an account
+- [x] **T-07b** Create the client’s back-office account on **production** · done: an account
       exists in `belso` and she can sign in · **found by T-07:** `admin_users` on production is
       empty. Her account exists only in `belso_test`, so a deployed site would have a back-office
       nobody can enter. Nothing in the spec noticed, because every test of the editor has run
-      against the scratch database
+      against the scratch database · done 01/09 via `scripts/vps/belso-admin-user.sh`, same
+      posture as T-07: the password is generated on the box, piped to `--stdin`, and written to a
+      root-only file the owner collects in their own session. `sofia@belso.ma` / “Sofia Belso”,
+      the identity the spec, the handoff and `belso_test` all already use — **if her real address
+      differs, `create` is an upsert on `lower(email)` and a second run fixes it.** Verified by
+      `check-admin-password.mjs`, which runs `verifyPassword` — the function `signInAction` calls
+      — against the stored hash, and falsified against a wrong password (`MISMATCH`) so the check
+      is not vacuous. **Three bugs found on the way, all the same shape: an argument silently
+      absorbed by something between the caller and the code.** `admin-user.mjs create` folded
+      `--stdin` into the display name; ssh re-split `"Sofia Belso"` and made an account called
+      “Sofia”; and `docker run -i` drank the rest of this script off its own stdin, so the first
+      run created the account, printed nothing and exited 0. **And one of mine:** demonstrating
+      the falsification I echoed a truncated candidate, putting twelve characters of the real
+      password in a transcript — rotated at once, and the reason this script prints paths and
+      never values
 
 - [ ] **T-08** Deploy by hand, once, to the VPS hostname · done: the catalogue serves the twenty
       real listings from the production database, and `/admin` signs in · **undo:**
