@@ -33,7 +33,7 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # --frozen-lockfile: build what was committed or fail. A container built from a
 # tree nobody reviewed is not the tree that passed `pnpm verify`.
-# `--config.node-linker=hoisted` gives this image a flat, npm-shaped
+# An `.npmrc` written into the image gives it a flat, npm-shaped
 # node_modules instead of pnpm's symlinked store.
 #
 # **Standalone tracing and pnpm symlinks do not survive each other.** With the
@@ -46,7 +46,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 #
 # Hoisting is local to the image. Development keeps pnpm's layout and its
 # strictness; the runtime gets the boring one that traces correctly.
-RUN pnpm install --frozen-lockfile --config.node-linker=hoisted
+RUN echo node-linker=hoisted > .npmrc && pnpm install --frozen-lockfile
 
 # ---------------------------------------------------------------------------
 # build — compile, with the public site URL baked in
