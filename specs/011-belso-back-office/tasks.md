@@ -247,7 +247,7 @@ specs named directly with `FEATURE` set.
 - [x] **T27** `/security-review` — a new auth surface, a new credential, file upload, and PII. Not optional · done 31/08: APPROVE, no P1. Three P2s fixed on `fix/011-security-review`; CSP enforcement (SEC-NET-002) deferred to the deploy
 - [x] **T28** `/review`; fix P0/P1 · done 01/09: four lenses, eleven findings, two P0s. All P0 and P1 closed; the declined and deferred ones are in the report's follow-ups
 - [x] **T29** `/feature-report` → [`docs/reports/011-belso-back-office.md`](../../docs/reports/011-belso-back-office.md) · done 01/09, with the eleven screenshots curated into the report folder and linked from `specs/README.md`
-- [ ] **T30** `/update-docs` — `backend.md` gains the roles and sessions; **reconcile `/plan.md`**, which still promises this work as `specs/003-belso-backoffice` with self-hosted Supabase; spec index → shipped
+- [x] **T30** `/update-docs` · done 01/09 — [`docs/product/features/back-office.md`](../../docs/product/features/back-office.md) written; `backend.md` gains the editor role and a section on sessions it had never had; CUJ-06 now names both e2e specs and both screenshot ranges; spec index and this spec’s own status → shipped. `plan.md` was reconciled on 31/08 in its own commit. The feature index also gained the public storefront, which had shipped in August and was never listed.
 
 ## AC coverage
 

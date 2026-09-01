@@ -1,6 +1,6 @@
 # Spec 011 — The client publishes a listing without a developer
 
-- **Status:** active
+- **Status:** shipped 2026-09-01 — [report](../../docs/reports/011-belso-back-office.md) · living doc: [docs/product/features/back-office.md](../../docs/product/features/back-office.md)
 - **Type:** feature
 - **Requested by / owner:** Houssem Ferrani
 - **Date:** 2026-08-29

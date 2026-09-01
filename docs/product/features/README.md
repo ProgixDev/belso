@@ -35,6 +35,8 @@ Key components, store, actions; anything non-obvious.
 
 ## Index
 
-| Feature          | Status | Doc                          |
-| ---------------- | ------ | ---------------------------- |
-| Task list (demo) | live   | [task-list.md](task-list.md) |
+| Feature                        | Status | Doc                                          |
+| ------------------------------ | ------ | -------------------------------------------- |
+| Belso Luxury public storefront | live   | [public-storefront.md](public-storefront.md) |
+| Back-office                    | live   | [back-office.md](back-office.md)             |
+| Task list (demo)               | live   | [task-list.md](task-list.md)                 |

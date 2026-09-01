@@ -41,14 +41,35 @@ What replaces it is narrower and easier to check: **one filter, in one place.**
 
 ## Roles
 
-| Role        | Used by                   | May                                                                                                                |
-| ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `belso`     | migrations, seed, backups | everything — it is the image's superuser, and it is never used by the app                                          |
-| `belso_app` | the web application       | `select` the catalogue, `insert` an enquiry, count the throttle. Nothing else — it cannot even read enquiries back |
+| Role           | Used by                   | May                                                                                                                                                                                                               |
+| -------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `belso`        | migrations, seed, backups | everything — it is the image's superuser, and it is never used by the app                                                                                                                                         |
+| `belso_app`    | the web application       | `select` the catalogue, `insert` an enquiry, count the throttle. Nothing else — it cannot even read enquiries back                                                                                                |
+| `belso_editor` | the back-office           | write listings, translations, photographs and slug history; read and write accounts and sessions. **Cannot delete a listing** — archiving is the reversible answer (AC-4), and `belso_app` cannot reach any of it |
 
 The app being write-only over the personal data it collects is the strongest control available
 short of not collecting it. See `docs/security/vps.md`, including the `RETURNING` consequence
 that looks like a broken grant and is not.
+
+## Who is signed in
+
+The back-office authenticates against this database rather than a provider
+([ADR-0011](decisions/0011-sessions-in-postgres.md)). Three things worth knowing before touching
+it:
+
+- **A session is a row, not a token.** The cookie carries 32 random bytes; `admin_sessions` stores
+  only their SHA-256. A dump is therefore not a stack of live cookies, and disabling an account
+  takes effect on the very next request rather than whenever a signed token would have expired.
+- **`src/core/session.ts` answers who, and refuses nothing.** `requireSession()` is the refusal, and
+  it is called on the first line of every Server Action — because an action is reachable without
+  the page it lives on ever rendering. `proxy.ts` only checks that a cookie exists; it runs on Edge
+  and cannot ask Postgres.
+- **`session-cookie.ts` imports nothing**, deliberately. It holds the two names `proxy.ts` and
+  `session.ts` must agree on, so the Edge runtime never pulls `pg` into a build that then fails on
+  its first request.
+
+Accounts come from `pnpm admin:user` over SSH and nowhere else. `belso_editor` has no `insert` on
+`admin_users`, so a defect in the back-office cannot mint an account for whoever found it.
 
 ## Schema and migrations
 
