@@ -90,8 +90,19 @@ services:
       # diff rather than a runtime flag on purpose: a site going public should
       # not be one argument away, and an empty `basicauth.users` is a broken
       # middleware rather than an open door, so a flag would fail unreadably.
+      # `:?` here, and the priority was inverted until a review said so. The tag
+      # above — cosmetic, a matter of knowing which commit is serving — was
+      # required, while the only thing keeping the client's catalogue and a
+      # working contact form off the public internet was left to default. An
+      # empty value produces a compose *warning* and an empty `users` list, and
+      # the gate then holds only because Traefik's parser rejects it. Fail on our
+      # own terms, not a third party's.
       - traefik.http.routers.belso.middlewares=belso-gate@docker
-      - traefik.http.middlewares.belso-gate.basicauth.users=${BELSO_BASIC_AUTH}
+      - traefik.http.middlewares.belso-gate.basicauth.users=${BELSO_BASIC_AUTH:?run scripts/vps/belso-gate.sh — the pre-launch gate must be set}
+      # Traefik forwards the Authorization header to the application by default,
+      # so the gate's plaintext credential would reach the Next.js process on
+      # every request and into any error path that dumps headers.
+      - traefik.http.middlewares.belso-gate.basicauth.removeheader=true
 
     # The image declares its own HEALTHCHECK against /robots.txt. Repeated here
     # only to give the deploy something to wait on before it calls itself done.

@@ -56,10 +56,22 @@ ESCAPED="$(printf '%s' "$HASH" | sed 's/\$/$$/g')"
 
 # Rewritten rather than appended to, so running this twice does not leave two
 # assignments of one key and a coin flip over which compose reads.
-TMP="$(mktemp)"
-grep -v '^BELSO_BASIC_AUTH=' "$ENV_FILE" > "$TMP" || true
+# Beside app.env, not in /tmp, and removed however this exits: the temp file is a
+# **complete copy of app.env** — both connection strings and the throttle secret —
+# so a failure between writing it and moving it would strand every production
+# secret in a world-readable directory until it was swept days later.
+#
+# And `|| true` is gone. grep exits 1 for "no lines matched", which is the normal
+# first run, but it also exits 2 for a real error — and the next line truncates
+# app.env to whatever the temp file holds. Masking both meant a read failure
+# emptied the deployment's configuration.
+TMP="$(mktemp -p "$TARGET_DIR" app.env-XXXXXX)"
+chmod 600 "$TMP"
+trap 'rm -f "$TMP"' EXIT
+
+grep -v '^BELSO_BASIC_AUTH=' "$ENV_FILE" > "$TMP" || [ "$?" = "1" ] ||
+  die "could not read $ENV_FILE — refusing to rewrite it"
 cat "$TMP" > "$ENV_FILE"
-rm -f "$TMP"
 
 {
   printf '\n# Basic auth over the whole router until B-2 has a domain and B-9 has a\n'

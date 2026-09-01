@@ -8,14 +8,20 @@
 # values. Written as a broad ignore and a single re-inclusion for the same
 # reason the settings hook uses that shape: enumerating the real names leaves
 # anything unlisted included by construction.
-.env
-.env.*
+**/.env
+**/.env.*
 !.env.example
 
 # Credentials that are not env files.
-*.pem
-*.key
-id_rsa*
+# `**/` on every one of these, because Docker matches a bare pattern against
+# the context-root path only and `*` does not cross a `/`. `*.pem` therefore
+# ignores `key.pem` and ships `certs/key.pem`. The documented deploy uses
+# `git archive HEAD`, so nothing untracked is in the context today — but a
+# local `docker build .` has no such property, and this file exists for the
+# case where the obvious thing is wrong.
+**/*.pem
+**/*.key
+**/id_rsa*
 
 # Resolved on the deps stage from the lockfile, never copied in. Copying a
 # Windows-built tree into an Alpine image is also how `sharp` arrives with the

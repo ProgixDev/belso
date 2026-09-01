@@ -85,10 +85,12 @@ export BELSO_PROBE_AUTH="$(ssh belso-vps 'cat /docker/belso/gate-credentials.txt
 
 pnpm ops:check-serving https://srv1843841.hstgr.cloud
 
-BELSO_ADMIN_EMAIL=sofia@belso.ma \
-BELSO_ADMIN_PASSWORD="$(ssh belso-vps 'cat /docker/belso/back-office-password.txt')" \
+BELSO_ADMIN_EMAIL=probe@belso.ma \
+BELSO_ADMIN_PASSWORD="$(ssh belso-vps 'cat /docker/belso/password-probe-belso-ma.txt')" \
   pnpm ops:check-signin https://srv1843841.hstgr.cloud
 ```
+
+**`probe@belso.ma`, not the client's account.** A deploy check that needs her password would copy it onto a developer workstation every time, and require the file it comes from to live on the box forever — while the rule two sections down says to collect that file and shred it. The probe account is an ordinary back-office account that exists to be signed into by a script. Keep its password in a password manager and re-issue it with `belso-admin-user.sh password probe@belso.ma`, which needs only the editor role.
 
 `check-serving` requires listing URLs in the sitemap, not a `200`. `check-signin` drives a real
 browser: a wrong password refused, the real one in, the catalogue visible to the editor role. They
@@ -141,13 +143,19 @@ ssh belso-vps 'bash -s' -- create nom@belso.ma "Nom Complet" < scripts/vps/belso
 ```
 
 It generates the password on the box, verifies it with the same function the sign-in calls, and
-writes it to `/docker/belso/back-office-password.txt` (mode 600, root). Collect it in your own
-session and destroy it:
+writes it to `/docker/belso/password-<address>.txt` (mode 600, root). One file per account, because
+a shared one meant provisioning a colleague silently destroyed the password of whoever came before —
+and by design it is the only copy. Collect it in your own session and destroy it:
 
 ```bash
-ssh belso-vps 'cat /docker/belso/back-office-password.txt'
-ssh belso-vps 'shred -u /docker/belso/back-office-password.txt'
+ssh belso-vps 'ls /docker/belso/password-*.txt'
+ssh belso-vps 'cat /docker/belso/password-sofia-belso-ma.txt'
+ssh belso-vps 'shred -u /docker/belso/password-sofia-belso-ma.txt'
 ```
+
+`create` reads the Postgres superuser password, because `insert on admin_users` is withheld from
+every other role on purpose. `password` and `list` do not — the editor role already has what they
+need, and the routine operation should not touch the highest-privilege credential on the box.
 
 Changing a password signs that account out everywhere. That is the point of it.
 

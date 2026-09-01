@@ -14,7 +14,7 @@
  * See docs/security/checklist.md (SEC-SECRET-*).
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join, extname, basename } from "node:path";
+import { join, extname, basename, relative } from "node:path";
 
 const ROOT = process.cwd();
 const problems = [];
@@ -90,7 +90,47 @@ scanEnvNames([
 // 2. Hardcoded secrets — source.
 scanValues(walk(join(ROOT, "src"), [".ts", ".tsx"]), "source");
 
-// 3. Build-time guard — scan the built CLIENT bundle if present.
+/*
+ * 3. The deploy surface — a credential handed to a subprocess on its command line.
+ *
+ * **This check read none of spec 013 and reported green throughout it.** The
+ * scan above covers `src/`, root `.env*` and the client bundle; every line of
+ * the deployment — five shell scripts on the VPS, the compose file, the
+ * Dockerfile — sat outside it, and every commit message on that branch quoted
+ * "check-secrets ✓" as though it meant something. A security review then found
+ * the Postgres superuser password being passed as `docker run -e PGPASSWORD=…`,
+ * which puts it in argv, and `/proc/<pid>/cmdline` is world-readable — measured
+ * on the box, not argued: an unprivileged account read the canary out of three
+ * processes.
+ *
+ * `docker run -e VAR` (no `=`) copies the value from the caller's environment
+ * instead, and `/proc/<pid>/environ` is owner-only. So the rule is narrow: flag
+ * an assignment, never the pass-through form. `psql -c` with an inline password
+ * is the same mistake wearing a different hat.
+ */
+const ARGV_SECRET =
+  /(?:docker\s+(?:run|exec)|psql)[^\n]*?-e\s+[A-Z_]*(?:PASSWORD|SECRET|TOKEN|CREDENTIAL|PW)[A-Z_]*=/;
+
+for (const file of [
+  ...walk(join(ROOT, "scripts"), [".sh", ".mjs"]),
+  ...walk(join(ROOT, "deploy"), [".yml", ".yaml"]),
+  ...[join(ROOT, "Dockerfile"), join(ROOT, ".dockerignore")].filter((f) => existsSync(f)),
+]) {
+  const lines = readFileSync(file, "utf8").split(/\r?\n/);
+  lines.forEach((line, index) => {
+    // The comment explaining the rule must not trip the rule.
+    if (/^\s*(#|\*|\/\/)/.test(line)) return;
+    if (ARGV_SECRET.test(line)) {
+      problems.push(
+        `${relative(ROOT, file)}:${index + 1} — a secret is passed on a command line, where ` +
+          `/proc/<pid>/cmdline exposes it to every local account. Export it and use the ` +
+          `value-less form (\`-e VAR\`).`,
+      );
+    }
+  });
+}
+
+// 4. Build-time guard — scan the built CLIENT bundle if present.
 const clientDir = join(ROOT, ".next", "static");
 if (existsSync(clientDir)) {
   scanValues(walk(clientDir, [".js", ".json"]), "the client bundle (.next/static)");

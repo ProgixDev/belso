@@ -39,12 +39,30 @@ docker inspect "$CONTAINER" >/dev/null 2>&1 || die "container $CONTAINER is not 
 # password becomes a failing connection string.
 generate() { head -c 24 /dev/urandom | base64 | tr -d '=+/' | head -c 32; }
 
+# **psql's stderr goes to a file, not to the caller.**
+#
+# `format('alter role %I with password %L', …)` builds the statement, and
+# PostgreSQL puts the *expanded* text into the `CONTEXT:` line of any error
+# raised inside the block — so a failure here would print
+# `alter role belso_app with password '<the password>'` to stderr, which over
+# `ssh 'bash -s'` is the operator's terminal and any transcript recording it.
+# That is precisely the leak this file's header claims cannot happen.
+# Kept beside app.env rather than in /tmp — a world-readable directory swept on
+# a schedule nobody here controls — and removed on the way out **only if it is
+# empty**. A trap that always deletes would destroy the diagnostics the failure
+# message just told the operator to read.
+mkdir -p "$TARGET_DIR"
+PSQL_LOG="$(mktemp -p "$TARGET_DIR" psql-XXXXXX.log)"
+chmod 600 "$PSQL_LOG"
+trap '[ -s "$PSQL_LOG" ] || rm -f "$PSQL_LOG"' EXIT
+
 set_password() {
   local role="$1" password="$2"
   # Piped, never an argument: an argument is visible in `ps` to every process on
   # a box that also runs the client's n8n. `format('%I … %L')` quotes both the
   # identifier and the literal so neither can end the statement early.
-  docker exec -i "$CONTAINER" psql -q -o /dev/null -v ON_ERROR_STOP=1 -U "$DB_OWNER" -d "$DB_NAME" <<SQL
+  docker exec -i "$CONTAINER" psql -q -o /dev/null -v ON_ERROR_STOP=1 -U "$DB_OWNER" -d "$DB_NAME" \
+    2>"$PSQL_LOG" <<SQL || die "setting the password for ${role} failed — psql's output is in ${PSQL_LOG}, and it may contain the password, so read it and delete it"
 do \$\$
 begin
   execute format('alter role %I with password %L', '${role}', \$pw\$${password}\$pw\$);

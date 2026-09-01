@@ -89,8 +89,16 @@ docker volume inspect "$MEDIA_VOLUME" >/dev/null 2>&1 \
 if [ "$MODE" = "one" ]; then
   # Checked before extracting, so a mistyped path says so instead of silently
   # restoring nothing and reporting success.
+  # `$TARGET` arrives as an argument to `sh -c`, not interpolated into it. It is
+  # an operator-supplied path, this container runs as root with the whole backup
+  # directory mounted — every database dump, so every enquiry — and a path
+  # containing a single quote would have closed the string and run whatever
+  # followed. Not reachable today, because `media.ts` names uploads
+  # `<uuid>/master.webp` from sniffed bytes and never from the filename; but this
+  # script's own header advertises restoring files with spaces and accents in
+  # them, so the input it invites is not the input the application produces.
   docker run --rm -v "${BACKUP_DIR}:/out:ro" "$TAR_IMAGE" \
-    sh -c "tar -tzf /out/${ARCHIVE} | sed 's|^\./||' | grep -qxF '${TARGET}'" \
+    sh -c 'tar -tzf "/out/$1" | sed "s|^\./||" | grep -qxF "$2"' _ "$ARCHIVE" "$TARGET" \
     || die "${TARGET} is not in ${ARCHIVE} — run \`list\` to see what is"
 
   docker run --rm -v "${MEDIA_VOLUME}:/media" -v "${BACKUP_DIR}:/out:ro" "$TAR_IMAGE" \
