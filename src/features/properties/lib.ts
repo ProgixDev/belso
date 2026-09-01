@@ -139,6 +139,26 @@ export function resolveTranslation(
  * locales on every seeded photograph) and it will be reachable the moment the
  * back-office writes its first caption.
  */
+/**
+ * How many photographs the site has no description for, in any language.
+ *
+ * **Defined as "`altFor` would return nothing", not "the French box is empty".**
+ * That is the condition with a consequence: the gallery falls back to a
+ * positional label, so a screen reader hears "Photo 3 sur 15" instead of what
+ * the room is. A photograph described in English alone is imperfect and is not
+ * this problem.
+ *
+ * The editor shows the count; it never blocks publishing. The spec refused that
+ * trade for translations — a finished property must not sit off the site
+ * waiting for prose — and alt text does not get a stricter rule than the
+ * listing text it accompanies.
+ */
+export function undescribedCount(
+  media: readonly { alt: Partial<Record<Locale, string>> }[],
+): number {
+  return media.filter((item) => Object.values(item.alt).every((text) => !text?.trim())).length;
+}
+
 export function altFor(alt: Partial<Record<Locale, string>>, locale: Locale): string {
   return alt[locale] ?? alt[defaultLocale] ?? Object.values(alt)[0] ?? "";
 }

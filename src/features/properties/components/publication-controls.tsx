@@ -10,6 +10,7 @@ import {
   unpublishListingAction,
 } from "../admin-actions";
 import type { EditorListing } from "../admin-repository";
+import { undescribedCount } from "../lib";
 
 /**
  * Publish, unpublish, archive — the three buttons that decide whether a listing
@@ -75,6 +76,17 @@ export function PublicationControls({ listing }: { listing: EditorListing }) {
     .map((key) => FIELD_NAMES[key])
     .filter(Boolean);
 
+  /*
+   * Shown here as well as in the photograph list, because this is where the
+   * decision is made. She can be looking at the publish button having scrolled
+   * past fifteen empty description boxes without registering them.
+   *
+   * It does not gate the button. `publishableSchema` names the missing French
+   * fields and refuses; alt text is not among them and should not be — the spec
+   * refused to hold a finished property off the site waiting for prose.
+   */
+  const undescribed = undescribedCount(listing.media);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
@@ -85,6 +97,21 @@ export function PublicationControls({ listing }: { listing: EditorListing }) {
             {listing.publication === "published" ? "Repasser en brouillon" : "Publier"}
           </ActionButton>
         </form>
+
+        {/*
+         * Shown whether or not it is published — the first version of this hid it
+         * once published, which is backwards: that is precisely when the
+         * undescribed photographs are live on the site and the omission has a
+         * consequence. Before publishing it is a prompt; after, it is a defect
+         * report.
+         */}
+        {undescribed > 0 ? (
+          <span className="text-muted-foreground text-sm">
+            {undescribed === 1
+              ? "Une photographie sans description"
+              : `${undescribed} photographies sans description`}
+          </span>
+        ) : null}
 
         {listing.publication !== "archived" ? (
           <form action={archive}>

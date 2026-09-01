@@ -12,6 +12,7 @@ import {
   uploadPhotographAction,
 } from "../admin-actions";
 import type { EditorListing } from "../admin-repository";
+import { undescribedCount } from "../lib";
 
 /**
  * The gallery: upload, order, and say what each photograph shows (AC-6).
@@ -76,6 +77,7 @@ export function PhotographManager({ listing }: { listing: EditorListing }) {
   const fileInput = useRef<HTMLInputElement>(null);
 
   const media = listing.media;
+  const undescribed = undescribedCount(media);
 
   /*
    * Every action revalidates, so the server sends a fresh listing and this
@@ -185,6 +187,32 @@ export function PhotographManager({ listing }: { listing: EditorListing }) {
         Envoyez les fichiers tels que le photographe vous les a donnés. Le site fabrique lui-même la
         taille dont il a besoin ; l’original est conservé.
       </p>
+
+      {undescribed > 0 ? (
+        /*
+         * A note, never a blocker. The spec refused to hold a finished property
+         * off the site waiting for a translation; alt text does not get a
+         * stricter rule than the listing text it accompanies. But the spec also
+         * calls this the field most likely to be skipped, and until now nothing
+         * in the product said so — the first end-to-end run of the editor left
+         * fourteen of fifteen photographs undescribed and published without a
+         * word.
+         *
+         * Not `role="alert"`: it is a standing fact about the listing, not an
+         * event, and announcing it on every keystroke would be worse than
+         * silence.
+         */
+        <p className="text-muted-foreground text-sm">
+          <strong className="text-foreground font-medium">
+            {undescribed === 1
+              ? "Une photographie n’a pas de description"
+              : `${undescribed} photographies n’ont pas de description`}
+            .
+          </strong>{" "}
+          Un visiteur qui utilise un lecteur d’écran ne saura pas ce qu’elles montrent. Vous pouvez
+          publier sans, et les compléter plus tard.
+        </p>
+      ) : null}
 
       {error ? (
         <p role="alert" className="text-destructive text-sm">

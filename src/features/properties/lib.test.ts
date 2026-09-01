@@ -12,6 +12,7 @@ import {
   resolveTranslation,
   similarityScore,
   sortProperties,
+  undescribedCount,
   tokenize,
 } from "./lib";
 import { propertySearchParamsSchema, type Property } from "./types";
@@ -371,5 +372,25 @@ describe("resolveLocation", () => {
       expect(Number.isFinite(location.lat), property.reference).toBe(true);
       expect(Number.isFinite(location.lng), property.reference).toBe(true);
     }
+  });
+});
+
+describe("undescribedCount", () => {
+  it("counts a photograph nobody described in any language", () => {
+    expect(undescribedCount([{ alt: {} }, { alt: { fr: "La piscine" } }])).toBe(1);
+  });
+
+  it("does not count one described in English alone", () => {
+    // Imperfect and not this problem: `altFor` falls back, so the gallery has a
+    // name for it. The count exists to find the ones with no name at all.
+    expect(undescribedCount([{ alt: { en: "The pool" } }])).toBe(0);
+  });
+
+  it("treats whitespace as no description", () => {
+    expect(undescribedCount([{ alt: { fr: "   " } }])).toBe(1);
+  });
+
+  it("is zero for an empty gallery, so the editor says nothing", () => {
+    expect(undescribedCount([])).toBe(0);
   });
 });

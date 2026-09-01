@@ -167,13 +167,21 @@ through this feature.
 
 Consciously open, in the order they matter.
 
-- **The editor does not ask for photograph descriptions, or say how many are missing.** The product
-  review rates this P1. `publishableSchema` says nothing about alt text and the editor publishes
-  fifteen empty description fields without comment, while the spec calls this "the field most
-  likely to be skipped, and the one the site has already been burned by". The recommendation is a
-  count beside the publish button — a warning, never a blocker, because the spec already refused
-  that trade for translations. **A floor is in place**: no gallery control is ever unnamed
-  (`gallery.test.tsx`), so the accessibility failure is fixed even where the copy is absent.
+- ~~**The editor does not ask for photograph descriptions, or say how many are missing.**~~
+  **Closed 2026-09-01.** The photograph list and the publish controls both show the count, worded
+  as a note and never a gate — `publishableSchema` is untouched, because the spec refused to hold a
+  finished property off the site waiting for prose and alt text does not get a stricter rule than
+  the listing text it accompanies. The count means "the gallery would have no name for this", not
+  "the French box is empty", so a photograph described in English alone does not raise it. Visible
+  in screenshots 66 and 67. The original finding read:
+
+  > The product review rates this P1. `publishableSchema` says nothing about alt text and the editor publishes
+  > fifteen empty description fields without comment, while the spec calls this "the field most
+  > likely to be skipped, and the one the site has already been burned by". The recommendation is a
+  > count beside the publish button — a warning, never a blocker, because the spec already refused
+  > that trade for translations. **A floor is in place**: no gallery control is ever unnamed
+  > (`gallery.test.tsx`), so the accessibility failure is fixed even where the copy is absent.
+
 - **`belso_editor` has no password on production.** `0006` creates the role without one by design;
   `scripts/vps/belso-roles.sh` provisions it. Deploy-time step.
 - **CSP is still `Report-Only` with `script-src 'unsafe-inline'`** (SEC-NET-002). Defensible for a
