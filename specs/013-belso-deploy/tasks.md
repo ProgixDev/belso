@@ -237,9 +237,21 @@ the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are 
       missing from the archive, which is a broken gallery. This way leaves a file no row mentions,
       which is invisible — and uploads outnumber deletions, so it is the rare case too
 
-- [ ] **T-19** Re-run `pnpm measure:upload` on the deployed box · done: the real number replaces the
-      ~460ms projection in `specs/011-belso-back-office/tasks.md`, which was measured with nothing
-      else competing for the cores
+- [x] **T-19** Re-run `pnpm measure:upload` on the deployed box · done: the real number replaces the
+      real number replaces the ~460ms projection in `specs/011-belso-back-office/tasks.md`, which
+      was measured with nothing else competing for the cores · done 01/09: **568 ms median per
+      photograph, 8.5 s for a gallery of fifteen**, on a box at 0.21 load. The projection was 24%
+      optimistic — the `openssl speed` ratio said the VPS core was 1.2x slower and it is 1.5x for
+      this workload, because SHA-256 is hardware-accelerated on both sides and an image codec is
+      not. The conclusion is unchanged and the reasoning behind it is now measured: photographs
+      upload one per submission, so a gallery is fifteen requests of half a second, not one
+      nine-second wait.
+
+      **A false claim of mine fell out of this.** `belso-admin-user.sh` justified skipping the
+      alias hook by saying its `module-typescript` format needs a newer Node than the image
+      carries. That was invented; this task ran `measure-upload.mjs` through the hook on that
+      exact image. The real reason to skip it stands — there is no alias to resolve — and the
+      comment now says that and only that
 
 ## Phase 6 — review & ship
 

@@ -86,11 +86,16 @@ OWNER_PW="$(grep '^POSTGRES_PASSWORD=' "$SECRET_ENV" | cut -d= -f2-)"
 # string that ends up in a log line because it looks like configuration.
 URL="postgres://${DB_OWNER}@${CONTAINER}:5432/${DB_NAME}"
 
-# Node 22 needs telling to strip types; 23+ does it unasked. The repository's
-# `ts-alias-hook` is deliberately not used: `admin-user.mjs` imports
-# `password.ts` by its real path with its real extension, so there is no alias to
-# resolve, and the hook's `module-typescript` format needs a newer Node than this
-# image carries.
+# `ts-alias-hook` is not used here because there is nothing for it to do:
+# `admin-user.mjs` imports `password.ts` by its real path with its real
+# extension, and `password.ts` imports only `node:crypto`. No alias, no stub.
+#
+# It is not that the hook could not run. An earlier version of this comment said
+# the hook's `module-typescript` format needed a newer Node than this image
+# carries; that was invented, and T-19 disproved it by running
+# `measure-upload.mjs` through the hook on this exact image. The strip-types flag
+# is likewise belt and braces — Node has stripped types without asking since
+# 22.18 — kept only so this does not depend on the image's minor version.
 NODE_FLAGS="--experimental-strip-types --disable-warning=ExperimentalWarning"
 NODE_FLAGS="$NODE_FLAGS --disable-warning=MODULE_TYPELESS_PACKAGE_JSON"
 

@@ -15,15 +15,34 @@
  * cannot take the storefront down with it. Measuring them in parallel would
  * report a number the product never produces.
  *
- * **This measures the machine it runs on, which is not the VPS.** Nothing is
- * deployed there yet, so the honest use of this script is: run it here, get a
- * single-core ratio, and multiply. Do not quote the local number as the
- * client's.
+ * **This measures the machine it runs on.** Run it on the VPS, which is now
+ * possible and is the only number worth quoting:
+ *
+ *   tar -czf - scripts src tsconfig.json package.json \
+ *     public/design/stock/reveal-interior.jpg |
+ *     ssh belso-vps 'rm -rf /docker/belso/admin && mkdir -p /docker/belso/admin &&
+ *                    tar -xzf - -C /docker/belso/admin'
+ *
+ *   ssh belso-vps 'docker run --rm \
+ *     -v /docker/belso/admin/scripts:/app/scripts:ro \
+ *     -v /docker/belso/admin/src:/app/src:ro \
+ *     -v /docker/belso/admin/public:/app/public:ro \
+ *     -v /docker/belso/admin/tsconfig.json:/app/tsconfig.json:ro \
+ *     belso-deps:latest node --import ./scripts/lib/ts-alias-hook.mjs \
+ *       scripts/measure-upload.mjs 15'
+ *
+ * **Before there was a deployment, this was scaled by a CPU ratio, and the ratio
+ * was 24% optimistic.** The method is left below because it is what you do when
+ * you cannot run on the target; the lesson is what it cost.
  *
  *   openssl speed -evp sha256 -seconds 2        # here, and over ssh on the VPS
  *
  * Compare the 16384-byte column. On 31/08/2026 that was 2,176,622k here against
- * 1,776,877k on the VPS — a single core about 1.2x slower.
+ * 1,776,877k on the VPS — a single core about 1.2x slower, which predicted
+ * ~460 ms per photograph. Measured on the box on 01/09 it was **568 ms**: the
+ * real ratio is 1.5x, because SHA-256 is hardware-accelerated on both sides and
+ * an image codec is not. Scaling a workload by a benchmark it does not resemble
+ * gets you the right order of magnitude and not much more.
  *
  * **Do not use `dd | sha256sum` for this**, which is the obvious thing to reach
  * for and is wrong: it timed the VPS at less than half the local wall clock,

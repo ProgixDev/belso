@@ -177,19 +177,29 @@ restore whose oracle is the site's own catalogue query rather than a row count.
 
 Measured, not assumed, with `scripts/measure-upload.mjs`:
 
-|                | per photograph    | gallery of fifteen |
-| -------------- | ----------------- | ------------------ |
-| this machine   | **381 ms** median | 5.5 s of CPU       |
-| VPS, projected | ~460 ms           | ~6.7 s             |
+|                   | per photograph    | gallery of fifteen |
+| ----------------- | ----------------- | ------------------ |
+| this machine      | **381 ms** median | 5.5 s of CPU       |
+| VPS, projected    | ~460 ms           | ~6.7 s             |
+| **VPS, measured** | **568 ms** median | **8.5 s**          |
 
-The projection uses `openssl speed -evp sha256` on both sides — 2,176,622k here
+The projection used `openssl speed -evp sha256` on both sides — 2,176,622k here
 against 1,776,877k on the VPS at 16 KB blocks, a single core about 1.2x slower.
-Rough, and a floor rather than a promise: the two cores are shared with Postgres
-and the client's n8n, so a number taken on an idle box is the best case.
 
-**The risk `plan.md` flagged is real and modest.** Photographs are uploaded one
-per submission, so a full gallery is fifteen separate requests of about half a
-second each, not one seven-second wait. That is comfortable. What would not be
+**The real number arrived on 01/09** (spec 013, T-19), once there was a
+deployment to run it in: 568 ms median, slowest 597 ms, on a box at 0.21 load.
+The projection was **24% optimistic** — the ratio said 1.2x and the truth was
+1.5x, because SHA-256 is hardware-accelerated on both sides and an image codec
+is not. Worth remembering the next time a CPU ratio is used to scale a
+workload it does not resemble.
+
+Still a floor rather than a promise: the two cores are shared with Postgres and
+the client's n8n, and this was measured while nobody was using the site.
+
+**The risk `plan.md` flagged is real and modest**, and the measured number does
+not change that. Photographs are uploaded one per submission, so a full gallery
+is fifteen separate requests of a little over half a second each, not one
+nine-second wait. That is comfortable. What would not be
 comfortable is batching them into a single submission, which is worth knowing
 before somebody improves the upload form.
 
