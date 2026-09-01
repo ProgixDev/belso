@@ -5,7 +5,16 @@ import { defineConfig } from "vitest/config";
 // does. Without it `pnpm verify:db` fails with "DATABASE_URL is not set" on a
 // machine where the site itself runs — and the guard in `vitest.db.setup.ts`
 // reads the absence as "no database, nothing to protect".
-import "./scripts/lib/env-local.mjs";
+import { loadEnvLocal } from "./scripts/lib/env-local.mjs";
+
+/*
+ * Called, not merely imported. This was a side-effect import until the module
+ * grew an explicit entry point, at which point the import kept type-checking,
+ * kept passing lint, and did nothing — so this whole suite skipped itself for
+ * want of a DATABASE_URL and reported success. A suite that silently declines
+ * to run is the failure this repository keeps paying for.
+ */
+loadEnvLocal();
 
 /**
  * The tests that need a real database, run on their own.
@@ -28,7 +37,17 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: "node",
-    include: ["src/**/*.db.test.ts", "src/features/properties/repository.golden.test.ts"],
+    /*
+     * `scripts/` included for the same reason `vitest.config.mts` includes it:
+     * those files open owner connections and one of them upserts the client's
+     * whole catalogue, and a test placed beside one was previously collected by
+     * nothing at all.
+     */
+    include: [
+      "src/**/*.db.test.ts",
+      "scripts/**/*.db.test.ts",
+      "src/features/properties/repository.golden.test.ts",
+    ],
     fileParallelism: false,
     setupFiles: ["./vitest.db.setup.ts"],
   },

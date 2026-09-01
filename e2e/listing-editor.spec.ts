@@ -114,7 +114,7 @@ test("@cuj CUJ-06: she creates a listing, and it is a draft nobody can see (AC-2
   expect(sitemap).not.toContain(SLUG);
 });
 
-test("she publishes it, and it appears in French on both sites (AC-3)", async ({ page }) => {
+test("@cuj she publishes it, and it appears in French on both sites (AC-3)", async ({ page }) => {
   await signIn(page);
   await page.goto(`/admin/listings/${await listingId()}`);
 
@@ -162,7 +162,7 @@ test("she publishes it, and it appears in French on both sites (AC-3)", async ({
   await shot(page, "62-published-english-note");
 });
 
-test("she adds the English later, without republishing (AC-3b)", async ({ page }) => {
+test("@cuj she adds the English later, without republishing (AC-3b)", async ({ page }) => {
   await signIn(page);
 
   // The French page as it stands, so it can be proved not to move.
@@ -213,7 +213,7 @@ async function photograph(index: number, big = false): Promise<Buffer> {
     .toBuffer();
 }
 
-test("she uploads fifteen photographs, orders them, and says what they show (AC-6)", async ({
+test("@cuj she uploads fifteen photographs, orders them, and says what they show (AC-6)", async ({
   page,
 }) => {
   /*
@@ -363,7 +363,7 @@ test("she uploads fifteen photographs, orders them, and says what they show (AC-
   await shot(page, "67-photographs-reordered");
 });
 
-test("she renames it, and the address she published still works (AC-5)", async ({ page }) => {
+test("@cuj she renames it, and the address she published still works (AC-5)", async ({ page }) => {
   await signIn(page);
   await page.goto(`/admin/listings/${await listingId()}`);
 
@@ -385,7 +385,7 @@ test("she renames it, and the address she published still works (AC-5)", async (
   await shot(page, "64-renamed-old-address-redirects");
 });
 
-test("she takes it off the site, and nothing is destroyed (AC-4)", async ({ page }) => {
+test("@cuj she takes it off the site, and nothing is destroyed (AC-4)", async ({ page }) => {
   await signIn(page);
   await page.goto(`/admin/listings/${await listingId()}`);
 

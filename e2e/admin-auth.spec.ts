@@ -41,7 +41,7 @@ test.skip(
 const GATED = ["/admin", "/admin/listings", "/admin/listings/p-01"];
 
 test.describe("signed out", () => {
-  test("AC-1: every back-office address redirects, and leaks no listing", async ({ page }) => {
+  test("@cuj AC-1: every back-office address redirects, and leaks no listing", async ({ page }) => {
     for (const path of GATED) {
       const response = await page.goto(path);
 
@@ -104,7 +104,9 @@ test.describe("signed out", () => {
 });
 
 test.describe("signing in", () => {
-  test("AC-9: a wrong password says the same thing as an unknown address", async ({ page }) => {
+  test("@cuj AC-9: a wrong password says the same thing as an unknown address", async ({
+    page,
+  }) => {
     await page.goto("/admin/connexion");
 
     const attempt = async (address: string, secret: string) => {
@@ -131,7 +133,7 @@ test.describe("signing in", () => {
     await shot(page, "51-admin-sign-in-refused");
   });
 
-  test("AC-1: signing in reaches the back-office, and signing out closes it again", async ({
+  test("@cuj AC-1: signing in reaches the back-office, and signing out closes it again", async ({
     page,
   }) => {
     await page.goto("/admin");

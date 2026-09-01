@@ -41,6 +41,23 @@ export default async function globalSetup(): Promise<void> {
   try {
     await client.query("delete from enquiry_throttle");
     await client.query("delete from admin_login_throttle");
+  } catch (error) {
+    /*
+     * **This needs the owner connection, and nothing else says so.**
+     * `0006_editor_role.sql` grants `belso_editor` select/insert/update on the
+     * login throttle and deliberately withholds `delete`; `belso_app` has
+     * nothing at all. So pointing `DATABASE_URL` at a least-privilege role —
+     * which is what production uses, and what a careful contributor would
+     * reach for — kills every e2e run here, before a single test, with a bare
+     * `permission denied for table admin_login_throttle`.
+     */
+    throw new Error(
+      `e2e global setup could not clear the rate limiters: ${
+        error instanceof Error ? error.message : String(error)
+      }
+  DATABASE_URL must be the owner connection here, not belso_app or
+  belso_editor — only the owner may delete from the throttle tables.`,
+    );
   } finally {
     await client.end();
   }

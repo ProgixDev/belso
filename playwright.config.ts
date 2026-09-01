@@ -237,7 +237,20 @@ export default defineConfig({
   webServer: {
     command: process.env.CI ? "pnpm start" : "pnpm dev",
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    /*
+     * Never inherit a stranger's server when a real database is in play.
+     *
+     * Reusing whatever is on the port discards this whole config — `PORT`,
+     * `THROTTLE_SECRET`, `BELSO_ALLOW_FIXTURES` are never applied, and the
+     * running server may be pointed at a database the guard above never saw.
+     * That is precisely the disagreement this file exists to end, arriving
+     * through the default local path. It has already bitten once here, with a
+     * different project's Next server holding port 3000.
+     *
+     * Reuse stays available for the fixtures case, where there is no database
+     * to be wrong about and the convenience is real.
+     */
+    reuseExistingServer: !process.env.CI && !databaseUrl,
     timeout: 120_000,
     env: {
       // Next reads this, so the server and the navigations move together.
