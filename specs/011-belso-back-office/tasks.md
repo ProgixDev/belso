@@ -245,8 +245,8 @@ specs named directly with `FEATURE` set.
 ## Phase 6 — review & ship
 
 - [x] **T27** `/security-review` — a new auth surface, a new credential, file upload, and PII. Not optional · done 31/08: APPROVE, no P1. Three P2s fixed on `fix/011-security-review`; CSP enforcement (SEC-NET-002) deferred to the deploy
-- [ ] **T28** `/review`; fix P0/P1
-- [ ] **T29** `/feature-report` → `docs/reports/011-belso-back-office.md`
+- [x] **T28** `/review`; fix P0/P1 · done 01/09: four lenses, eleven findings, two P0s. All P0 and P1 closed; the declined and deferred ones are in the report's follow-ups
+- [x] **T29** `/feature-report` → [`docs/reports/011-belso-back-office.md`](../../docs/reports/011-belso-back-office.md) · done 01/09, with the eleven screenshots curated into the report folder and linked from `specs/README.md`
 - [ ] **T30** `/update-docs` — `backend.md` gains the roles and sessions; **reconcile `/plan.md`**, which still promises this work as `specs/003-belso-backoffice` with self-hosted Supabase; spec index → shipped
 
 ## AC coverage
