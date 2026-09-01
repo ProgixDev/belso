@@ -255,8 +255,34 @@ the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are 
 
 ## Phase 6 — review & ship
 
-- [ ] **T-20** `/security-review` — a new runtime surface, a new credential, a persistent agent on
-      the client's box
+- [x] **T-20** `/security-review` — a new runtime surface, a new credential, a persistent agent on
+      the client's box · done 01/09 — **REQUEST-CHANGES**, one P1, four P2s, four P3s. All
+      closed in `6fdcd62`.
+
+      **The P1 was a comment asserting the opposite of the code beneath it.**
+      `belso-admin-user.sh` passed the Postgres superuser password as `docker run -e VAR=value`,
+      which puts it in argv, twenty lines below its own “piped, never an argument: an argument is
+      visible in `ps`”. Measured rather than argued: a canary set that way was read by the
+      unprivileged `belso-ci` account out of three separate processes, on a box that also runs the
+      client's n8n. `/proc/<pid>/environ` is owner-only, so the values are exported and passed
+      with the value-less `-e VAR` form.
+
+      The P2 worth naming: **the compose gate's priority was inverted.** `${BELSO_TAG:?}` —
+      cosmetic — was required, while `${BELSO_BASIC_AUTH}`, the only thing keeping the client's
+      catalogue and a working contact form off the public internet, was left to default and held
+      only because Traefik rejects an empty user list.
+
+      **And `check-secrets.mjs` had read none of this branch.** It walked `src/`, root `.env*` and
+      the client bundle; the five VPS scripts, the compose file and the Dockerfile were all
+      outside it — while every commit message on this spec quoted its green as evidence. It now
+      walks the deploy surface with a rule that fails on a secret passed on a command line,
+      falsified by reintroducing the exact P1
+
+- [ ] **T-20b** The rest of the review's harness proposals · `shellcheck` over `scripts/vps/*.sh`
+      in `pnpm verify` (it catches three of the four P3s mechanically); a test asserting every
+      `${VAR}` in `deploy/compose.yml` that carries a security control uses `:?`; and
+      `pnpm ops:check-image` to make **AC-7 executable** — T-02 is ticked “written, not verified”,
+      and AC-7's first half is currently the one claim in this spec with no runnable oracle
 - [ ] **T-21** `/review`; fix P0/P1
 - [ ] **T-22** `/feature-report` → `docs/reports/013-belso-deploy.md`
 - [ ] **T-23** `/update-docs` — `docs/ops/deploy.md` indexed, `docs/architecture/overview.md` gains
