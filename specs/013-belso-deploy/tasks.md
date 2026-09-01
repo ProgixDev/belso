@@ -63,10 +63,18 @@ Deliberately before any deploy machinery. Both are cheap now and expensive after
 Each task states its undo. The site is not public at the end of this phase; it is reachable at the
 VPS hostname.
 
-- [ ] **T-06** **Spike:** confirm Traefik (`network_mode: host`, Docker provider,
+- [x] **T-06** **Spike:** confirm Traefik (`network_mode: host`, Docker provider,
       `exposedbydefault=false`) routes to a bridged container by label · done: a throwaway
       `whoami` container answers on the VPS hostname · **undo:** `docker rm -f` the throwaway. Stop
-      here and re-plan the routing if it does not
+      here and re-plan the routing if it does not · done 01/09: a `whoami` container on `belso-net`
+      answered through Traefik by label — host-network Traefik reaches a bridged container over the
+      gateway (`RemoteAddr 172.16.0.1`), and the `loadbalancer.server.port` label is what makes it
+      work. Container removed.
+
+      **Bonus, and worth more than the spike:** `whoami` echoes headers, so a forged
+      `X-Forwarded-For: 1.2.3.4` was sent through Traefik and arrived as the real client address.
+      SEC-RATE-003 was recorded as an assumption from Traefik's documentation; it is now measured.
+
 - [ ] **T-07** Provision production configuration on the box — `THROTTLE_SECRET` (`openssl rand -base64 32`),
       `DATABASE_EDITOR_URL` via `scripts/vps/belso-roles.sh belso_editor`, `MEDIA_ROOT`,
       `NEXT_PUBLIC_SITE_URL` · done: present in the compose env file, `chmod 600`, owned by root,
