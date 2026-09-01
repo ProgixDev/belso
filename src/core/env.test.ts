@@ -38,9 +38,13 @@ describe("env production guards", () => {
     vi.unstubAllEnvs();
   });
 
-  it("boots when production has everything", async () => {
+  it("boots when production has everything, and keeps the values", async () => {
+    // `resolves.toBeDefined()` alone asserts that a module object exists, which
+    // would hold if the schema dropped every field. Read one back.
     stubProduction();
-    await expect(loadEnv()).resolves.toBeDefined();
+    const { env } = await loadEnv();
+    expect(env.THROTTLE_SECRET).toBe("a-real-secret");
+    expect(env.DATABASE_URL).toContain("/belso");
   });
 
   it("refuses to boot production without a database", async () => {
@@ -100,6 +104,58 @@ describe("env production guards", () => {
     vi.stubEnv("THROTTLE_SECRET", undefined);
     vi.stubEnv("BELSO_ALLOW_FIXTURES", "1");
     await expect(loadEnv()).rejects.toThrow(/THROTTLE_SECRET is required in production/);
+  });
+
+  it("treats a declared-but-empty DATABASE_URL as absent", async () => {
+    // The docstring cites this exact Vercel failure — a variable declared on the
+    // deploy with no value — and only THROTTLE_SECRET had it pinned.
+    stubProduction();
+    vi.stubEnv("DATABASE_URL", "   ");
+    await expect(loadEnv()).rejects.toThrow(/DATABASE_URL is required in production/);
+  });
+
+  it("refuses a DATABASE_URL that is not a postgres URL", async () => {
+    stubProduction();
+    vi.stubEnv("DATABASE_URL", "mysql://nope/belso");
+    await expect(loadEnv()).rejects.toThrow(/postgres/i);
+  });
+
+  it("warns, but does not throw, when production has no editor connection", async () => {
+    /*
+     * ADR-0010 written as a test, in both directions. Without DATABASE_URL the
+     * storefront would lie to visitors, so it must not boot; without the editor
+     * connection the storefront is entirely correct and only the back-office is
+     * unavailable, so refusing to boot would take a working public site down to
+     * protect three people’s editor. Deleting the whole warn block left every
+     * case green before this one existed.
+     */
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    stubProduction();
+    vi.stubEnv("DATABASE_EDITOR_URL", undefined);
+
+    await expect(loadEnv()).resolves.toBeDefined();
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("DATABASE_EDITOR_URL is not set"));
+
+    warn.mockRestore();
+  });
+
+  it("resolves the media root, and defaults it", async () => {
+    // Getting this wrong loses the client’s photography on the next deploy, per
+    // the variable’s own docstring, and nothing asserted either half.
+    stubProduction();
+    vi.stubEnv("MEDIA_ROOT", undefined);
+    const { mediaRoot } = await loadEnv();
+    expect(mediaRoot).toMatch(/media$/);
+
+    // Separators normalised rather than matched: this runs on Windows and on
+    // the VPS, and the assertion is about resolution, not about which slash.
+    vi.resetModules();
+    vi.stubEnv("MEDIA_ROOT", "srv/photos");
+    const again = await loadEnv();
+    expect(again.mediaRoot.split(/[\\/]/).slice(-2).join("/")).toBe("srv/photos");
+    // Relative, so it resolves against the working directory rather than being
+    // taken literally — the docstring's whole point.
+    expect(again.mediaRoot).toContain(process.cwd().split(/[\\/]/).pop() ?? "");
   });
 
   it("does not guard development, where neither variable is expected", async () => {

@@ -37,6 +37,54 @@ describe.skipIf(!configured)("consumeLoginAllowance", () => {
     await query("delete from admin_login_throttle");
   });
 
+  it("keys on an HMAC, never a bare hash of the address (SEC-RATE-002)", async () => {
+    /*
+     * **The row this asserts could be deleted and every other suite would stay
+     * green.** `keyFor` branches to a plain `createHash` when `THROTTLE_SECRET`
+     * is absent, and nothing distinguished the two: removing `createHmac`
+     * altogether leaves the six behavioural cases here and the twelve in
+     * `env.test.ts` entirely happy, because throttling works identically either
+     * way. Only the privacy differs, and privacy is what a behavioural test
+     * cannot see.
+     *
+     * What the bare hash costs: `sha256("login:account:sofia@belso.ma")` is
+     * computable by anyone holding a backup, so the table that exists to prevent
+     * account enumeration becomes the enumeration list — a guessed address is
+     * confirmed by finding its hash. The same applies to a /24 on the network
+     * axis, where the whole IPv4 space is enumerable in minutes.
+     *
+     * The secret is stubbed rather than assumed. `pnpm test:db` does not set one
+     * — `lib/env-local.mjs` deliberately carries connection details and nothing
+     * that changes behaviour — so a case that merely read the ambient value
+     * would pass or fail by accident of the shell it ran in.
+     */
+    const secret = `test-secret-${stamp}`;
+    vi.stubEnv("THROTTLE_SECRET", secret);
+    vi.resetModules();
+
+    const { createHash, createHmac } = await import("node:crypto");
+    const { consumeLoginAllowance } = await import("./login-throttle");
+    const { query } = await import("@/core/db");
+
+    const email = `hmac+${stamp}@belso.ma`;
+    const subject = `login:account:${email.toLowerCase()}`;
+    await consumeLoginAllowance("account", email);
+
+    const bare = createHash("sha256").update(subject).digest("hex");
+    const keyed = createHmac("sha256", secret).update(subject).digest("hex");
+
+    // Scoped to these two keys, not to the table being empty: other cases in
+    // this file leave rows behind, and a count over the whole table would make
+    // this pass or fail on execution order.
+    const rows = await query<{ key_hash: string }>(
+      "select key_hash from admin_login_throttle where key_hash in ($1, $2)",
+      [bare, keyed],
+    );
+
+    expect(rows.map((r) => r.key_hash)).toEqual([keyed]);
+    vi.unstubAllEnvs();
+  });
+
   it("refuses the sixth attempt on one account", async () => {
     const { consumeLoginAllowance } = await import("./login-throttle");
     const email = `sofia+${stamp}@belso.ma`;

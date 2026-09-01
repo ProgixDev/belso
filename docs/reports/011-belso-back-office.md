@@ -44,9 +44,11 @@ half cannot carry that weight: it posts a deliberately made-up `Next-Action` id,
 dispatches to an action and would pass with `requireSession()` removed from all nine. It is
 retained as a smoke test of the endpoint and is no longer cited as evidence for the criterion.
 
-**AC-9's HMAC keying is still unasserted.** `login-throttle.ts` falls back to a plain SHA-256 when
-`THROTTLE_SECRET` is absent, and no test distinguishes the two branches — deleting `createHmac`
-leaves every suite green. Listed under follow-ups.
+**AC-9's HMAC keying was unasserted until 01/09.** `login-throttle.ts` falls back to a plain
+SHA-256 when `THROTTLE_SECRET` is absent, and no test distinguished the two branches — deleting
+`createHmac` left every suite green, because throttling works identically either way and only the
+privacy differs. `login-throttle.db.test.ts` now stubs a secret and asserts the row exists under
+the HMAC key and not under the bare one.
 
 ## Screenshots
 
@@ -189,9 +191,10 @@ Consciously open, in the order they matter.
 - **`X-Forwarded-For` is trusted unverified** (SEC-RATE-003). The login limiter inherited the
   enquiry limiter's code without its caveat; the network axis only holds if Traefik sanitises
   client-supplied forwarded headers, and nothing in the repository confirms that it does.
-- **Three tests the board asked for and did not get:** the HMAC-versus-bare-hash branch in
-  `login-throttle`, the `Secure` cookie flag, and four gaps in `env.test.ts` (an empty
-  `DATABASE_URL`, a non-postgres URL, the `DATABASE_EDITOR_URL` warning, `mediaRoot`).
+- ~~**Three tests the board asked for and did not get.**~~ **Closed 2026-09-01.** The
+  HMAC-versus-bare-hash branch (deleting `createHmac` now turns `login-throttle.db.test.ts` red;
+  it left every suite green before), the `Secure` cookie flag in both directions, and the four
+  `env.test.ts` gaps. Each was confirmed by breaking the thing it guards.
 - **Reordering fifteen photographs is fourteen clicks.** Product ruled ship-as-is: AC-6 asks only
   that she orders them, and `plan.md`'s drag-to-reorder is more surface than the problem justifies
   for a client who has not used the editor once. The cheap version, if it is ever wanted, is a

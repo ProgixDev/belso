@@ -24,6 +24,19 @@ const mocks = vi.hoisted(() => ({
   }),
   jar: new Map<string, string>(),
   cookieOptions: new Map<string, Record<string, unknown>>(),
+  /** Drives the Secure flag. Assignable, so both branches are reachable. */
+  nodeEnv: "test" as string,
+}));
+
+/*
+ * `session.ts` reads `env.NODE_ENV` and nothing else from this module. Mocked so
+ * the Secure flag can be tested in both directions — the real module reads the
+ * process, which under vitest is always "test".
+ */
+vi.mock("./env", () => ({
+  get env() {
+    return { NODE_ENV: mocks.nodeEnv };
+  },
 }));
 
 vi.mock("./db", () => ({
@@ -61,6 +74,7 @@ async function loadSession() {
 beforeEach(() => {
   mocks.jar.clear();
   mocks.cookieOptions.clear();
+  mocks.nodeEnv = "test";
   mocks.editorQuery.mockReset().mockResolvedValue([]);
   mocks.isEditorConfigured.mockReturnValue(true);
   mocks.redirect.mockClear();
@@ -112,6 +126,34 @@ describe("createSession", () => {
       // Scoped, so the public storefront never carries the session.
       path: "/admin",
     });
+  });
+
+  it("sends Secure on the session cookie outside development", async () => {
+    /*
+     * Guarded in both directions because the expression has now been rewritten
+     * three times — `process.env.NODE_ENV === "production"`, then
+     * `env.NODE_ENV === "production"`, then `!== "development"` — each on a
+     * reasoned argument, with nothing that would go red if the next rewrite
+     * dropped the flag. It is written as "not development" to fail closed:
+     * `env.NODE_ENV` is a runtime read whose schema defaults to development, and
+     * `next start` only fills the variable when it is empty, so a deploy that
+     * exports NODE_ENV=development would otherwise ship the cookie unprotected.
+     */
+    mocks.nodeEnv = "production";
+    const { createSession } = await loadSession();
+
+    await createSession("11111111-1111-1111-1111-111111111111");
+
+    expect(mocks.cookieOptions.get(COOKIE)).toMatchObject({ secure: true });
+  });
+
+  it("omits Secure in development, so localhost over plain http still works", async () => {
+    mocks.nodeEnv = "development";
+    const { createSession } = await loadSession();
+
+    await createSession("11111111-1111-1111-1111-111111111111");
+
+    expect(mocks.cookieOptions.get(COOKIE)).toMatchObject({ secure: false });
   });
 
   it("issues a different token every time", async () => {
