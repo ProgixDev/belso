@@ -110,6 +110,12 @@ golden snapshot against it — so what is proven is not "rows exist" but "the si
 same catalogue from this backup". The scratch database is dropped afterwards, including on
 failure.
 
+**A second gap, opened by spec 013 and ours to close:** the backup covers Postgres and nothing
+else. Since the site deployed, the client's photographs live in the Docker volume `belso-media`,
+which `belso-backup.sh` does not touch — so a database restore is not a full restore, and that
+volume is currently the only copy of every photograph she has uploaded. Spec 013's T-18 extends the
+job to cover it. Until then, say “database backup” and not “backup”.
+
 **The gap that remains, and it is the client's to close:** these dumps live on the same disk as
 the database they protect. They survive a bad migration or a deleted listing; they do not
 survive losing the machine. That is covered only by Hostinger's snapshots, which are configured
@@ -139,8 +145,15 @@ Set its password and point the app at it:
 
 ```bash
 ssh belso-vps "docker exec belso-db-db-1 psql -U belso -d postgres -c \"alter role belso_app with password '…'\""
-# DATABASE_URL=postgres://belso_app:<password>@db:5432/belso
+# DATABASE_URL=postgres://belso_app:<password>@belso-db-db-1:5432/belso
 ```
+
+The host is the container's name on `belso-net`, not the `db` service name — that one resolves only
+inside the `belso-db` stack, and the app is not in it.
+
+Since spec 013 there is a script for this, and it is the better path: `belso-app-env.sh` rotates
+both roles and writes the connection strings straight into the deployed config, so the password
+never passes through a terminal. See [ops/deploy.md](../ops/deploy.md#rotate-a-secret).
 
 Migrations, the seed and the backups keep using the owner — they are run by a human over SSH,
 not by a request from the internet.

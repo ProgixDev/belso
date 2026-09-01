@@ -165,6 +165,26 @@ the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are 
       its rewrite, or rotating a database password would also stop the deploy and un-gate the
       site — two failures with nothing to do with rotating a password
 
+- [x] **T-09** [P] `docs/ops/deploy.md`: deploy, roll back, rotate a secret, what to do when the
+      runner stops, and where the media volume lives · done: a second person could follow it ·
+      done 01/09, indexed, and mostly transcription — the deploy had just been done by hand, so
+      the runbook records what happened rather than what ought to. It carries the two probes as
+      the proof step, the rollback’s real limit (**a rollback does not undo a migration**), and a
+      failure table keyed on what you see rather than on what is wrong. **The runner section says
+      there is no runner**, because a runbook describing machinery that does not exist is the
+      failure it is written to prevent.
+
+      Two ripples fixed in `docs/security/vps.md`, which is the home for both facts: it gave the
+      app’s connection host as `db:5432`, a name that resolves only inside the `belso-db` stack
+      the app is not in, and its backup section still implied the nightly dump covers everything.
+      Since T-08 it does not — the photographs sit in a volume `belso-backup.sh` never touches.
+
+      **This task had to be recovered from git.** Ticking T-08 spliced out the lines from its
+      checkbox to the next blank one, and there was no blank line between T-08 and T-09, so T-09
+      went with it. The edit was verified by printing the block it added and not the block after
+      it — the same shape as every other bug this phase found: something between the intent and
+      the file quietly absorbed more than was offered
+
 ## Phase 3 — automation
 
 - [ ] **T-10** `.github/workflows/verify.yml` (ADR-0012) · done: a push runs `pnpm verify` and a

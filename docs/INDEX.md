@@ -21,6 +21,12 @@ The docs tree is the repository's long-term memory. Agents and humans ground the
 
 (Coverage matrix lives in `SECURITY.md` at the repo root.)
 
+## Operations
+
+| File                           | What it answers                                                |
+| ------------------------------ | -------------------------------------------------------------- |
+| [ops/deploy.md](ops/deploy.md) | Deploy, roll back, rotate a secret, where the photographs live |
+
 ## Web production-readiness
 
 | File                                 | What it answers                                                           |
