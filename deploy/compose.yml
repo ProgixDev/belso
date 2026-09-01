@@ -1,0 +1,75 @@
+# How the site runs on the VPS (spec 013).
+#
+# Lives at /docker/belso/compose.yml on the box, beside the app.env that T-07
+# writes. Postgres is not here — it has its own stack at /docker/belso-db and is
+# reached over the shared network, because a database whose lifecycle is tied to
+# the application's is a database that goes away when somebody redeploys badly.
+
+services:
+  app:
+    # Tagged with the commit sha by the deploy job, so `docker ps` answers "what
+    # is actually running" and a rollback is `BELSO_TAG=<previous sha> up -d`
+    # rather than an archaeology exercise.
+    image: belso:${BELSO_TAG:-latest}
+    container_name: belso-app
+    restart: unless-stopped
+
+    # Written by T-07, chmod 600, root-owned, never in the repository. Carries
+    # DATABASE_URL, DATABASE_EDITOR_URL, THROTTLE_SECRET, MEDIA_ROOT.
+    env_file: app.env
+
+    volumes:
+      # **The client's photographs, and the only data on this box that Postgres
+      # does not hold.** `belso-backup.sh` dumps the database and does not touch
+      # the filesystem, so until T-18 extends it this volume is the single copy
+      # of every photograph she has uploaded.
+      #
+      # Named, not a bind mount: a bind mount to a host path works equally well
+      # until somebody moves the compose file, at which point a relative path
+      # silently points somewhere new and the gallery empties. A named volume is
+      # owned by Docker and survives `down`, `up`, a new image and a rebuilt
+      # container. It does not survive `down -v`, which is why the runbook says
+      # so in bold.
+      - belso-media:/app/media
+
+    networks:
+      # Postgres lives here. Created by the belso-db stack, so it is external:
+      # if this file declared it, `docker compose down` on the app could take
+      # the database's network with it.
+      - belso-net
+
+    labels:
+      - traefik.enable=true
+      # `${BELSO_DOMAIN}` is set in app.env. Until B-2 provides a real domain
+      # this is the VPS hostname, which is what T-08 deploys against.
+      - traefik.http.routers.belso.rule=Host(`${BELSO_DOMAIN}`)
+      - traefik.http.routers.belso.entrypoints=websecure
+      - traefik.http.routers.belso.tls.certresolver=letsencrypt
+      # Traefik runs on the host network, so it needs the container's port
+      # explicitly — it cannot infer it from a bridge it is not on. This is the
+      # line T-06 exists to prove, because getting it wrong produces a 404 from
+      # Traefik rather than an error from anything.
+      - traefik.http.services.belso.loadbalancer.server.port=3000
+
+    # The image declares its own HEALTHCHECK against /robots.txt. Repeated here
+    # only to give the deploy something to wait on before it calls itself done.
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/robots.txt').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+volumes:
+  belso-media:
+    name: belso-media
+
+networks:
+  belso-net:
+    external: true

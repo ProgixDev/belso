@@ -43,9 +43,11 @@ itself; a task that cannot be undone is written as two.
 
 Deliberately before any deploy machinery. Both are cheap now and expensive after go-live.
 
-- [ ] **T-04** `deploy/compose.yml` with a **named volume for `MEDIA_ROOT`**, and `pnpm ops:check-media`
+- [x] **T-04** `deploy/compose.yml` with a **named volume for `MEDIA_ROOT`**, and `pnpm ops:check-media`
       — a script that writes a file into the volume, recreates the container, and reads it back ·
-      done: the check passes, and passes again after `docker compose down` without `-v` (**AC-3**)
+      done 01/09: `pnpm ops:check-media` green, including a negative control — a container with no
+      volume mounted cannot see the marker, so the volume is provably what carried it rather than
+      the image (**AC-3**)
 - [ ] **T-05** Prove the boot guard survives containerisation: run the image with a deliberately
       wrong `DATABASE_URL` · done: the container exits non-zero rather than serving, and
       `docker compose up -d` leaves the previous container running (**AC-6**)

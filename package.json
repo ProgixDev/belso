@@ -37,7 +37,8 @@
     "test:db": "vitest run --config vitest.db.config.mts",
     "verify:db": "pnpm db:migrate && pnpm db:seed && pnpm test:db && pnpm db:restore-check",
     "db:restore-check": "node scripts/restore-check.mjs",
-    "measure:upload": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/measure-upload.mjs"
+    "measure:upload": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/measure-upload.mjs",
+    "ops:check-media": "node scripts/check-media.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [
