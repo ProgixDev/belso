@@ -161,10 +161,22 @@ ssh belso-vps 'docker volume inspect belso-media'
 ssh belso-vps 'docker run --rm -v belso-media:/m alpine du -sh /m'
 ```
 
-**It is the only data on this box the nightly backup does not cover.** `belso-backup.sh` dumps
-Postgres and does not touch the filesystem, so until spec 013's T-18 extends it, this volume is the
-single copy of every photograph the client has uploaded. Do not treat a database restore as a full
-restore.
+The nightly backup covers it. `belso-backup.sh` archives the volume after the database dump and
+verifies the archive lists as many files as the volume holds — see
+[security/vps.md](../security/vps.md#backups).
+
+To put a photograph back:
+
+```bash
+ssh belso-vps 'bash -s' -- list                        < scripts/vps/belso-media-restore.sh
+ssh belso-vps 'bash -s' -- one 2026/09/villa.jpg       < scripts/vps/belso-media-restore.sh
+ssh belso-vps 'bash -s' -- all                         < scripts/vps/belso-media-restore.sh
+```
+
+`one` is the case that actually happens — a photograph deleted by mistake. `all` extracts over the
+volume without wiping it first, so it puts back what is missing and leaves anything uploaded since
+the archive alone. Add `--archive=belso-media-<stamp>.tgz` to reach past the newest, which matters
+when the newest already contains the mistake.
 
 On a fresh box the volume must exist before the first `up`:
 

@@ -214,10 +214,29 @@ the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are 
 
 ## Phase 5 — the gaps this spec created
 
-- [ ] **T-18** Extend `scripts/vps/belso-backup.sh` to the media volume, with a restore check · done:
+- [x] **T-18** Extend `scripts/vps/belso-backup.sh` to the media volume, with a restore check · done:
       a photograph deleted from the volume is recoverable from a backup. **Not optional and not
       deferred:** the client's photographs become the only unbacked-up data on the box the moment
-      T-08 lands
+      T-08 lands · done 01/09, and T-08 had landed. The job archives `belso-media` after the dump
+      and `scripts/vps/belso-media-restore.sh` puts files back — `list`, `one <path>`, `all`.
+
+      **Timing that will not come again:** the volume was still empty, because production's 149
+      photographs all point at `/design/stock/…` in `public/` and nobody has used the back-office
+      yet. So the restore was proven destructively on the real volume rather than on a copy —
+      three files including a subdirectory, a space and an accent, deleted one at a time and then
+      all at once, restored and compared byte for byte, with a bogus path refused rather than
+      silently restoring nothing.
+
+      **The verification is a file count, not a size floor**, and the empty volume is why: a
+      153-byte archive of zero files is the correct state today, and a 20 KB floor would fail on
+      it every night until somebody switched the check off. Counting compares the archive against
+      the volume it came from and is true at zero and at ten thousand.
+
+      The archive is written **after** the dump. They cannot be atomic, so the choice is which way
+      to be wrong: media first lets a photograph uploaded in between be referenced by the dump and
+      missing from the archive, which is a broken gallery. This way leaves a file no row mentions,
+      which is invisible — and uploads outnumber deletions, so it is the rare case too
+
 - [ ] **T-19** Re-run `pnpm measure:upload` on the deployed box · done: the real number replaces the
       ~460ms projection in `specs/011-belso-back-office/tasks.md`, which was measured with nothing
       else competing for the cores

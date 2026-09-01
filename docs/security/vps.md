@@ -110,11 +110,25 @@ golden snapshot against it — so what is proven is not "rows exist" but "the si
 same catalogue from this backup". The scratch database is dropped afterwards, including on
 failure.
 
-**A second gap, opened by spec 013 and ours to close:** the backup covers Postgres and nothing
-else. Since the site deployed, the client's photographs live in the Docker volume `belso-media`,
-which `belso-backup.sh` does not touch — so a database restore is not a full restore, and that
-volume is currently the only copy of every photograph she has uploaded. Spec 013's T-18 extends the
-job to cover it. Until then, say “database backup” and not “backup”.
+**Uploaded photographs are covered too**, since spec 013's T-18. Postgres does not hold them — they
+live in the Docker volume `belso-media` — so the job archives the volume after the dump and checks
+the archive lists exactly as many files as the volume holds. That comparison rather than a size
+floor, because the volume is legitimately empty until the client uploads her first photograph, and a
+check that fails on the correct state is a check somebody switches off.
+
+The archive is written after the dump on purpose. The two cannot be atomic, so the question is which
+way to be wrong: media first would let a photograph uploaded in between be referenced by the dump
+and missing from the archive, which is a broken gallery. This way round leaves a file no row
+mentions, which is invisible.
+
+```bash
+ssh belso-vps 'bash -s' -- list                  < scripts/vps/belso-media-restore.sh
+ssh belso-vps 'bash -s' -- one 2026/09/villa.jpg < scripts/vps/belso-media-restore.sh
+```
+
+Proven by doing it, on the real volume while it was still empty of real photographs: three files
+including a subdirectory, a space and an accent, deleted one at a time and then all at once, restored
+and compared byte for byte. A bogus path is refused rather than silently restoring nothing.
 
 **The gap that remains, and it is the client's to close:** these dumps live on the same disk as
 the database they protect. They survive a bad migration or a deleted listing; they do not

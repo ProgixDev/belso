@@ -7,7 +7,7 @@
 # exists only inside the Postgres container. Adding a runtime to a 2-core box
 # so a backup can be written in JavaScript is the wrong trade.
 #
-# It does three things, in this order and for this reason:
+# It does four things, in this order and for this reason:
 #
 #   1. Delete enquiries past their retention date. Personal data we are no
 #      longer entitled to keep must not be copied into a fresh backup — doing
@@ -15,7 +15,13 @@
 #      lifetime, which is exactly the leak the retention date exists to close.
 #   2. Prune spent throttle counters, which otherwise grow by one row per
 #      sender forever.
-#   3. Dump, then **verify the dump**, then prune old dumps — never before.
+#   3. Dump, then **verify the dump**.
+#   4. Archive the media volume, then **verify the archive**. Uploaded
+#      photographs are the one thing on this box Postgres does not hold, so
+#      without this a database restore is half a restore: the catalogue comes
+#      back with every gallery pointing at files that are gone.
+#
+# Only then prune, and never before.
 #
 # The verification is the part that matters. A backup job that reports success
 # without reading back what it wrote is a job that will report success every
@@ -30,8 +36,12 @@ DB_NAME="belso"
 DEST_IN_CONTAINER="/backups"
 DEST_ON_HOST="/root/backups/belso"
 KEEP_DAYS=14
-KEEP_MINIMUM=7          # never fall below this many dumps, whatever the dates say
+KEEP_MINIMUM=7          # never fall below this many of each kind, whatever the dates say
 MIN_BYTES=20000         # a healthy dump of this catalogue is ~100 KB; 20 KB is a floor
+MEDIA_VOLUME=belso-media
+# The one image this box is guaranteed to have — the database runs from it — so
+# the nightly job does not depend on Docker Hub being reachable at 03:20.
+TAR_IMAGE=postgres:17-alpine
 
 log() { printf '%s belso-backup: %s\n' "$(date -Is)" "$*"; }
 die() { log "FAILED — $*"; exit 1; }
@@ -80,13 +90,68 @@ tables=$(docker exec "$CONTAINER" pg_restore --list "${DEST_IN_CONTAINER}/${name
 
 log "dump ok: ${name} (${size} bytes, ${tables} tables with data)"
 
-# --- 4. Prune old dumps, only now that a good one exists ----------------------
-count=$(find "$DEST_ON_HOST" -maxdepth 1 -name 'belso-*.dump' | wc -l)
-if [ "$count" -gt "$KEEP_MINIMUM" ]; then
-  removed=$(find "$DEST_ON_HOST" -maxdepth 1 -name 'belso-*.dump' -mtime "+${KEEP_DAYS}" -print -delete | wc -l)
-  log "pruned ${removed} dump(s) older than ${KEEP_DAYS} days (${count} on disk before)"
-else
-  log "keeping all ${count} dump(s) — at or below the floor of ${KEEP_MINIMUM}"
-fi
+# --- 4. The media volume ------------------------------------------------------
+# Uploaded photographs, which Postgres does not hold and `pg_dump` therefore
+# cannot save. Until this existed, "the backup" meant the database and a
+# database restore was half a restore — the catalogue would come back with every
+# gallery pointing at files that were gone.
+#
+# **After the dump, deliberately.** The two snapshots cannot be atomic, so the
+# question is which way to be wrong. Media first would let a photograph uploaded
+# in between be referenced by the dump and missing from the archive: a broken
+# gallery. Database first leaves the opposite — a file in the archive that no row
+# mentions, which is invisible and harmless. Uploads also vastly outnumber
+# deletions, so this is the rare direction as well as the safe one.
+media_name="belso-media-${stamp}.tgz"
+media_path="${DEST_ON_HOST}/${media_name}"
+
+docker volume inspect "$MEDIA_VOLUME" >/dev/null 2>&1 \
+  || die "volume ${MEDIA_VOLUME} does not exist — is the app deployed?"
+
+# `postgres:17-alpine` because it is the one image this box is guaranteed to
+# have: the database this script already talks to runs from it. Pulling
+# `alpine` would make the nightly backup depend on the network and on Docker Hub
+# being reachable at 03:20, which is a strange thing for a backup to need.
+docker run --rm \
+  -v "${MEDIA_VOLUME}:/media:ro" \
+  -v "${DEST_ON_HOST}:/out" \
+  "$TAR_IMAGE" tar -czf "/out/${media_name}" -C /media . \
+  || die "archiving ${MEDIA_VOLUME} returned non-zero"
+
+[ -f "$media_path" ] || die "media archive is missing at ${media_path}"
+
+# Read it back and count, rather than checking a size floor.
+#
+# A floor cannot work here: the volume is legitimately empty until the client
+# uploads her first photograph, and a check that fails on the correct state
+# gets switched off. Counting compares the archive against the volume it came
+# from, which is true at zero files and stays true at ten thousand.
+live_files=$(docker run --rm -v "${MEDIA_VOLUME}:/media:ro" "$TAR_IMAGE" \
+  sh -c 'find /media -type f | wc -l')
+archived_files=$(docker run --rm -v "${DEST_ON_HOST}:/out:ro" "$TAR_IMAGE" \
+  sh -c "tar -tzf /out/${media_name} | grep -vc '/\$'" || true)
+
+[ "$archived_files" = "$live_files" ] \
+  || die "media archive holds ${archived_files} files, the volume holds ${live_files}"
+
+media_size=$(stat -c %s "$media_path")
+log "media ok: ${media_name} (${media_size} bytes, ${archived_files} file(s))"
+
+# --- 5. Prune old backups, only now that good ones exist ----------------------
+# One function for both kinds, so the database and the photographs cannot drift
+# into different retentions and nobody notices until a restore needs the pair.
+prune() {
+  local pattern="$1" label="$2" count removed
+  count=$(find "$DEST_ON_HOST" -maxdepth 1 -name "$pattern" | wc -l)
+  if [ "$count" -gt "$KEEP_MINIMUM" ]; then
+    removed=$(find "$DEST_ON_HOST" -maxdepth 1 -name "$pattern" -mtime "+${KEEP_DAYS}" -print -delete | wc -l)
+    log "pruned ${removed} ${label} older than ${KEEP_DAYS} days (${count} on disk before)"
+  else
+    log "keeping all ${count} ${label} — at or below the floor of ${KEEP_MINIMUM}"
+  fi
+}
+
+prune 'belso-*.dump' 'dump(s)'
+prune 'belso-media-*.tgz' 'media archive(s)'
 
 log "done"
