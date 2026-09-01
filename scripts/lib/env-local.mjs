@@ -41,16 +41,16 @@ export const DATABASE_KEYS = ["DATABASE_URL", "DATABASE_EDITOR_URL", "MEDIA_ROOT
  *
  * Resolved relative to this module, not `process.cwd()`: a script run from a
  * subdirectory must not silently find no file and carry on as though the
- * repository had none.
+ * repository had none. `file` overrides it, for tests only — no caller passes it.
  */
-export function loadEnvLocal(keys = DATABASE_KEYS) {
+export function loadEnvLocal(keys = DATABASE_KEYS, { file } = {}) {
   const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
   const wanted = new Set(keys);
   const filled = new Set();
 
   let text;
   try {
-    text = readFileSync(join(root, ".env.local"), "utf8");
+    text = readFileSync(file ?? join(root, ".env.local"), "utf8");
   } catch {
     return filled; // No file is the ordinary case on a fresh clone and in CI.
   }

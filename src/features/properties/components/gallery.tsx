@@ -36,9 +36,27 @@ export function Gallery({
   // Wraps in both directions: reaching the end of a gallery and finding the
   // button dead is a worse experience than looping.
   const go = (delta: number) => setIndex((i) => (i + delta + total) % total);
-  const position = labels.photoOf
-    .replace("{index}", String(index + 1))
-    .replace("{total}", String(total));
+  const positionAt = (i: number) =>
+    labels.photoOf.replace("{index}", String(i + 1)).replace("{total}", String(total));
+  const position = positionAt(index);
+
+  /*
+   * A photograph with no description must still have a name.
+   *
+   * `altFor` returns "" when the back-office was never given one, and an empty
+   * `aria-label` on a button leaves it with **no accessible name at all** —
+   * fifteen unnamed controls, which is a WCAG 4.1.2 failure rather than a
+   * degraded experience. No test caught it because every fixture carries alt
+   * text; it appears only on listings the client writes herself, which is the
+   * path spec 011 added.
+   *
+   * "Photo 3 sur 15" is a weak name and beats no name. The real remedy is the
+   * back-office telling her which photographs lack a description — this is the
+   * floor under that, and it still holds for the ones she legitimately leaves
+   * blank.
+   */
+  const nameFor = (alt: Parameters<typeof altFor>[0], i: number) =>
+    altFor(alt, locale) || positionAt(i);
 
   return (
     <section aria-label={labels.gallery} className="flex flex-col gap-3">
@@ -97,7 +115,7 @@ export function Gallery({
               <button
                 type="button"
                 onClick={() => setIndex(i)}
-                aria-label={altFor(frame.alt, locale)}
+                aria-label={nameFor(frame.alt, i)}
                 aria-current={i === index ? "true" : undefined}
                 className={cn(
                   "focus-visible:ring-ring relative h-14 w-20 overflow-hidden rounded-md transition-opacity focus-visible:ring-2 focus-visible:ring-offset-2 motion-reduce:transition-none",

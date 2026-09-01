@@ -7,7 +7,13 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    /*
+     * `scripts/` is included deliberately. Those files open connections to the
+     * client's database and one of them upserts her whole catalogue, so they
+     * carry more risk per line than most of `src` — and a test placed beside
+     * one would have been collected by nothing at all.
+     */
+    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.{ts,mts}"],
     /**
      * `*.db.test.ts` is excluded here and run by `pnpm test:db` instead.
      *

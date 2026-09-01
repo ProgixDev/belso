@@ -132,16 +132,34 @@ storefront's credential, and the failure only appears at its next process start.
 ```bash
 pnpm verify
 
-DATABASE_URL=… DATABASE_EDITOR_URL=… pnpm test:db          # expect 42 passed
-
-DATABASE_URL=… BELSO_E2E_ADMIN_EMAIL=… BELSO_E2E_ADMIN_PASSWORD=… \
-  CI=true pnpm e2e                                          # expect 95 passed
+pnpm test:db                    # expect 42 passed
+PORT=3001 CI=true pnpm e2e      # expect 95 passed, 3 skipped
 ```
 
-The e2e suite needs the variables **exported into the test process**, not only in `.env.local` —
-Next reads that file, Playwright does not. `CI=true` is what makes it build and run
-`pnpm start` rather than reuse a dev server; the admin and editor specs skip themselves without the
-account variables rather than passing vacuously.
+**The variables no longer need exporting.** They did — Next reads `.env.local` and Playwright did
+not, so the two disagreed about which database was in play, and the scratch-database guard was
+reading a variable the server never used. `scripts/lib/env-local.mjs` and `playwright.config.ts`
+now resolve `.env.local` the same way the application does, so `pnpm test:db` and `pnpm e2e` find
+the connection on their own. An exported variable still wins, so the old commands also work.
+
+`CI=true` is what makes it build and run `pnpm start` rather than reuse a dev server. Do not drop
+it: with `reuseExistingServer` a plain `pnpm e2e` against an occupied port runs the whole suite
+against whatever is already listening — which on this machine was a different project's Next
+server, on port 3000. Hence `PORT=3001`; any free port will do.
+
+The admin and editor specs skip themselves without `BELSO_E2E_ADMIN_EMAIL` and
+`BELSO_E2E_ADMIN_PASSWORD` rather than passing vacuously, so a green summary with ten skips is not
+the same as a green summary — check the skip count. Both belong in `.env.local`.
+
+### 6. Two things a fresh machine needs that nothing prompts for
+
+```bash
+pnpm exec playwright install chromium   # ~112 MB; without it every browser test fails
+```
+
+And `THROTTLE_SECRET` must be set before anything runs in production — `src/core/env.ts` refuses
+to boot without it, on every route rather than only `/admin`. `.env.example` carries the
+generation command. It is not needed for local development.
 
 ---
 
