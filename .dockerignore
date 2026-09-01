@@ -1,0 +1,58 @@
+# What must never reach the build context (spec 013, AC-7).
+#
+# The build copies the repository in, so anything listed here is something that
+# would otherwise sit in an image layer on the client's box — recoverable with
+# `docker history` long after it was "removed" in a later layer.
+
+# Secrets. `.env.example` is the only one that may travel, and it carries no
+# values. Written as a broad ignore and a single re-inclusion for the same
+# reason the settings hook uses that shape: enumerating the real names leaves
+# anything unlisted included by construction.
+.env
+.env.*
+!.env.example
+
+# Credentials that are not env files.
+*.pem
+*.key
+id_rsa*
+
+# Resolved on the deps stage from the lockfile, never copied in. Copying a
+# Windows-built tree into an Alpine image is also how `sharp` arrives with the
+# wrong platform binaries.
+node_modules
+.pnpm-store
+
+# Build output — regenerated inside the image. Copying a local `.next` risks
+# shipping a build made with a different `NEXT_PUBLIC_SITE_URL`.
+.next
+out
+
+# History and tooling the runtime has no use for.
+.git
+.github
+.husky
+.claude
+
+# Evidence and scratch. `artifacts/` holds screenshots and Playwright traces and
+# is the largest directory in the repository.
+artifacts
+test-results
+playwright-report
+coverage
+
+# Tests, specs and documentation: reviewed in the repository, not shipped.
+e2e
+docs
+specs
+packs
+**/*.test.ts
+**/*.test.tsx
+**/__tests__
+**/__golden__
+
+# Editor and OS noise.
+.vscode
+.idea
+.DS_Store
+Thumbs.db

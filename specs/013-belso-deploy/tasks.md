@@ -13,12 +13,24 @@ itself; a task that cannot be undone is written as two.
 
 - [x] **T-01** `output: "standalone"` in `next.config.ts` · done 01/09: `pnpm build` green,
       `.next/standalone/server.js` emitted
-- [ ] **T-02** `Dockerfile` (multi-stage: deps → build → runtime on `node:22-alpine`, non-root
-      user, `HEALTHCHECK` hitting a static route) and `.dockerignore` (must exclude `.env*`,
-      `.git`, `artifacts/`, `node_modules`) · done: `docker build` succeeds and
-      `docker history --no-trunc` shows no secret and no `.env` layer (**AC-7**, first half)
+- [~] **T-02** `Dockerfile` (multi-stage: deps → build → runtime on `node:22-alpine`, non-root
+  user, `HEALTHCHECK` hitting a static route) and `.dockerignore` (must exclude `.env*`,
+  `.git`, `artifacts/`, `node_modules`) · done: `docker build` succeeds and
+  `docker history --no-trunc` shows no secret and no `.env` layer (**AC-7**, first half) ·
+  **written 01/09, not verified: there is no Docker on this machine.** The files are reviewable;
+  the done-check is not runnable here, and ticking it on the strength of having written them is
+  the exact move this repository keeps being bitten by
 - [ ] **T-03** Run the image locally against `belso_test` through the tunnel · done: the catalogue
       renders and `/admin` redirects to sign-in, from the container, on a laptop
+
+> **Blocked at T-02.** `docker` is not installed on the development machine, so the Dockerfile and
+> `.dockerignore` are written and unverified. Two ways forward, and they are not equivalent:
+>
+> - **Install Docker locally.** Phase 0 stays local as planned, and the image is proven before
+>   anything reaches the client's box. Preferred.
+> - **Build on the VPS.** Workable, and it breaks the sequencing this task list opens with: a
+>   multi-stage Node build on two shared cores competes with the client's n8n for several minutes,
+>   and the first thing we would learn about the image we would learn on their machine.
 
 ## Phase 1 — the two things that will fail first
 
