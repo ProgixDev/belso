@@ -21,10 +21,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import pg from "pg";
-import "./lib/env-local.mjs";
+import { loadEnvLocal } from "./lib/env-local.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dir = join(root, "db", "migrations");
+
+loadEnvLocal();
 
 const url = process.env.DATABASE_URL;
 if (!url?.trim()) {

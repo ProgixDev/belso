@@ -19,14 +19,48 @@
  * Run: `pnpm db:seed` (with DATABASE_URL set — see `pnpm db:tunnel`).
  */
 import pg from "pg";
-import "./lib/env-local.mjs";
+import { loadEnvLocal } from "./lib/env-local.mjs";
 import { districts, districtOrder } from "../src/features/properties/districts.ts";
 import { propertyFixtures } from "../src/features/properties/fixtures/index.ts";
 import { locales } from "../src/core/i18n.ts";
 
+loadEnvLocal();
+
 const url = process.env.DATABASE_URL;
 if (!url?.trim()) {
   console.error("seed: DATABASE_URL is not set — see `pnpm db:tunnel`.");
+  process.exit(1);
+}
+
+/**
+ * Refuse to seed a database this script is not allowed to damage.
+ *
+ * **The same guard `vitest.db.setup.ts` has, and it belongs here more.** This
+ * script upserts every fixture with `on conflict (reference) do update`, so
+ * pointed at the client's database it silently reverts her own edits to her own
+ * catalogue — the exact hazard that file's docstring names.
+ *
+ * Until `lib/env-local.mjs` existed the protection was accidental: `DATABASE_URL`
+ * had to be supplied on the command line, so nobody seeded a database by
+ * forgetting which one was configured. Reading `.env.local` removed that, and a
+ * security review caught what it exposed. The sequence is not hypothetical, it
+ * is the one the repository currently queues up: production is two migrations
+ * behind, so somebody points `.env.local` at `belso` to run `pnpm db:migrate` —
+ * and a later `pnpm verify:db` is `migrate && seed && test:db`, which reaches
+ * this script long before `vitest.db.setup.ts` gets to refuse anything.
+ *
+ * `BELSO_ALLOW_PROD_TESTS=1` overrides, as it does elsewhere, and it must be
+ * exported for the run rather than written into `.env.local` — the loader
+ * deliberately will not carry it.
+ */
+const ALLOWED = /_test$|^test_|scratch/i;
+const database = new URL(url).pathname.replace(/^\//, "");
+
+if (!ALLOWED.test(database) && process.env.BELSO_ALLOW_PROD_TESTS !== "1") {
+  console.error(`seed: refusing to seed the database "${database}".`);
+  console.error("  This upserts every fixture, so it would overwrite real listings.");
+  console.error("  Use a scratch database, or export BELSO_ALLOW_PROD_TESTS=1 if you");
+  console.error("  genuinely mean this one (seeding production is a deliberate act).");
   process.exit(1);
 }
 

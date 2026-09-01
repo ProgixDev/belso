@@ -25,8 +25,10 @@
  */
 import { randomBytes } from "node:crypto";
 import pg from "pg";
-import "./lib/env-local.mjs";
+import { loadEnvLocal } from "./lib/env-local.mjs";
 import { hashPassword } from "../src/features/admin/password.ts";
+
+loadEnvLocal();
 
 const url = process.env.DATABASE_URL;
 if (!url?.trim()) {
@@ -135,10 +137,18 @@ try {
 
       const { created } = rows[0];
 
-      // The `on conflict` branch above is a password change wearing another
-      // name, so it revokes like one. A genuinely new account has no sessions
-      // and this is a no-op.
-      const revoked = created ? 0 : await revokeSessions(email);
+      /*
+       * Revoked unconditionally, not only on the update branch.
+       *
+       * This read `created ? 0 : await revokeSessions(email)`, which made
+       * revocation depend on `(xmax = 0)` — a Postgres heap internal, and one
+       * whose two failure directions are not equal. A fresh insert misreported
+       * as an update costs a `delete` that matches nothing. An update
+       * misreported as an insert leaves a changed password with live sessions,
+       * which is the one thing this function exists to prevent. Nothing is
+       * bought by the conditional: a genuinely new account has no session rows.
+       */
+      const revoked = await revokeSessions(email);
 
       console.log(`\nadmin-user: ${created ? "created" : "updated"} ${email} (${displayName})`);
       console.log(`  password: ${password}`);
@@ -152,16 +162,37 @@ try {
       if (!email) usage("password needs an email");
 
       const password = args.includes("--stdin") ? await readStdin() : generate();
-      const { rowCount } = await client.query(
-        "update admin_users set password_hash = $2, updated_at = now() where lower(email) = lower($1)",
-        [email, await hashPassword(password)],
-      );
 
-      if (rowCount === 0) usage(`no account for ${email}`);
+      /*
+       * One transaction, because the two halves are one act.
+       *
+       * The new hash is not the whole job — the cookies issued under the old one
+       * stay valid for seven days unless they are destroyed. Run as two
+       * autocommitted statements, a failure between them (these run over an SSH
+       * tunnel, so a dropped connection is the ordinary case) leaves the account
+       * with a password nobody knows *and* the old sessions still live: worse
+       * than either outcome alone, and the password is not printed until after.
+       */
+      await client.query("begin");
+      let rowCount;
+      let revoked;
+      try {
+        ({ rowCount } = await client.query(
+          "update admin_users set password_hash = $2, updated_at = now() where lower(email) = lower($1)",
+          [email, await hashPassword(password)],
+        ));
 
-      // The new hash is not the whole job: the cookies issued under the old one
-      // stay valid for seven days unless they are destroyed here.
-      const revoked = await revokeSessions(email);
+        if (rowCount === 0) {
+          await client.query("rollback");
+          usage(`no account for ${email}`);
+        }
+
+        revoked = await revokeSessions(email);
+        await client.query("commit");
+      } catch (error) {
+        await client.query("rollback");
+        throw error;
+      }
 
       console.log(`\nadmin-user: new password for ${email}`);
       console.log(`  password: ${password}`);

@@ -21,84 +21,123 @@ import { defineConfig, devices } from "@playwright/test";
  */
 
 /**
- * Read one variable out of `.env.local`, because **the guard below has to judge
- * the value the server will use, not the one this process happens to see.**
+ * The `.env.local` reader, duplicated from `scripts/lib/env-local.mjs`.
  *
- * This is the hole a security review found, and it was the whole guard. The
- * server under test is `pnpm start`, and Next loads `.env.local` itself —
- * Playwright never sees that file. So a machine set up exactly as
- * `HANDOFF.md` instructs, with `DATABASE_URL` in `.env.local` and nothing
- * exported, made `process.env.DATABASE_URL` undefined here. The check below was
- * skipped as "no database", `BELSO_ALLOW_FIXTURES=1` was passed to a server
- * that then connected to a real one, and the suite would have submitted live
- * enquiries with the guard reporting nothing. Which is the incident it was
- * written after.
+ * **The duplication is forced, and the first explanation given for it was
+ * wrong.** It was justified here as a typing problem — that importing an
+ * untyped `.mjs` would need `allowJs` or a declaration file. `tsconfig.json`
+ * already sets `allowJs`, `vitest.db.config.mts` imports that module happily,
+ * and `tsc --noEmit` is clean either way. A review said so, and was right.
  *
- * Parsed rather than imported: `@next/env` is in the tree only as a transitive
- * dependency of `next`, and taking a direct dependency on a package for one
- * variable read is a worse trade than fifteen lines.
+ * The real constraint is Playwright's config loader, which registers its own
+ * `.mjs` handler and compiles it through the CommonJS path
+ * (`playwright/lib/common/index.js`). Importing the shared module from here
+ * fails at run time with `ReferenceError: exports is not defined in ES module
+ * scope` — a config that type-checks perfectly and cannot start. `.mts` is
+ * natively ESM, which is why the vitest config gets to share and this one does
+ * not.
  *
- * Precedence matches Next's: an exported variable wins over the file.
+ * So: same semantics, deliberately. **Last assignment wins** and an exported
+ * variable beats the file, matching `env-local.mjs`. An earlier pair of copies
+ * disagreed about the first — which is exactly the failure duplication invites,
+ * and the reason this comment names the invariant rather than gesturing at it.
+ * If one changes, change both.
  */
-function fromEnvLocal(key: string): string | undefined {
+const DATABASE_KEYS = ["DATABASE_URL", "DATABASE_EDITOR_URL", "MEDIA_ROOT"];
+
+function loadEnvLocal(keys: readonly string[]): Set<string> {
+  const wanted = new Set(keys);
+  const filled = new Set<string>();
+
   let text: string;
   try {
-    text = readFileSync(resolve(process.cwd(), ".env.local"), "utf8");
+    // Relative to this config, not `process.cwd()`. Invoked from a
+    // subdirectory, a cwd-relative read finds no file and the guard below
+    // silently reverts to the hole it was written to close.
+    text = readFileSync(resolve(__dirname, ".env.local"), "utf8");
   } catch {
-    return undefined; // No file is the ordinary case on a fresh clone.
+    return filled; // No file is the ordinary case on a fresh clone and in CI.
   }
 
-  // Last assignment wins, as dotenv-style loaders do for a repeated key.
-  let found: string | undefined;
+  const found = new Map<string, string>();
   for (const line of text.split(/\r?\n/)) {
     const match = /^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
-    if (!match || match[1] !== key) continue;
-    found = (match[2] ?? "").trim().replace(/^(['"])(.*)\1$/, "$2");
+    if (!match) continue;
+
+    const [, key, raw] = match;
+    if (!key || !wanted.has(key)) continue;
+
+    const value = (raw ?? "").trim().replace(/^(['"])(.*)\1$/, "$2");
+    if (value) found.set(key, value);
   }
-  return found || undefined;
+
+  for (const [key, value] of found) {
+    if (process.env[key]) continue; // An exported variable wins.
+    process.env[key] = value;
+    filled.add(key);
+  }
+
+  return filled;
 }
 
 /**
  * Everything the run needs, resolved **into `process.env`** rather than into a
  * local — because the guard below is not the only reader.
  *
- * Three things in this process consume these, and each one was getting a
- * different answer from the server:
+ * Three things in this process consume these, and each was getting a different
+ * answer from the server:
  *
  * - the guard below, which refuses a database that is not a scratch one;
  * - **`e2e/global-setup.ts`**, which clears the rate limiters and returns early
- *   when `DATABASE_URL` is absent, reading absence as "this run is on
- *   fixtures — nothing to reset". With the value only in `.env.local` that
- *   conclusion was wrong: the server had a database, the setup did not know,
- *   and the enquiry throttle was never cleared. It allows five submissions per
- *   hour per network and the suite sends four, so the *second* run inside an
- *   hour failed on the enquiry tests — reported as a broken contact form, and
- *   actually the limiter working exactly as designed. The file's own docstring
- *   describes this failure and it happened anyway, one layer up;
+ *   when `DATABASE_URL` is absent, reading absence as "this run is on fixtures
+ *   — nothing to reset". With the value only in `.env.local` that conclusion
+ *   was wrong: the server had a database, the setup did not know, and the
+ *   enquiry throttle was never cleared. It allows five submissions per hour per
+ *   network and the suite sends four, so the *second* run inside an hour failed
+ *   on the enquiry tests — reported as a broken contact form, and actually the
+ *   limiter working exactly as designed;
  * - `admin-auth.spec.ts` and `listing-editor.spec.ts`, which **skip themselves**
- *   without `BELSO_E2E_ADMIN_*`. That is the right behaviour — a contributor
- *   with no tunnel should not be blocked — but it means the two specs covering
- *   AC-1 through AC-6 can quietly not run while the suite reports success.
+ *   without `BELSO_E2E_ADMIN_*`, so the two specs covering AC-1 through AC-6 can
+ *   quietly not run while the suite reports success.
  *
- * One resolution, applied to the whole process, so the tests, the setup and the
- * server cannot disagree about which database they are pointed at.
+ * The parser is `scripts/lib/env-local.mjs`, shared rather than copied. It was
+ * briefly duplicated here on the grounds that importing an untyped `.mjs` from a
+ * type-checked config would need `allowJs` — which `tsconfig.json` already sets,
+ * so the justification was simply false. The two copies had also already
+ * diverged on which of a repeated key wins, which is the argument against
+ * duplication making itself.
  */
-const fromFile = new Set<string>();
-for (const key of [
-  "DATABASE_URL",
-  "DATABASE_EDITOR_URL",
+const fromFile = loadEnvLocal([
+  ...DATABASE_KEYS,
   "BELSO_E2E_ADMIN_EMAIL",
   "BELSO_E2E_ADMIN_PASSWORD",
-]) {
-  if (process.env[key]) continue;
-  const value = fromEnvLocal(key);
-  if (value === undefined) continue;
-  process.env[key] = value;
-  fromFile.add(key);
-}
+]);
 
 const databaseUrl = process.env.DATABASE_URL;
+const editorUrl = process.env.DATABASE_EDITOR_URL;
 const databaseSource = fromFile.has("DATABASE_URL") ? ".env.local" : "the environment";
+
+/** The database a connection string names, or null if it will not parse. */
+function databaseOf(url: string): string | null {
+  try {
+    return new URL(url).pathname.replace(/^\//, "");
+  } catch {
+    return null;
+  }
+}
+
+function refuse(lines: string[]): never {
+  throw new Error(
+    [
+      ...lines,
+      "  This suite submits the enquiry form and drives the back-office editor;",
+      "  those rows are real.",
+      "  Use a scratch database (see docs/security/vps.md):",
+      "    DATABASE_URL=postgres://belso:<password>@127.0.0.1:55432/belso_test pnpm e2e",
+      "  or set BELSO_ALLOW_PROD_TESTS=1 if you truly mean this one.",
+    ].join("\n"),
+  );
+}
 
 /**
  * Which port the suite drives, and why it is not simply 3000.
@@ -124,16 +163,48 @@ const databaseSource = fromFile.has("DATABASE_URL") ? ".env.local" : "the enviro
 const port = process.env.PORT ?? "3000";
 const baseURL = `http://localhost:${port}`;
 
-if (databaseUrl && process.env.BELSO_ALLOW_PROD_TESTS !== "1") {
-  const database = new URL(databaseUrl).pathname.replace(/^\//, "");
-  if (!/_test$|^test_|scratch/i.test(database)) {
-    throw new Error(
-      `Refusing to run e2e against the database "${database}" (from ${databaseSource}).\n` +
-        `  This suite submits the enquiry form; those rows are real.\n` +
-        `  Use a scratch database (see docs/security/vps.md):\n` +
-        `    DATABASE_URL=postgres://belso:<password>@127.0.0.1:55432/belso_test pnpm e2e\n` +
-        `  or set BELSO_ALLOW_PROD_TESTS=1 if you truly mean this one.`,
-    );
+/**
+ * Refuse a database this suite is not allowed to damage — **both** connections.
+ *
+ * Checking `DATABASE_URL` alone was the hole. Every back-office write goes
+ * through `DATABASE_EDITOR_URL` (`core/db.ts`), and `listing-editor.spec.ts`
+ * creates, publishes, renames and archives listings through exactly that
+ * connection. So a `.env.local` pairing `DATABASE_URL=…/belso_test` with
+ * `DATABASE_EDITOR_URL=…/belso` passed this guard and then wrote the client's
+ * live catalogue — while the refusal message reassured the operator about the
+ * database it had checked. A review caught it; nothing else would have, because
+ * the suite would simply have gone green.
+ *
+ * A split pair is always a misconfiguration here, so a mismatch is refused even
+ * when both halves are scratch databases: the two roles exist to hold different
+ * privileges on the *same* data, never to address different data.
+ */
+const ALLOWED = /_test$|^test_|scratch/i;
+
+if ((databaseUrl || editorUrl) && process.env.BELSO_ALLOW_PROD_TESTS !== "1") {
+  for (const [name, url] of [
+    ["DATABASE_URL", databaseUrl],
+    ["DATABASE_EDITOR_URL", editorUrl],
+  ] as const) {
+    if (!url) continue;
+    const database = databaseOf(url);
+    if (database === null) {
+      refuse([
+        `Refusing to run e2e: ${name} (from ${databaseSource}) will not parse.`,
+        "  Percent-encode any special characters in the password.",
+      ]);
+    }
+    if (!ALLOWED.test(database)) {
+      refuse([`Refusing to run e2e against the database "${database}" (${name}).`]);
+    }
+  }
+
+  const pair = [databaseUrl, editorUrl].filter(Boolean).map((u) => databaseOf(u as string));
+  if (pair.length === 2 && pair[0] !== pair[1]) {
+    refuse([
+      `Refusing to run e2e: DATABASE_URL names "${pair[0]}" and DATABASE_EDITOR_URL names "${pair[1]}".`,
+      "  The two roles exist to hold different privileges on the same data.",
+    ]);
   }
 }
 export default defineConfig({

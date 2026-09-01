@@ -114,7 +114,15 @@ export async function createSession(userId: string): Promise<void> {
     // Through `env`, not `process.env`: SEC-ENV-001 makes `env.ts` the only
     // reader, and the rule is worth more than the one case where reading the
     // raw value would obviously have been harmless.
-    secure: env.NODE_ENV === "production",
+    //
+    // **Written as "not development" rather than "is production", to fail
+    // closed.** `process.env.NODE_ENV` used to be folded to a constant by the
+    // bundler; `env.NODE_ENV` is a runtime read whose schema defaults to
+    // `development`, and `next start` only fills the variable when it is empty.
+    // So a deploy that exports `NODE_ENV=development` would have quietly
+    // dropped `Secure` from the session cookie. That deploy is broken in other
+    // ways, but the cookie must not be one of them.
+    secure: env.NODE_ENV !== "development",
     // Scoped, so the public storefront never carries the session — not in a
     // request, not in a proxy log, not in a cache key.
     path: "/admin",

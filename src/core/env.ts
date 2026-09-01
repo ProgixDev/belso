@@ -180,11 +180,17 @@ if (env.NODE_ENV === "production" && !isBuilding && !env.DATABASE_EDITOR_URL) {
  * reversible keys, and the only way anyone finds out is by reading a dump of
  * the table — which is the moment it has already cost something.
  *
- * Same carve-outs as the guard above, and for the same reasons: `next build`
- * sets `NODE_ENV=production` itself, and `pnpm start` under Playwright is not a
- * deployment. `playwright.config.ts` supplies a test value.
+ * **One carve-out, not two.** `next build` sets `NODE_ENV=production` itself and
+ * has no secret to offer, so `isBuilding` is necessary. `BELSO_ALLOW_FIXTURES`
+ * is not: `playwright.config.ts` supplies `THROTTLE_SECRET` unconditionally, in
+ * both its branches, so nothing that legitimately runs relies on such a bypass.
+ * Leaving it in would have been a live way past this guard — `next start` loads
+ * `.env.local`, and a deploy carrying `BELSO_ALLOW_FIXTURES=1` in that file
+ * would silently waive both this and the `DATABASE_URL` guard above. A security
+ * review caught it, along with the test below that had pinned the bypass as
+ * intended behaviour, which is how a fix comes to look right without being it.
  */
-if (env.NODE_ENV === "production" && !isBuilding && !allowFixtures && !env.THROTTLE_SECRET) {
+if (env.NODE_ENV === "production" && !isBuilding && !env.THROTTLE_SECRET) {
   throw new Error(
     "THROTTLE_SECRET is required in production: without it the sign-in and enquiry throttles " +
       "key on a bare hash of an email address and an IP prefix, so the tables that exist to " +

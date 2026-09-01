@@ -132,17 +132,51 @@ describe("AC-1: every action authorises itself", () => {
       },
     });
 
-    const everyExport = [
-      actions.createListingAction,
-      actions.saveListingAction,
-      actions.publishListingAction,
-      actions.archiveListingAction,
-      actions.unpublishListingAction,
-    ];
+    /*
+     * Derived from the module, not listed by hand.
+     *
+     * This was a hand-written array of five, and the module exports nine: the
+     * four photograph actions — upload, reorder, remove and alt text, including
+     * the one that deletes and the one that writes files to disk — were absent
+     * from a test whose name says "on every export". All four do call
+     * `requireSession()`; nothing would have noticed if one stopped, and AC-1's
+     * action half was unpinned for exactly the surface spec 011 added.
+     *
+     * Deriving it means the tenth action is covered on the day it is written,
+     * which is the only version of this test that stays true.
+     */
+    type Action = (previous: unknown, form: FormData) => Promise<unknown>;
 
-    for (const action of everyExport) {
+    const everyExport = (Object.entries(actions) as [string, unknown][]).filter(
+      (entry): entry is [string, Action] => typeof entry[1] === "function",
+    );
+
+    /*
+     * A count assertion, because deriving a list from a module is only as good
+     * as the module being the thing you think it is. If this number changes,
+     * read why before changing it: an export that disappeared is as interesting
+     * as one that arrived.
+     */
+    expect(everyExport.map(([name]) => name).sort()).toEqual([
+      "archiveListingAction",
+      "createListingAction",
+      "publishListingAction",
+      "removePhotographAction",
+      "reorderPhotographsAction",
+      "saveAltTextAction",
+      "saveListingAction",
+      "unpublishListingAction",
+      "uploadPhotographAction",
+    ]);
+
+    for (const [name, action] of everyExport) {
       mocks.calls.length = 0;
-      // `createListingAction` ends in a redirect, which throws by design.
+      /*
+       * One generic form for all nine. The actions that need a file or a media
+       * id refuse this input — which is fine and is the point: `requireSession`
+       * runs before the validation that rejects them, so the ordering assertion
+       * below still reads the thing it is testing.
+       */
       await action(null, completeForm()).catch(() => undefined);
 
       /*
@@ -151,7 +185,7 @@ describe("AC-1: every action authorises itself", () => {
        * shape, not a hypothetical one: it is what happens when somebody adds
        * the check to the end of a function while fixing something else.
        */
-      expect(mocks.calls[0], `${action.name} wrote before it checked`).toBe("requireSession");
+      expect(mocks.calls[0], `${name} wrote before it checked`).toBe("requireSession");
     }
   });
 });

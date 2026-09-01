@@ -1,57 +1,79 @@
 /**
- * Load `.env.local` into `process.env`, for the scripts that talk to Postgres.
+ * Load named variables from `.env.local` into `process.env`.
  *
  * **Why this exists.** Next reads `.env.local` on its own, so the application
  * has always had `DATABASE_URL` without anybody exporting anything. The scripts
- * beside it did not: `migrate`, `seed` and `admin-user` read `process.env` and
- * nothing else, so `HANDOFF.md` has to tell every new machine to export the
- * variables by hand, and `pnpm verify:db` fails with "DATABASE_URL is not set"
- * on a machine where the site itself runs perfectly.
+ * beside it did not, so every new machine is told to export the variables by
+ * hand and `pnpm verify:db` fails with "DATABASE_URL is not set" on a machine
+ * where the site itself runs perfectly. Two components disagreeing about which
+ * database is in play is the shape of the bug this closes — it is what made the
+ * e2e scratch-database guard read "no database" while the server was connected
+ * to one.
  *
- * That gap is not only inconvenient, it has produced real defects. The e2e
- * config decided whether it was allowed to touch a database by reading a
- * variable the server did not get from the same place, so it judged "no
- * database" while the server connected to one — and `e2e/global-setup.ts`,
- * reading the same absence, stopped clearing the rate limiters. Two components
- * disagreeing about which database is in play is the shape of the bug; the fix
- * is for everything to resolve it the same way.
+ * **An allow-list, not everything in the file, and that is the security
+ * property.** An earlier version lifted every `KEY=value` it found. That is
+ * quietly dangerous here: `BELSO_ALLOW_PROD_TESTS=1` written into `.env.local`
+ * would satisfy `vitest.db.setup.ts` permanently and invisibly, and
+ * `BELSO_ALLOW_FIXTURES=1` would waive two production guards in `core/env.ts`.
+ * Those variables exist to be a deliberate, per-run decision; a file is not a
+ * decision. So this moves connection details, and nothing that turns a guard
+ * off.
  *
  * **Precedence matches Next's:** an exported variable wins over the file, so
  * `DATABASE_URL=…/belso_test pnpm db:seed` still overrides, and a deployment
- * that sets real values is unaffected by a stray file.
+ * that sets real values is unaffected by a stray file. Within the file the last
+ * assignment of a key wins, as dotenv-style loaders do.
  *
- * Imported for its side effect — `import "./lib/env-local.mjs"` — before
- * anything reads `process.env`.
- *
- * Deliberately duplicated by `playwright.config.ts`, which parses the same file
- * with its own copy. That config is TypeScript and is type-checked; importing
- * an untyped `.mjs` from it would mean either `allowJs` across the project or a
- * declaration file for fifteen lines. The repository already prefers a
- * documented duplication to bad coupling in `lib/network.ts`, for the same kind
- * of reason. If this parser changes, change that one.
+ * Called explicitly rather than run on import: the scripts that use it read
+ * `process.env` at module scope, and an import-order dependency that an import
+ * sorter could silently reorder is not a thing to rely on.
  */
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+/** Connection details only. Never a variable that disables a guard. */
+export const DATABASE_KEYS = ["DATABASE_URL", "DATABASE_EDITOR_URL", "MEDIA_ROOT"];
 
-let text;
-try {
-  text = readFileSync(join(root, ".env.local"), "utf8");
-} catch {
-  // No file is the ordinary case on a fresh clone, in CI, and in production.
-  text = "";
-}
+/**
+ * Fill `keys` in `process.env` from `.env.local`. Returns the keys it filled,
+ * so a caller can report where a value came from.
+ *
+ * Resolved relative to this module, not `process.cwd()`: a script run from a
+ * subdirectory must not silently find no file and carry on as though the
+ * repository had none.
+ */
+export function loadEnvLocal(keys = DATABASE_KEYS) {
+  const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
+  const wanted = new Set(keys);
+  const filled = new Set();
 
-for (const line of text.split(/\r?\n/)) {
-  const match = /^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
-  if (!match) continue;
+  let text;
+  try {
+    text = readFileSync(join(root, ".env.local"), "utf8");
+  } catch {
+    return filled; // No file is the ordinary case on a fresh clone and in CI.
+  }
 
-  const [, key, raw] = match;
-  if (process.env[key]) continue;
+  /** Last assignment wins, so scan the whole file before applying anything. */
+  const found = new Map();
+  for (const line of text.split(/\r?\n/)) {
+    const match = /^\s*(?:export\s+)?([A-Z0-9_]+)\s*=\s*(.*)$/.exec(line);
+    if (!match) continue;
 
-  // Strip one matching pair of surrounding quotes, as dotenv-style files allow.
-  const value = (raw ?? "").trim().replace(/^(['"])(.*)\1$/, "$2");
-  if (value) process.env[key] = value;
+    const [, key, raw] = match;
+    if (!wanted.has(key)) continue;
+
+    // Strip one matching pair of surrounding quotes, as dotenv-style files allow.
+    const value = (raw ?? "").trim().replace(/^(['"])(.*)\1$/, "$2");
+    if (value) found.set(key, value);
+  }
+
+  for (const [key, value] of found) {
+    if (process.env[key]) continue; // An exported variable wins.
+    process.env[key] = value;
+    filled.add(key);
+  }
+
+  return filled;
 }

@@ -78,15 +78,28 @@ describe("env production guards", () => {
     await expect(loadEnv()).resolves.toBeDefined();
   });
 
-  it("lets the Playwright production server past both guards", async () => {
+  it("lets the Playwright production server past the database guard", async () => {
     // `pnpm start` under Playwright is NODE_ENV=production and is not a
-    // deployment. A real deploy never sets this, which is what keeps the guards
+    // deployment. A real deploy never sets this, which is what keeps the guard
     // worth having.
     stubProduction();
     vi.stubEnv("DATABASE_URL", undefined);
-    vi.stubEnv("THROTTLE_SECRET", undefined);
     vi.stubEnv("BELSO_ALLOW_FIXTURES", "1");
     await expect(loadEnv()).resolves.toBeDefined();
+  });
+
+  it("does NOT let the fixtures hatch past the throttle guard", async () => {
+    /*
+     * This case previously asserted the opposite, and pinning that was the
+     * defect: `next start` loads .env.local, so a deploy carrying
+     * BELSO_ALLOW_FIXTURES=1 there would have waived a security requirement
+     * that has nothing to do with fixtures. Nothing legitimate needs it —
+     * playwright.config.ts supplies THROTTLE_SECRET in both its branches.
+     */
+    stubProduction();
+    vi.stubEnv("THROTTLE_SECRET", undefined);
+    vi.stubEnv("BELSO_ALLOW_FIXTURES", "1");
+    await expect(loadEnv()).rejects.toThrow(/THROTTLE_SECRET is required in production/);
   });
 
   it("does not guard development, where neither variable is expected", async () => {
