@@ -132,6 +132,25 @@ const nextConfig: NextConfig = {
    * cheap enough that excluding it to save nothing would be a trap for whoever
    * later runs a migration from the box.
    */
+  /*
+   * Force `@swc/helpers` in, complete.
+   *
+   * Tracing followed its CommonJS entry points and copied `cjs/` alone, so the
+   * image contained the package with its `esm/` build missing. Next resolves
+   * `@swc/helpers/esm/_interop_require_default.js` through package exports at
+   * boot, so the container built cleanly and exited 1 on first start with
+   * MODULE_NOT_FOUND — for a directory that was present and half-copied, which
+   * is why the first two attempts at this chased a missing package and a
+   * symlink layout instead.
+   *
+   * Globbed rather than pathed: pnpm's virtual store puts it under a directory
+   * whose name encodes the whole dependency graph, and that name differs
+   * between the machine that builds it and the one that ran it.
+   */
+  outputFileTracingIncludes: {
+    "*": ["**/@swc/helpers/**"],
+  },
+
   outputFileTracingExcludes: {
     "*": [
       "artifacts/**",
