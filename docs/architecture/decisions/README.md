@@ -9,6 +9,13 @@ ADRs capture decisions that shape the codebase: what we chose, what we rejected,
 - ADRs are immutable once accepted — supersede, don't edit history.
 - Write one whenever you: add/replace a dependency with architectural weight, change module boundaries, change a CI gate, change the data-flow model, or make any choice a future reader would ask "why is it like this?" about.
 - Agents: if your task requires deviating from an accepted ADR, stop and surface it. Propose a superseding ADR; do not quietly diverge.
+- **0001–0007 came with the skeleton; 0008 onward are Belso's own.** Their `Deciders:` lines name the
+  people who built the starting point this repository was cloned from, not stakeholders on this
+  product — so "who decided this" is not a person to go and ask. Revisiting an inherited decision
+  needs the same superseding ADR as any other and no additional permission:
+  [0008](0008-postgres-on-our-own-vps.md) superseded [0007](0007-supabase-backend.md) exactly that
+  way. The line is worth stating because reading a name there as a stakeholder is a natural mistake
+  and has been made.
 
 ## Index
 

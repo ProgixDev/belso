@@ -2,13 +2,16 @@
 
 - **Status:** Proposed
 - **Date:** 2026-09-01
-- **Deciders:** Houssem Ferrani — **needs Achraf Arabi, who decided [ADR-0006](0006-repo-only-operating-model.md)**
+- **Deciders:** Houssem Ferrani
 - **Amends:** [ADR-0006](0006-repo-only-operating-model.md), decision point 1, narrowly
 
 ## Context
 
 ADR-0006 deleted the GitHub Actions workflows and moved verification to `pnpm verify` plus Husky
-hooks. Its reasoning holds and this does not dispute it: the cloud surfaces it removed — Notion,
+hooks. It is a **skeleton decision, inherited by cloning** — its deciders built the starting point,
+not this product, and the precedent for revisiting one is [ADR-0008](0008-postgres-on-our-own-vps.md),
+which superseded a skeleton ADR outright. Its reasoning holds regardless and this does not dispute
+it: the cloud surfaces it removed — Notion,
 Slack, a review bot, a daily report — were **duplicated state**, things that had to be kept in
 sync with a repository that was already the source of truth. Its own consequences section names
 the price it accepted: "quality depends on local gates actually being run."
