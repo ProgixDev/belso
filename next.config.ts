@@ -114,6 +114,56 @@ const nextConfig: NextConfig = {
    */
   output: "standalone",
 
+  /*
+   * Keep the traced output to what actually serves the site.
+   *
+   * Without this the standalone bundle is the **entire repository** — verified,
+   * not assumed: the first image carried `AGENTS.md`, `HANDOFF.md`, `specs/`,
+   * `e2e/`, `scripts/`, the vitest configs and `artifacts/`. Next traces from the
+   * repository root and errs towards including, which is the safe default for it
+   * and the wrong one for an image that sits on someone else's machine.
+   *
+   * Nothing here is secret — `.dockerignore` keeps every `.env` out and that is
+   * asserted separately — so this is about size and about not shipping our
+   * operating notes to production, rather than about exposure.
+   *
+   * Excludes only what cannot be reached at runtime. `public/` and `db/` are
+   * deliberately absent from the list: the first is served, and the second is
+   * cheap enough that excluding it to save nothing would be a trap for whoever
+   * later runs a migration from the box.
+   */
+  outputFileTracingExcludes: {
+    "*": [
+      "artifacts/**",
+      // Uploaded photographs live here in development. They are not the app.
+      "media/**",
+      "docs/**",
+      "e2e/**",
+      "specs/**",
+      "packs/**",
+      "playwright-report/**",
+      "test-results/**",
+      "scripts/**",
+      ".claude/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/__tests__/**",
+      "**/__golden__/**",
+      // The operating notes especially. `HANDOFF.md` documents the VPS layout,
+      // the SSH alias, the database names and the fact that the only key to the
+      // box grants root with no passphrase. None of it is a credential; all of
+      // it is a map, and a map does not belong in a runtime image.
+      "**/*.md",
+      "vitest.*",
+      "playwright.config.*",
+      "eslint.config.*",
+      "commitlint.config.*",
+      "prettier.config.*",
+      "postcss.config.*",
+      "Dockerfile",
+    ],
+  },
+
   experimental: { serverActions: { bodySizeLimit: "16mb" } },
   images: {
     /*

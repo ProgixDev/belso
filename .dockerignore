@@ -23,6 +23,12 @@ id_rsa*
 node_modules
 .pnpm-store
 
+# Locally uploaded photographs. Gitignored, so never in the repository — but it
+# is in the build context, and Next traces it into the standalone output. The
+# first image carried 900K of test uploads that a volume then hid at runtime,
+# which is the worst combination: shipped and invisible.
+media
+
 # Build output — regenerated inside the image. Copying a local `.next` risks
 # shipping a build made with a different `NEXT_PUBLIC_SITE_URL`.
 .next

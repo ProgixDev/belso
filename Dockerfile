@@ -1,9 +1,15 @@
 # The image the site runs as (spec 013).
 #
-# Three stages so the runtime carries none of the build: no pnpm, no lockfile,
-# no source, no test suite. What ships is the traced server from
-# `output: "standalone"` plus the static assets, which is the smallest thing
-# that can serve this site.
+# Three stages so the runtime carries none of the build tooling. What ships is
+# the traced server from `output: "standalone"` plus the static assets.
+#
+# **It is not as small as "just the server", and the first version of this
+# comment claimed it was.** Next traces from the repository root and errs
+# towards including, so the first image carried AGENTS.md, HANDOFF.md, specs/,
+# e2e/, the vitest configs and 900K of locally uploaded photographs — inspected,
+# not assumed. `outputFileTracingExcludes` in next.config.ts narrows it and
+# `.dockerignore` keeps the rest out of the context. `src/` still ships, which is
+# fine: it is the client's own application, and no secret is in it.
 
 # ---------------------------------------------------------------------------
 # deps — resolve exactly what the lockfile says, and nothing else
