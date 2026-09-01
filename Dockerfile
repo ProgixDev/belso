@@ -33,7 +33,20 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # --frozen-lockfile: build what was committed or fail. A container built from a
 # tree nobody reviewed is not the tree that passed `pnpm verify`.
-RUN pnpm install --frozen-lockfile
+# `--config.node-linker=hoisted` gives this image a flat, npm-shaped
+# node_modules instead of pnpm's symlinked store.
+#
+# **Standalone tracing and pnpm symlinks do not survive each other.** With the
+# default layout the image builds cleanly and then exits 1 on first start:
+# `Cannot find module @swc/helpers/esm/_interop_require_default.js`. The package
+# is present — copied into `.pnpm/node_modules/@swc/helpers` — but the symlink
+# Next resolves through, `.pnpm/next@…/node_modules/@swc/helpers`, is not. A
+# build that succeeds and a container that cannot boot is the failure this task
+# exists to catch, and it is only visible by running the thing.
+#
+# Hoisting is local to the image. Development keeps pnpm's layout and its
+# strictness; the runtime gets the boring one that traces correctly.
+RUN pnpm install --frozen-lockfile --config.node-linker=hoisted
 
 # ---------------------------------------------------------------------------
 # build — compile, with the public site URL baked in
