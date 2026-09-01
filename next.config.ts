@@ -97,6 +97,23 @@ const nextConfig: NextConfig = {
    * Still under `experimental` in Next 16 — verified against
    * `node_modules/next/dist/server/config-shared.d.ts` rather than guessed.
    */
+  /*
+   * Trace the server and its dependencies into `.next/standalone`, so the
+   * container ships a runnable tree instead of the repository plus
+   * `node_modules` (spec 013, ADR-0013).
+   *
+   * It changes nothing locally — `pnpm dev` and `pnpm start` behave as before,
+   * and this only adds an output directory. What it buys is an image that does
+   * not carry pnpm, the lockfile, the test suite or the source: less to build,
+   * less to ship, and less of the repository sitting on the client's box.
+   *
+   * The trace is computed from actual imports, so a file read at runtime by a
+   * path the bundler cannot see is not copied. `sharp` is the one to watch —
+   * it loads platform binaries — and the container test in T-03 is what proves
+   * the upload path still works rather than assuming it.
+   */
+  output: "standalone",
+
   experimental: { serverActions: { bodySizeLimit: "16mb" } },
   images: {
     /*

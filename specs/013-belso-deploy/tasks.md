@@ -11,8 +11,8 @@ itself; a task that cannot be undone is written as two.
 
 ## Phase 0 — the container, entirely local (no VPS)
 
-- [ ] **T-01** `output: "standalone"` in `next.config.ts` · done: `pnpm build` still green and
-      `.next/standalone/server.js` exists
+- [x] **T-01** `output: "standalone"` in `next.config.ts` · done 01/09: `pnpm build` green,
+      `.next/standalone/server.js` emitted
 - [ ] **T-02** `Dockerfile` (multi-stage: deps → build → runtime on `node:22-alpine`, non-root
       user, `HEALTHCHECK` hitting a static route) and `.dockerignore` (must exclude `.env*`,
       `.git`, `artifacts/`, `node_modules`) · done: `docker build` succeeds and
