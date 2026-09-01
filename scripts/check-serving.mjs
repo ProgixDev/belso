@@ -29,8 +29,19 @@ const BASE = (process.argv[2] ?? process.env.BELSO_PROBE_URL ?? "http://127.0.0.
 /** A site with a database has listings in its sitemap; one without has none. */
 const MINIMUM_LISTINGS = 1;
 
+/**
+ * `user:password` for the basic-auth gate the site sits behind until it is
+ * allowed to be public (spec 013, T-08b — `scripts/vps/belso-gate.sh`). Absent
+ * once the gate is removed at launch, which is why it is optional here rather
+ * than required.
+ */
+const AUTH = process.env.BELSO_PROBE_AUTH;
+
 async function get(path) {
-  const response = await fetch(`${BASE}${path}`, { redirect: "follow" });
+  const response = await fetch(`${BASE}${path}`, {
+    redirect: "follow",
+    headers: AUTH ? { Authorization: `Basic ${Buffer.from(AUTH).toString("base64")}` } : undefined,
+  });
   return { status: response.status, body: await response.text() };
 }
 
@@ -38,6 +49,14 @@ try {
   console.log(`check-serving: probing ${BASE}`);
 
   const robots = await get("/robots.txt");
+  if (robots.status === 401) {
+    // Named, because a 401 here means the probe is misconfigured and the site is
+    // fine — the opposite conclusion from every other failure in this file.
+    console.error(`\ncheck-serving ✗ the site is behind the pre-launch gate (401).`);
+    console.error(`  Pass the credential: BELSO_PROBE_AUTH="$(ssh belso-vps`);
+    console.error(`  'cat /docker/belso/gate-credentials.txt')" pnpm ops:check-serving ${BASE}`);
+    process.exit(1);
+  }
   if (robots.status !== 200) {
     console.error(`check-serving ✗ the server is not answering at all (${robots.status})`);
     process.exit(1);

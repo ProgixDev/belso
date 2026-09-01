@@ -39,7 +39,8 @@
     "db:restore-check": "node scripts/restore-check.mjs",
     "measure:upload": "node --import ./scripts/lib/ts-alias-hook.mjs scripts/measure-upload.mjs",
     "ops:check-media": "node scripts/check-media.mjs",
-    "ops:check-serving": "node scripts/check-serving.mjs"
+    "ops:check-serving": "node scripts/check-serving.mjs",
+    "ops:check-signin": "node scripts/check-signin.mjs"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs}": [

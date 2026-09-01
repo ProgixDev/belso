@@ -28,8 +28,16 @@ services:
       # until somebody moves the compose file, at which point a relative path
       # silently points somewhere new and the gallery empties. A named volume is
       # owned by Docker and survives `down`, `up`, a new image and a rebuilt
-      # container. It does not survive `down -v`, which is why the runbook says
-      # so in bold.
+      # container.
+      #
+      # **And external, so it survives `down -v` too.** It was compose-managed
+      # until the first deploy, where compose warned that the volume already
+      # existed and it had not created it — true, `ops:check-media` made it. The
+      # warning was the useful half: a volume compose owns is a volume
+      # `down -v` deletes, and one mistyped flag would take every photograph the
+      # client has uploaded with no backup behind it until T-18. Declaring it
+      # external costs one `docker volume create belso-media` on a new box, which
+      # the runbook carries, and makes the destructive flag a no-op here.
       - belso-media:/app/media
 
     networks:
@@ -40,8 +48,15 @@ services:
 
     labels:
       - traefik.enable=true
-      # `${BELSO_DOMAIN}` is set in app.env. Until B-2 provides a real domain
-      # this is the VPS hostname, which is what T-08 deploys against.
+      # **`${BELSO_DOMAIN}` needs `--env-file app.env` on the compose command,
+      # not just the `env_file:` above.** They are different mechanisms and it is
+      # an easy hour to lose: `env_file:` puts variables inside the container,
+      # while `${...}` here is interpolated by compose itself, which reads only
+      # the shell and `.env`. Without the flag this label becomes
+      # ``Host(``)`` — compose warns, Traefik registers a router that matches
+      # nothing, and the site answers 404 while every container is healthy.
+      # Until B-2 provides a real domain the value is the VPS hostname, which is
+      # what T-08 deploys against.
       - traefik.http.routers.belso.rule=Host(`${BELSO_DOMAIN}`)
       - traefik.http.routers.belso.entrypoints=websecure
       - traefik.http.routers.belso.tls.certresolver=letsencrypt
@@ -50,6 +65,24 @@ services:
       # line T-06 exists to prove, because getting it wrong produces a 404 from
       # Traefik rather than an error from anything.
       - traefik.http.services.belso.loadbalancer.server.port=3000
+
+      # **The whole site sits behind a password until it is allowed to be
+      # public** (T-08b, `scripts/vps/belso-gate.sh`). T-08 deployed on the
+      # understanding that the VPS hostname is "not public"; it is not, because
+      # Traefik's certificate publishes that hostname to the Certificate
+      # Transparency logs, which are scraped. B-9 forbids a reachable contact
+      # form before the privacy notice exists, and the notice is still headings
+      # reading "Section à rédiger."
+      #
+      # One middleware over the router, so it covers the storefront, the enquiry
+      # form and the back-office together, crawlers included.
+      #
+      # **Deleting these two lines is the launch step (T-16).** It is a reviewed
+      # diff rather than a runtime flag on purpose: a site going public should
+      # not be one argument away, and an empty `basicauth.users` is a broken
+      # middleware rather than an open door, so a flag would fail unreadably.
+      - traefik.http.routers.belso.middlewares=belso-gate@docker
+      - traefik.http.middlewares.belso-gate.basicauth.users=${BELSO_BASIC_AUTH}
 
     # The image declares its own HEALTHCHECK against /robots.txt. Repeated here
     # only to give the deploy something to wait on before it calls itself done.
@@ -69,6 +102,10 @@ services:
 volumes:
   belso-media:
     name: belso-media
+    # Created once, by hand or by `ops:check-media`, and never by compose. See
+    # the note on the mount above: this is what keeps `down -v` from being able
+    # to destroy the photographs.
+    external: true
 
 networks:
   belso-net:

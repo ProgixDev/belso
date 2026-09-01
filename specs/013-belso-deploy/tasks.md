@@ -60,8 +60,10 @@ Deliberately before any deploy machinery. Both are cheap now and expensive after
 
 ## Phase 2 — the VPS, still without a domain
 
-Each task states its undo. The site is not public at the end of this phase; it is reachable at the
-VPS hostname.
+Each task states its undo. ~~The site is not public at the end of this phase; it is reachable at
+the VPS hostname.~~ **That was wrong, and T-08 proved it within the hour** — Traefik's certificate
+publishes the hostname to the Certificate Transparency logs, which are scraped. The site is public
+the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are done.
 
 - [x] **T-06** **Spike:** confirm Traefik (`network_mode: host`, Docker provider,
       `exposedbydefault=false`) routes to a bridged container by label · done: a throwaway
@@ -105,11 +107,50 @@ VPS hostname.
       password in a transcript — rotated at once, and the reason this script prints paths and
       never values
 
-- [ ] **T-08** Deploy by hand, once, to the VPS hostname · done: the catalogue serves the twenty
+- [x] **T-08** Deploy by hand, once, to the VPS hostname · done: the catalogue serves the twenty
       real listings from the production database, and `/admin` signs in · **undo:**
-      `docker compose down` — the site was not public, so there is nothing to restore
-- [ ] **T-09** [P] `docs/ops/deploy.md`: deploy, roll back, rotate a secret, what to do when the
-      runner stops, and where the media volume lives · done: a second person could follow it
+      `docker compose down` — ~~the site was not public, so there is nothing to restore~~ (see
+      T-08b: it was) · done 01/09. `belso:82d1aa2`, built on the box from `git archive HEAD`,
+      brought up with `docker compose --env-file app.env up -d`, healthy, HTTP 301ing to HTTPS on
+      a Let's Encrypt certificate. `ops:check-serving` reads 40 sitemap entries — the twenty real
+      listings in two locales — and the new `pnpm ops:check-signin` drives a real browser through
+      the whole path: a wrong password refused, the real one in, a session cookie that is
+      httpOnly and secure, twenty listings in the editor, and sign-out back to the form.
+
+      **`--env-file app.env` is not the same thing as `env_file:`, and the difference is a 404.**
+      `env_file:` fills the container; `${BELSO_DOMAIN}` in a label is interpolated by compose
+      itself, which reads only the shell and `.env`. Without the flag the router rule becomes
+      ``Host(``)``, compose warns, Traefik registers a router matching nothing, and the site is
+      unreachable while every container reports healthy.
+
+      **`belso-media` is now `external: true`.** Compose warned that the volume already existed
+      and it had not created it, which was the useful half of the warning: a volume compose owns
+      is a volume `down -v` deletes, and that is every photograph the client has, with no backup
+      behind it until T-18. External costs one `docker volume create` on a new box and makes the
+      destructive flag a no-op.
+
+      **An hour went to a bug in the check, not in the site.** `check-signin` shared one browser
+      context between the wrong password and the right one, so the second submit raced the first
+      form's re-render, and it waited on `networkidle` rather than on the URL, so the redirect had
+      not happened yet. A successful sign-in was reported as refused, twice, and the diagnosis
+      went to the database, the connection string and the hash before the probe. Both mistakes
+      are now comments in `scripts/check-signin.mjs`
+
+- [x] **T-08b** Put the deployment behind a password until it is allowed to be public · done:
+      the site answers 401 without a credential and 200 with one · **undo:** delete the two
+      `belso-gate` labels from `deploy/compose.yml` · **found by T-08, and it contradicts this
+      phase's own heading.** “Reachable at the VPS hostname” was treated as “not public”. Traefik
+      obtains a certificate for that hostname, which publishes it to the Certificate Transparency
+      logs within minutes, and those logs are scraped continuously. What was actually live: the
+      client's twenty real listings, a working contact form, `robots.txt` saying `Allow: /` with a
+      sitemap beside it, and a privacy notice consisting of eight headings each reading “Section à
+      rédiger.” **That is precisely what B-9 forbids** — a stranger's name, email and phone number
+      stored under a policy nobody has written. `scripts/vps/belso-gate.sh` issues the credential
+      on the box; the labels are in compose. There is deliberately no `off`: removing the gate is
+      T-16's reviewed diff, because a site going public should not be one argument away, and an
+      empty `basicauth.users` is a broken middleware rather than an open door. `ops:check-serving`
+      and `ops:check-signin` take `BELSO_PROBE_AUTH`, and name the gate when they get a 401 —
+      otherwise the next person reads “the site is down” for a probe that is merely unauthenticated
 
 ## Phase 3 — automation
 
