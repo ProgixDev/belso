@@ -5,6 +5,7 @@ import { isDatabaseConfigured, query } from "@/core/db";
 import { logger } from "@/lib/logger";
 import { consumeEnquiryAllowance } from "./rate-limit";
 import { type EnquiryField, type EnquiryResult, type EnquiryValues, enquirySchema } from "./types";
+import { clientAddress } from "@/lib/network";
 
 /**
  * The only untrusted input path on the site, and now the only one that writes.
@@ -193,6 +194,5 @@ export async function submitEnquiryAction(
  */
 async function senderKey(): Promise<string> {
   const list = await headers();
-  const forwarded = list.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return forwarded || list.get("x-real-ip")?.trim() || "unknown";
+  return clientAddress(list.get("x-forwarded-for"), list.get("x-real-ip"));
 }

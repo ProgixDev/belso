@@ -9,6 +9,7 @@ import { logger } from "@/lib/logger";
 import { clearLoginAllowance, consumeLoginAllowance } from "./login-throttle";
 import { verifyAgainstDummy, verifyPassword } from "./password";
 import { type SignInResult, signInSchema } from "./types";
+import { clientAddress } from "@/lib/network";
 
 /**
  * Signing in and out.
@@ -31,8 +32,7 @@ import { type SignInResult, signInSchema } from "./types";
 /** The visitor's address, as Traefik forwards it. */
 async function networkIdentifier(): Promise<string> {
   const list = await headers();
-  const forwarded = list.get("x-forwarded-for")?.split(",")[0]?.trim();
-  return forwarded || list.get("x-real-ip")?.trim() || "unknown";
+  return clientAddress(list.get("x-forwarded-for"), list.get("x-real-ip"));
 }
 
 type AdminUserRow = {

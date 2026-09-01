@@ -184,26 +184,13 @@ Consciously open, in the order they matter.
   > that trade for translations. **A floor is in place**: no gallery control is ever unnamed
   > (`gallery.test.tsx`), so the accessibility failure is fixed even where the copy is absent.
 
-- **`belso_editor` has no password on production.** `0006` creates the role without one by design;
-  `scripts/vps/belso-roles.sh` provisions it. Deploy-time step.
-- **CSP is still `Report-Only` with `script-src 'unsafe-inline'`** (SEC-NET-002). Defensible for a
-  read-only storefront, less so now there is a session cookie. Wants a real domain to tune against.
-- **`X-Forwarded-For` is trusted unverified** (SEC-RATE-003). The login limiter inherited the
-  enquiry limiter's code without its caveat; the network axis only holds if Traefik sanitises
-  client-supplied forwarded headers, and nothing in the repository confirms that it does.
-- ~~**Three tests the board asked for and did not get.**~~ **Closed 2026-09-01.** The
-  HMAC-versus-bare-hash branch (deleting `createHmac` now turns `login-throttle.db.test.ts` red;
-  it left every suite green before), the `Secure` cookie flag in both directions, and the four
-  `env.test.ts` gaps. Each was confirmed by breaking the thing it guards.
-- **Reordering fifteen photographs is fourteen clicks.** Product ruled ship-as-is: AC-6 asks only
-  that she orders them, and `plan.md`'s drag-to-reorder is more surface than the problem justifies
-  for a client who has not used the editor once. The cheap version, if it is ever wanted, is a
-  "make this the cover" button reusing the existing reorder payload.
-- **There is no CI.** Every gate here was run by hand. A workflow running `pnpm verify` on push
-  needs no secrets and would have caught the prerender failure that reached a branch during this
-  spec.
-- **B-2 (no domain) and B-9 (no privacy notice owner) still gate production**, and neither is
-  technical.
+- ~~**`X-Forwarded-For` is trusted unverified** (SEC-RATE-003).~~ **Closed 2026-09-01.** Traefik
+  3.7.8 runs with no `forwardedHeaders.trustedIPs`, which is the configuration that makes it
+  distrust client-supplied forwarded headers — so the original defence did hold. The limiters no
+  longer depend on it: `clientAddress()` reads the **last** hop rather than the first, which is
+  correct whether the proxy replaced a forged header or appended to one. A forger can lengthen the
+  list and cannot reach the end of it. Verifying a setting in a file this repository does not own
+  is worth less than not needing it.
 
 ---
 
