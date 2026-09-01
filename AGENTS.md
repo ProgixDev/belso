@@ -4,12 +4,19 @@ You are working in **NEXTJS-SKELETON**: a production-grade starting point for we
 
 ## Operating model — repo-only (ADR-0006)
 
-**The repo is the only operating surface.** There is no Notion/Slack/GitHub-Actions layer to keep
-in sync, and no cloud CI — verification runs locally (`pnpm verify` + Husky pre-commit hooks).
+**The repo is the only operating surface.** There is no Notion/Slack layer to keep in sync.
 Every fact has one home, and that home is the repo: conventions, specs, ADRs, gates, PRDs, and
 reports all live here. Duplicating a fact elsewhere is a bug. The upgrade in progress (web security,
 SSR Supabase, production-readiness, design, skills) is tracked in `UPGRADE-ROADMAP.md` and grounded
 in the cited briefs under `docs/research/`.
+
+**Amended by [ADR-0012](docs/architecture/decisions/0012-verify-on-push.md), narrowly:** `pnpm verify`
+also runs on push, on a clean checkout. This paragraph used to say “no cloud CI — verification runs
+locally”, and that stopped being true. Local gates cannot catch the class of failure where the thing
+that differs is the _absence_ of local state — a build that passes on every machine with a
+`.env.local`, which is every machine that has ever run this project. Spec 011 hit that shape three
+times. A workflow that only runs `pnpm verify` holds no state and duplicates no fact, so ADR-0006's
+objection does not reach it.
 
 > Note: the old `/progix` "four-surface" front door (ADR-0005) and `/meeting-intake` (Notion R2R)
 > have been **removed** (ADR-0006). New projects start by cloning and running `/setup-project`.
