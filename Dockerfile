@@ -19,7 +19,12 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN corepack enable
 
-COPY package.json pnpm-lock.yaml ./
+# **`pnpm-workspace.yaml` is not optional here.** It carries `allowBuilds`, the
+# opt-in list of dependencies permitted to run install scripts. Omit it and pnpm
+# finds no allow-list, refuses to build `sharp` and `unrs-resolver`, and exits 1
+# with ERR_PNPM_IGNORED_BUILDS — which reads exactly like a broken lockfile and
+# is a missing file. That is how the first build of this image failed.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 # --frozen-lockfile: build what was committed or fail. A container built from a
 # tree nobody reviewed is not the tree that passed `pnpm verify`.
 RUN pnpm install --frozen-lockfile

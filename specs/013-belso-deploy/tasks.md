@@ -23,14 +23,19 @@ itself; a task that cannot be undone is written as two.
 - [ ] **T-03** Run the image locally against `belso_test` through the tunnel · done: the catalogue
       renders and `/admin` redirects to sign-in, from the container, on a laptop
 
-> **Blocked at T-02.** `docker` is not installed on the development machine, so the Dockerfile and
-> `.dockerignore` are written and unverified. Two ways forward, and they are not equivalent:
+> **Phase 0 and 1 run on the VPS, not locally.** This machine has no container runtime — no Docker,
+> no WSL, no podman — so the done-checks for T-02 through T-05 cannot be run here. The owner chose
+> to build on the VPS rather than install one.
 >
-> - **Install Docker locally.** Phase 0 stays local as planned, and the image is proven before
->   anything reaches the client's box. Preferred.
-> - **Build on the VPS.** Workable, and it breaks the sequencing this task list opens with: a
->   multi-stage Node build on two shared cores competes with the client's n8n for several minutes,
->   and the first thing we would learn about the image we would learn on their machine.
+> The objection this list opens with still stands in principle and was weaker than stated in fact:
+> the box was measured before starting — load 0.00, 6.8 GB of 7.8 GB free, 92 GB of disk — so the
+> build competes with nothing. The source is shipped with `git archive` over SSH rather than cloned,
+> so no repository credential goes near the client's machine before T-11 provisions one
+> deliberately.
+>
+> What is genuinely lost is the sequencing: the first thing we learn about the image, we learn on
+> their box. Mitigated by building into a tagged image that nothing serves from until T-08, so a
+> failed build costs disk and nothing else.
 
 ## Phase 1 — the two things that will fail first
 
