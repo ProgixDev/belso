@@ -35,3 +35,4 @@ ship → /update-docs                           status: shipped; learnings disti
 | [010](010-belso-data-layer/spec.md)  | Listings come from a database — [report](../docs/reports/010-belso-data-layer.md)                       | shipped |
 | [011](011-belso-back-office/spec.md) | The client publishes a listing without a developer — [report](../docs/reports/011-belso-back-office.md) | shipped |
 | [012](012-belso-inbox/spec.md)       | The agency is told when someone writes                                                                  | draft   |
+| [013](013-belso-deploy/spec.md)      | The site is on the internet                                                                             | draft   |
