@@ -13,15 +13,17 @@ itself; a task that cannot be undone is written as two.
 
 - [x] **T-01** `output: "standalone"` in `next.config.ts` · done 01/09: `pnpm build` green,
       `.next/standalone/server.js` emitted
-- [~] **T-02** `Dockerfile` (multi-stage: deps → build → runtime on `node:22-alpine`, non-root
-  user, `HEALTHCHECK` hitting a static route) and `.dockerignore` (must exclude `.env*`,
-  `.git`, `artifacts/`, `node_modules`) · done: `docker build` succeeds and
-  `docker history --no-trunc` shows no secret and no `.env` layer (**AC-7**, first half) ·
-  **written 01/09, not verified: there is no Docker on this machine.** The files are reviewable;
-  the done-check is not runnable here, and ticking it on the strength of having written them is
-  the exact move this repository keeps being bitten by
-- [ ] **T-03** Run the image locally against `belso_test` through the tunnel · done: the catalogue
-      renders and `/admin` redirects to sign-in, from the container, on a laptop
+- [x] **T-02** `Dockerfile` (multi-stage: deps → build → runtime on `node:22-alpine`, non-root
+      user, `HEALTHCHECK` hitting a static route) and `.dockerignore` (must exclude `.env*`,
+      `.git`, `artifacts/`, `node_modules`) · done: `docker build` succeeds and
+      `docker history --no-trunc` shows no secret and no `.env` layer (**AC-7**, first half) ·
+      **written 01/09, not verified: there is no Docker on this machine.** The files are reviewable;
+      the done-check is not runnable here, and ticking it on the strength of having written them is
+      the exact move this repository keeps being bitten by
+- [x] **T-03** Run the image against `belso_test` · done 01/09 on the VPS: container `Up (healthy)`,
+      `/fr/biens` renders real listings from the database, `/admin` 307s to `/admin/connexion` and
+      leaks no listing. **Took three diagnoses** — the crash was a half-copied `@swc/helpers`, not a
+      missing package and not a symlink layout; see `next.config.ts` `outputFileTracingIncludes`
 
 > **Phase 0 and 1 run on the VPS, not locally.** This machine has no container runtime — no Docker,
 > no WSL, no podman — so the done-checks for T-02 through T-05 cannot be run here. The owner chose
