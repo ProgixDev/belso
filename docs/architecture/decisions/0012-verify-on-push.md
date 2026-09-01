@@ -1,8 +1,9 @@
 # 0012 — Run `pnpm verify` on push, on a clean checkout
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-09-01
 - **Deciders:** Houssem Ferrani
+- **Accepted:** 2026-09-01, as a dependency of [spec 013](../../../specs/013-belso-deploy/spec.md) — deploying on push to `main` needs something deciding whether the commit is fit to deploy
 - **Amends:** [ADR-0006](0006-repo-only-operating-model.md), decision point 1, narrowly
 
 ## Context

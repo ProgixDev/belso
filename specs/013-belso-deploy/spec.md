@@ -1,6 +1,6 @@
 # Spec 013 — The site is on the internet
 
-- **Status:** draft
+- **Status:** active
 - **Type:** feature
 - **Requested by / owner:** Houssem Ferrani
 - **Date:** 2026-09-01
@@ -88,18 +88,18 @@ take at speed, without reconstructing what the previous version was.
   whether the site may lawfully be public. It has been open since spec 010. It gates the deploy
   even though nothing technical depends on it.
 
-## Open questions
+## Resolved before planning
 
-- [ ] **Deploying on push to `main` puts a bad merge straight on the live site, and nothing
-      currently gates `main`.** [ADR-0012](../../docs/architecture/decisions/0012-verify-on-push.md)
-      proposes running `pnpm verify` on push and is `Proposed`; this spec's AC-4 assumes something
-      decides whether a commit builds before it is deployed. Either that ADR is accepted and this
-      depends on it, or AC-4's gate is the deploy job itself building the image and stopping on
-      failure. The second is workable and weaker — it catches a broken build and not a failing test.
-- [ ] **Automatic deploys need credentials the repository does not have.** A deploy key or token
-      reaching the VPS from GitHub is the first secret this project stores outside the VPS, and
-      ADR-0006's objection to cloud surfaces applies to it more than it did to CI. Worth an ADR of
-      its own, or a decision to reverse the trigger to a manual command.
-- [ ] **Who owns the domain and the DNS?** Registrar, and whether the agency or the developer holds
-      the account, decides who can complete AC-1 and who is called when a certificate stops
-      renewing.
+- **What gates a deploy: `pnpm verify`.**
+  [ADR-0012](../../docs/architecture/decisions/0012-verify-on-push.md) is accepted, and AC-4 depends
+  on it. A commit reaches the VPS only if lint, types, the tests and the build all pass. The weaker
+  option — letting the deploy job discover a broken build — was rejected: it catches the failure
+  that reached a branch during spec 011 and not a failing test, and after this spec the difference
+  is the client's live website rather than a branch.
+- **The credential points outward.** The VPS registers itself with GitHub and pulls work; GitHub
+  never holds a key to the box. The conventional inbound SSH deploy key was rejected because a
+  GitHub compromise would then be a root compromise of a machine that also runs the client's n8n.
+  Recorded as [ADR-0013](../../docs/architecture/decisions/0013-deploy-from-the-box.md).
+- **The agency owns the domain**, and grants access to point records. They keep the asset if the
+  relationship ends, and the renewal is not on a developer's card. AC-1 waits on them, which is the
+  right trade.
