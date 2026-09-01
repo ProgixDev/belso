@@ -146,7 +146,31 @@ should be re-run immediately after being restored, not at the end of the phase.
 ## Phase 5 — verification
 
 - [x] **T24** `CI=true pnpm e2e` — CUJ-01/03/04/05 **unchanged**; any edit to an existing CUJ assertion is a red flag, not a fix · done 31/08: 95 passed, 3 skipped (`db-down`, which wants `DB_DOWN=1`), 0 failed. No CUJ assertion was touched
-- [ ] **T25** `pnpm verify` green ✓; `pnpm verify:db` **blocked** — migrate, seed and the 42 db tests pass, `db:restore-check` fails and is right to (see below); screenshots ✓ captured to `artifacts/screenshots/011-belso-back-office/` and looked at
+- [x] **T25** `pnpm verify` green ✓; `pnpm verify:db` green ✓ against `belso_test`; screenshots ✓ captured to `artifacts/screenshots/011-belso-back-office/` and looked at · closed 01/09 once production was migrated — see below
+
+### Production was migrated to 0006 on 01/09
+
+`db:restore-check` failed for a fortnight-shaped reason: `0005` and `0006` had been applied to
+`belso_test` and never to `belso`, which still sat at `0004`. The check restores the newest live
+dump and runs the site's own golden snapshot against the copy, so it failed on
+`column p.version does not exist` — and that column is selected in `row.ts`, the one query **every
+public read** goes through. Deploying spec 011 before this would have returned 500 on every
+catalogue page, every listing and every district, not merely on `/admin`.
+
+Applied after a fresh dump (`belso-20260901-122026.dump`), with the row counts recorded either
+side: **20 properties, 39 translations, 149 photographs, 0 enquiries, 0 slug history — identical
+before and after.** Both migrations are additive; the only non-additive statement is
+`property_media`'s unique constraint being recreated as `deferrable initially immediate`, inside
+the migration's own transaction.
+
+`belso_editor` now exists on production **with no password**, exactly as `0006` intends: the role
+cannot authenticate until `scripts/vps/belso-roles.sh` provisions one. That is a deploy-time step
+and deliberately not done here — the credential belongs in the deployment's configuration, not in
+a transcript.
+
+`pnpm verify:db` is green end to end for the first time: migrate, seed, 47 database tests, and a
+restore whose oracle is the site's own catalogue query rather than a row count.
+
 - [x] **T26** Register **CUJ-06**; measure the editor's save time against the two-core box rather than assuming it · done 31/08 — CUJ-06 was already registered; the measurement is below and repeatable as `pnpm measure:upload`
 
 ### T26 — what the editor actually costs
@@ -196,8 +220,8 @@ production as it stands would 500 the whole storefront, not only the back-office
 restored and every table matched. Comparing row counts would have printed a tick, which is the
 argument for running a real query that the script's own docstring makes.
 
-`pnpm verify:db` stays red at its last stage until somebody migrates production. That is a
-decision for the owner, not a task to tick.
+`pnpm verify:db` stayed red at its last stage until production was migrated on 01/09; it is green
+now, and the account of that sits under T25 above.
 
 **Nothing warns that a photograph has no description.** `publishableSchema` requires the
 reference, the price, the built area and the French title, description, district, city and slug —
