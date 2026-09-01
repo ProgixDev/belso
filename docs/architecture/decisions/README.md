@@ -25,3 +25,4 @@ ADRs capture decisions that shape the codebase: what we chose, what we rejected,
 | [0009](0009-maplibre-for-the-listings-map.md) | MapLibre GL JS + hosted vector tiles for the listings map                                                          | Accepted                     |
 | [0010](0010-two-database-roles.md)            | Two Postgres roles: the storefront reads, the back-office writes                                                   | Accepted                     |
 | [0011](0011-sessions-in-postgres.md)          | Sessions in Postgres, passwords with scrypt, no auth library                                                       | Accepted                     |
+| [0012](0012-verify-on-push.md)                | Run `pnpm verify` on push, on a clean checkout (amends 0006 narrowly)                                              | **Proposed**                 |
