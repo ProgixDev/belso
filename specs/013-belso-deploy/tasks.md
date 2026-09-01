@@ -152,6 +152,19 @@ the moment it answers, so T-08b puts it behind a password until B-2 and B-9 are 
       and `ops:check-signin` take `BELSO_PROBE_AUTH`, and name the gate when they get a 401 —
       otherwise the next person reads “the site is down” for a probe that is merely unauthenticated
 
+- [x] **T-08c** Make the running commit a recorded fact · done: `docker ps` names the sha and a
+      deploy without it refuses to start · **found by T-08b:** bringing the gate up without
+      `BELSO_TAG` on the command line silently re-tagged the running container `belso:latest`,
+      because the compose file defaulted to it. `docker ps` then answers with a tag that moves on
+      the next build, so it cannot say which commit is serving and there is nothing for T-14 to
+      roll back to. `BELSO_TAG` now lives in `app.env` — the file that records what this box is
+      meant to be running, rather than whatever the last person typed — and the image reads
+      `${BELSO_TAG:?…}`, so a missing value stops the deploy instead of quietly shipping a moving
+      tag. Falsified: `docker compose config` without the env file exits on the message rather
+      than defaulting. `belso-app-env.sh` now carries `BELSO_TAG` and `BELSO_BASIC_AUTH` across
+      its rewrite, or rotating a database password would also stop the deploy and un-gate the
+      site — two failures with nothing to do with rotating a password
+
 ## Phase 3 — automation
 
 - [ ] **T-10** `.github/workflows/verify.yml` (ADR-0012) · done: a push runs `pnpm verify` and a

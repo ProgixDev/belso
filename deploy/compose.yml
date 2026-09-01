@@ -7,10 +7,19 @@
 
 services:
   app:
-    # Tagged with the commit sha by the deploy job, so `docker ps` answers "what
-    # is actually running" and a rollback is `BELSO_TAG=<previous sha> up -d`
-    # rather than an archaeology exercise.
-    image: belso:${BELSO_TAG:-latest}
+    # Tagged with the commit sha, so `docker ps` answers "what is actually
+    # running" and a rollback is one edit to `BELSO_TAG` in app.env rather than
+    # an archaeology exercise. It lives in app.env because that file is the
+    # record of what this box is meant to be running — passing it on the command
+    # line means the record is whatever the last person typed.
+    #
+    # **`:?` and not `:-latest`.** The default was there for one deploy and cost
+    # exactly what it was meant to prevent: a `compose up` run without the
+    # variable quietly re-tagged the running container `belso:latest`, and
+    # `docker ps` stopped being able to say which commit was serving. A silent
+    # fallback to a moving tag is worse than a stopped deploy, so this one
+    # refuses to start.
+    image: belso:${BELSO_TAG:?set BELSO_TAG in app.env to the commit sha to run}
     container_name: belso-app
     restart: unless-stopped
 

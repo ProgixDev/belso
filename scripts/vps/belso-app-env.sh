@@ -68,6 +68,19 @@ set_password belso_editor "$EDITOR_PW"
 
 mkdir -p "$TARGET_DIR"
 
+# Keys this script does not own, carried across the rewrite.
+#
+# It writes the whole file, which is right for the values it generates and wrong
+# for the ones added later: `BELSO_TAG` records which commit this box is meant to
+# be running, and `BELSO_BASIC_AUTH` holds the pre-launch gate. Dropping them
+# turns a routine password rotation into a stopped deploy and an unreachable
+# site — both fail closed, and neither has anything to do with rotating a
+# password.
+CARRIED=""
+if [ -f "$TARGET" ]; then
+  CARRIED="$(grep -E '^(BELSO_TAG|BELSO_BASIC_AUTH)=' "$TARGET" || true)"
+fi
+
 # Written with a restrictive umask rather than chmod'd afterwards: between
 # `cat >` and `chmod` the file is world-readable, and on a shared box that
 # window is not hypothetical.
@@ -103,6 +116,11 @@ MEDIA_ROOT=/app/media
 BELSO_DOMAIN=${DOMAIN}
 ENV
 )
+
+if [ -n "$CARRIED" ]; then
+  printf '\n# Carried across the rewrite — see the note above where these are read.\n' >> "$TARGET"
+  printf '%s\n' "$CARRIED" >> "$TARGET"
+fi
 
 chown root:root "$TARGET"
 
